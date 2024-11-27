@@ -110,8 +110,8 @@ const Index = () => {
 
               <div className="w-1/2 h-[200px]">
                 <MapContainer
-                  defaultCenter={coordinates}
-                  defaultZoom={9}
+                  center={coordinates}
+                  zoom={9}
                   className="h-full w-full rounded-lg"
                 >
                   <TileLayer
