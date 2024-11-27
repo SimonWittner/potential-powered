@@ -23,12 +23,12 @@ const Results = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="pt-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex items-center">
           <Button
             variant="ghost"
-            className="mb-4"
+            className="mb-4 text-white hover:text-white/80"
             onClick={() => navigate(-1)}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -37,11 +37,11 @@ const Results = () => {
         </div>
 
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-primary mb-4">Analysis Results</h1>
+          <h1 className="text-4xl font-bold text-white mb-4">Analysis Results</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="p-6">
+          <Card className="p-6 bg-white/95 backdrop-blur-sm">
             <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
             <div className="space-y-4">
               <p>Peak Demand: {randomMetrics.peakDemand} kW</p>
@@ -51,7 +51,7 @@ const Results = () => {
             </div>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 bg-white/95 backdrop-blur-sm">
             <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
             <div className="space-y-4">
               <p>Specific Yield: {randomMetrics.yield} kWh/kWp</p>

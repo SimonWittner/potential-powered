@@ -48,19 +48,19 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="pt-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold text-primary mb-4">
+          <h1 className="text-4xl font-bold text-white mb-4">
             Potential Analysis
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-300">
             Analyse your potential for a PV and/or a battery. Get results in less
             than 5 minutes.
           </p>
         </div>
 
-        <Card className="p-6 space-y-8 shadow-lg bg-white animate-fade-in">
+        <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in">
           <div className="space-y-8">
             <CompanyInfoForm 
               address={address}
@@ -83,7 +83,7 @@ const Index = () => {
 
             <div className="space-y-4">
               <div className="space-y-3">
-                <Label>Do you know if you have available grid connection capacity?</Label>
+                <Label className="text-black">Do you know if you have available grid connection capacity?</Label>
                 <RadioGroup
                   value={hasGridCapacity}
                   onValueChange={setHasGridCapacity}
