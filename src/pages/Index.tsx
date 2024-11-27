@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import AnalysisDialog from "@/components/AnalysisDialog";
 
 // Fix for default marker icon in react-leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -25,6 +26,7 @@ const Index = () => {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [coordinates, setCoordinates] = useState<[number, number]>([51.1657, 10.4515]); // Germany center
+  const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
 
   const interests = [
     { id: "pv", label: "PV" },
@@ -106,14 +108,13 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="w-1/2 h-[300px]">
+              <div className="w-1/2 h-[200px]">
                 <MapContainer
-                  center={coordinates}
-                  zoom={6}
+                  defaultCenter={coordinates}
+                  defaultZoom={9}
                   className="h-full w-full rounded-lg"
                 >
                   <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
                   <Marker position={coordinates} />
@@ -217,9 +218,19 @@ const Index = () => {
             )}
           </div>
 
-          <Button className="w-full">Analyse</Button>
+            <Button 
+              className="w-full" 
+              onClick={() => setShowAnalysisDialog(true)}
+            >
+              Analyse
+            </Button>
+          </div>
         </Card>
       </div>
+      <AnalysisDialog 
+        open={showAnalysisDialog} 
+        onOpenChange={setShowAnalysisDialog}
+      />
     </div>
   );
 };
@@ -227,7 +238,7 @@ const Index = () => {
 // Helper component to update map view when coordinates change
 const MapUpdater = ({ coordinates }: { coordinates: [number, number] }) => {
   const map = useMap();
-  map.setView(coordinates, map.getZoom());
+  map.setView(coordinates, 9);
   return null;
 };
 
