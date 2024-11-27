@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import AnalysisDialog from "@/components/AnalysisDialog";
 import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import InterestsForm from "@/components/form/InterestsForm";
@@ -13,6 +16,8 @@ const Index = () => {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [address, setAddress] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
+  const [hasGridCapacity, setHasGridCapacity] = useState<string>("");
+  const [gridCapacityAmount, setGridCapacityAmount] = useState<string>("");
 
   const interests = [
     { id: "pv", label: "PV" },
@@ -75,6 +80,39 @@ const Index = () => {
               onElectricityPriceChange={handleElectricityPriceChange}
               onLoadProfileChange={handleLoadProfileChange}
             />
+
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <Label>Do you know if you have available grid connection capacity?</Label>
+                <RadioGroup
+                  value={hasGridCapacity}
+                  onValueChange={setHasGridCapacity}
+                  className="flex gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="yes" id="grid-yes" />
+                    <Label htmlFor="grid-yes">Yes</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="no" id="grid-no" />
+                    <Label htmlFor="grid-no">No</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {hasGridCapacity === "yes" && (
+                <div className="space-y-2">
+                  <Label htmlFor="grid-capacity">How much (in kWh)?</Label>
+                  <Input
+                    id="grid-capacity"
+                    type="number"
+                    value={gridCapacityAmount}
+                    onChange={(e) => setGridCapacityAmount(e.target.value)}
+                    placeholder="Enter capacity in kWh"
+                  />
+                </div>
+              )}
+            </div>
 
             <Button 
               className="w-full" 

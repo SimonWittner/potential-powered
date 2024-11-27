@@ -1,10 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import LoadProfileChart from "@/components/results/LoadProfileChart"
 import PVProductionChart from "@/components/results/PVProductionChart"
 import BatteryDesignCard from "@/components/results/BatteryDesignCard"
 import EconomicCalculationsCard from "@/components/results/EconomicCalculationsCard"
 import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
 
 const Results = () => {
+  const navigate = useNavigate();
   const randomMetrics = {
     peakDemand: (Math.random() * 100 + 50).toFixed(2),
     highTariffCoverage: (Math.random() * 30 + 40).toFixed(2),
@@ -16,9 +20,19 @@ const Results = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            className="mb-4"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </div>
+
         <div className="text-center">
           <h1 className="text-4xl font-bold text-primary mb-4">Analysis Results</h1>
-          <p className="text-lg text-gray-600">Here's what we found based on your data</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
