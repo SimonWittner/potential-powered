@@ -60,7 +60,7 @@ const Index = () => {
           </p>
         </div>
 
-        <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in">
+        <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in mb-12">
           <div className="space-y-8">
             <CompanyInfoForm 
               address={address}
