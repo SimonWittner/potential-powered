@@ -1,15 +1,16 @@
-import { Card } from "@/components/ui/card"
 import LoadProfileChart from "@/components/results/LoadProfileChart"
 import PVProductionChart from "@/components/results/PVProductionChart"
+import BatteryDesignCard from "@/components/results/BatteryDesignCard"
+import EconomicCalculationsCard from "@/components/results/EconomicCalculationsCard"
+import { Card } from "@/components/ui/card"
 
 const Results = () => {
   const randomMetrics = {
     peakDemand: (Math.random() * 100 + 50).toFixed(2),
+    highTariffCoverage: (Math.random() * 30 + 40).toFixed(2),
+    lowTariffCoverage: (Math.random() * 20 + 60).toFixed(2),
     yield: (Math.random() * 1000 + 800).toFixed(2),
     selfConsumption: (Math.random() * 40 + 30).toFixed(2),
-    batterySize: Math.floor(Math.random() * 20 + 5),
-    paybackPeriod: (Math.random() * 5 + 5).toFixed(1),
-    roi: (Math.random() * 10 + 8).toFixed(2),
   };
 
   return (
@@ -25,6 +26,8 @@ const Results = () => {
             <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
             <div className="space-y-4">
               <p>Peak Demand: {randomMetrics.peakDemand} kW</p>
+              <p>High Tariff Coverage: {randomMetrics.highTariffCoverage}%</p>
+              <p>Low Tariff Coverage: {randomMetrics.lowTariffCoverage}%</p>
               <LoadProfileChart />
             </div>
           </Card>
@@ -38,23 +41,8 @@ const Results = () => {
             </div>
           </Card>
 
-          <Card className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
-            <div className="space-y-4">
-              <p>Recommended Battery Size: {randomMetrics.batterySize} kWh</p>
-              <p>Additional Self-consumption: +{(Math.random() * 20 + 10).toFixed(1)}%</p>
-              <p>Estimated Full Cycles per Year: {Math.floor(Math.random() * 200 + 100)}</p>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Economic Calculations</h2>
-            <div className="space-y-4">
-              <p>Payback Period: {randomMetrics.paybackPeriod} years</p>
-              <p>Return on Investment: {randomMetrics.roi}%</p>
-              <p>LCOE: {(Math.random() * 0.1 + 0.08).toFixed(3)} €/kWh</p>
-            </div>
-          </Card>
+          <BatteryDesignCard />
+          <EconomicCalculationsCard />
         </div>
       </div>
     </div>
