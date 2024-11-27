@@ -56,10 +56,10 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
         </div>
       </div>
 
-      <div className="w-1/2 h-[200px]">
+      <div className="w-1/2 h-[150px]">
         <MapContainer
           style={{ height: "100%", width: "100%" }}
-          center={[51.1657, 10.4515] as L.LatLngExpression}
+          center={[51.1657, 10.4515]}
           zoom={6}
           ref={mapRef}
           className="w-full h-full rounded-lg"
@@ -68,7 +68,7 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          {address && <Marker position={[51.1657, 10.4515] as L.LatLngExpression} />}
+          {address && <Marker position={[51.1657, 10.4515]} />}
         </MapContainer>
       </div>
     </div>
