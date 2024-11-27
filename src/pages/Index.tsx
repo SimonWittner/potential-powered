@@ -5,11 +5,20 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Index = () => {
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
   const [showLoadProfileUpload, setShowLoadProfileUpload] = useState(false);
   const [showYearlyConsumption, setShowYearlyConsumption] = useState(false);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+
+  const interests = [
+    { id: "pv", label: "PV" },
+    { id: "battery", label: "Battery" },
+    { id: "evCharging", label: "EV Charging" },
+    { id: "heatpump", label: "Heatpump" },
+  ];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -21,6 +30,14 @@ const Index = () => {
       }
       toast.success("File uploaded successfully");
     }
+  };
+
+  const handleInterestChange = (interest: string) => {
+    setSelectedInterests((current) =>
+      current.includes(interest)
+        ? current.filter((i) => i !== interest)
+        : [...current, interest]
+    );
   };
 
   return (
@@ -54,6 +71,22 @@ const Index = () => {
                 placeholder="Enter your company address"
                 className="mt-1"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label>What are you interested in?</Label>
+              <div className="grid grid-cols-2 gap-4">
+                {interests.map((interest) => (
+                  <div key={interest.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={interest.id}
+                      checked={selectedInterests.includes(interest.id)}
+                      onCheckedChange={() => handleInterestChange(interest.id)}
+                    />
+                    <Label htmlFor={interest.id}>{interest.label}</Label>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -135,7 +168,7 @@ const Index = () => {
             )}
           </div>
 
-          <Button className="w-full">Submit Analysis</Button>
+          <Button className="w-full">Analyse</Button>
         </Card>
       </div>
     </div>
