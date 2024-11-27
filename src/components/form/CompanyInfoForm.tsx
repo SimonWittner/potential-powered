@@ -59,16 +59,16 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
       <div className="w-1/2 h-[150px]">
         <MapContainer
           style={{ height: "100%", width: "100%" }}
-          center={[51.1657, 10.4515]}
+          className="w-full h-full rounded-lg"
+          center={[51.1657, 10.4515] as L.LatLngExpression}
           zoom={6}
           ref={mapRef}
-          className="w-full h-full rounded-lg"
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          {address && <Marker position={[51.1657, 10.4515]} />}
+          {address && <Marker position={[51.1657, 10.4515] as L.LatLngExpression} />}
         </MapContainer>
       </div>
     </div>
