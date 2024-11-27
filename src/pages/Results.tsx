@@ -5,7 +5,7 @@ import BatteryDesignCard from "@/components/results/BatteryDesignCard"
 import EconomicCalculationsCard from "@/components/results/EconomicCalculationsCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Download } from "lucide-react"
 
 const Results = () => {
   const navigate = useNavigate();
@@ -15,6 +15,11 @@ const Results = () => {
     lowTariffCoverage: (Math.random() * 20 + 60).toFixed(2),
     yield: (Math.random() * 1000 + 800).toFixed(2),
     selfConsumption: (Math.random() * 40 + 30).toFixed(2),
+  };
+
+  const handleExport = () => {
+    console.log("Exporting analysis...");
+    // Export functionality would go here
   };
 
   return (
@@ -57,6 +62,18 @@ const Results = () => {
 
           <BatteryDesignCard />
           <EconomicCalculationsCard />
+        </div>
+
+        <div className="flex justify-center mt-8">
+          <Button 
+            variant="secondary"
+            size="lg"
+            onClick={handleExport}
+            className="w-48"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export Analysis
+          </Button>
         </div>
       </div>
     </div>
