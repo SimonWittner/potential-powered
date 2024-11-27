@@ -44,3 +44,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.leaflet-container {
+  z-index: 1;
+}

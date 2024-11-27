@@ -6,12 +6,25 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for default marker icon in react-leaflet
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 const Index = () => {
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
   const [showLoadProfileUpload, setShowLoadProfileUpload] = useState(false);
   const [showYearlyConsumption, setShowYearlyConsumption] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [address, setAddress] = useState("");
+  const [coordinates, setCoordinates] = useState<[number, number]>([51.1657, 10.4515]); // Germany center
 
   const interests = [
     { id: "pv", label: "PV" },
@@ -19,6 +32,21 @@ const Index = () => {
     { id: "evCharging", label: "EV Charging" },
     { id: "heatpump", label: "Heatpump" },
   ];
+
+  const handleAddressChange = async (value: string) => {
+    setAddress(value);
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}`
+      );
+      const data = await response.json();
+      if (data.length > 0) {
+        setCoordinates([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+      }
+    } catch (error) {
+      console.error('Error geocoding address:', error);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -42,7 +70,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl font-bold text-primary mb-4">
             Potential Analysis
@@ -55,27 +83,48 @@ const Index = () => {
 
         <Card className="p-6 space-y-8 shadow-lg bg-white animate-fade-in">
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="companyName">Company Name</Label>
-              <Input
-                id="companyName"
-                placeholder="Enter your company name"
-                className="mt-1"
-              />
-            </div>
+            <div className="flex gap-8">
+              <div className="w-1/2 space-y-4">
+                <div>
+                  <Label htmlFor="companyName">Company Name</Label>
+                  <Input
+                    id="companyName"
+                    placeholder="Enter your company name"
+                    className="mt-1"
+                  />
+                </div>
 
-            <div>
-              <Label htmlFor="address">Address</Label>
-              <Input
-                id="address"
-                placeholder="Enter your company address"
-                className="mt-1"
-              />
+                <div>
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    placeholder="Enter your company address"
+                    className="mt-1"
+                    value={address}
+                    onChange={(e) => handleAddressChange(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="w-1/2 h-[300px]">
+                <MapContainer
+                  center={coordinates}
+                  zoom={6}
+                  className="h-full w-full rounded-lg"
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker position={coordinates} />
+                  <MapUpdater coordinates={coordinates} />
+                </MapContainer>
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label>What are you interested in?</Label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex space-x-6">
                 {interests.map((interest) => (
                   <div key={interest.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -173,6 +222,13 @@ const Index = () => {
       </div>
     </div>
   );
+};
+
+// Helper component to update map view when coordinates change
+const MapUpdater = ({ coordinates }: { coordinates: [number, number] }) => {
+  const map = useMap();
+  map.setView(coordinates, map.getZoom());
+  return null;
 };
 
 export default Index;
