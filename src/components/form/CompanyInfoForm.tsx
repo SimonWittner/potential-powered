@@ -23,13 +23,10 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
 
   useEffect(() => {
     if (address && mapRef.current) {
-      // Geocode the address (in a real application, you would use a geocoding service)
-      // For this example, we'll just zoom to a fixed point when an address is entered
       const map = mapRef.current;
-      map.setView([51.1657, 10.4515], 6); // Germany center coordinates
+      map.setView([51.1657, 10.4515], 6);
       
       if (address.length > 0) {
-        // Simulate zooming in when address is entered
         map.setZoom(9);
       }
     }
@@ -59,9 +56,10 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
         </div>
       </div>
 
-      <div className="w-1/2 h-[300px]">
+      <div className="w-1/2 h-[200px]">
         <MapContainer
-          center={[51.1657, 10.4515]} // Germany center coordinates
+          style={{ height: "100%", width: "100%" }}
+          center={[51.1657, 10.4515] as L.LatLngExpression}
           zoom={6}
           ref={mapRef}
           className="w-full h-full rounded-lg"
@@ -70,7 +68,7 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          {address && <Marker position={[51.1657, 10.4515]} />}
+          {address && <Marker position={[51.1657, 10.4515] as L.LatLngExpression} />}
         </MapContainer>
       </div>
     </div>
