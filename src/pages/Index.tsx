@@ -216,7 +216,6 @@ const Index = () => {
                 />
               </div>
             )}
-          </div>
 
             <Button 
               className="w-full" 
@@ -226,11 +225,12 @@ const Index = () => {
             </Button>
           </div>
         </Card>
+
+        <AnalysisDialog 
+          open={showAnalysisDialog} 
+          onOpenChange={setShowAnalysisDialog}
+        />
       </div>
-      <AnalysisDialog 
-        open={showAnalysisDialog} 
-        onOpenChange={setShowAnalysisDialog}
-      />
     </div>
   );
 };
