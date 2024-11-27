@@ -1,5 +1,17 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import { useEffect, useRef } from "react"
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+
+// Fix for default marker icon in leaflet
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 interface CompanyInfoFormProps {
   address: string;
@@ -7,26 +19,59 @@ interface CompanyInfoFormProps {
 }
 
 const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => {
+  const mapRef = useRef<L.Map>(null);
+
+  useEffect(() => {
+    if (address && mapRef.current) {
+      // Geocode the address (in a real application, you would use a geocoding service)
+      // For this example, we'll just zoom to a fixed point when an address is entered
+      const map = mapRef.current;
+      map.setView([51.1657, 10.4515], 6); // Germany center coordinates
+      
+      if (address.length > 0) {
+        // Simulate zooming in when address is entered
+        map.setZoom(9);
+      }
+    }
+  }, [address]);
+
   return (
-    <div className="space-y-4">
-      <div>
-        <Label htmlFor="companyName">Company Name</Label>
-        <Input
-          id="companyName"
-          placeholder="Enter your company name"
-          className="mt-1"
-        />
+    <div className="flex gap-8">
+      <div className="w-1/2 space-y-4">
+        <div>
+          <Label htmlFor="companyName">Company Name</Label>
+          <Input
+            id="companyName"
+            placeholder="Enter your company name"
+            className="mt-1"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="address">Address</Label>
+          <Input
+            id="address"
+            placeholder="Enter your company address"
+            className="mt-1"
+            value={address}
+            onChange={(e) => onAddressChange(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div>
-        <Label htmlFor="address">Address</Label>
-        <Input
-          id="address"
-          placeholder="Enter your company address"
-          className="mt-1"
-          value={address}
-          onChange={(e) => onAddressChange(e.target.value)}
-        />
+      <div className="w-1/2 h-[300px]">
+        <MapContainer
+          center={[51.1657, 10.4515]} // Germany center coordinates
+          zoom={6}
+          ref={mapRef}
+          className="w-full h-full rounded-lg"
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {address && <Marker position={[51.1657, 10.4515]} />}
+        </MapContainer>
       </div>
     </div>
   );
