@@ -64,7 +64,7 @@ const Results = () => {
           <EconomicCalculationsCard />
         </div>
 
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-8 pb-32">
           <Button 
             variant="secondary"
             size="lg"
