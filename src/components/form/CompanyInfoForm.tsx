@@ -61,20 +61,18 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
         </div>
       </div>
 
-      {/* Map section - takes up the other half */}
-      <div className="w-1/2 h-[400px] rounded-lg overflow-hidden">
+      {/* Map section - takes up the other half but with reduced height */}
+      <div className="w-1/2 h-[100px] rounded-lg overflow-hidden">
         <MapContainer
-          style={{ height: "100%", width: "100%" }}
           center={[51.1657, 10.4515]} // Germany's center coordinates
           zoom={6}
           ref={mapRef}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           <MapUpdater address={address} />
-          {address && <Marker position={[51.1657, 10.4515]} />} {/* This will be updated when geocoding succeeds */}
+          {address && <Marker position={[51.1657, 10.4515]} />}
         </MapContainer>
       </div>
     </div>
