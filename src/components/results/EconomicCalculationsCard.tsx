@@ -51,12 +51,6 @@ const EconomicCalculationsCard = () => {
               value={`${randomMetrics.annualYield} kWh`}
               level="Medium"
             />
-          </div>
-        </Card>
-
-        <Card className="p-4">
-          <h3 className="text-lg font-semibold mb-4">Battery</h3>
-          <div className="space-y-2">
             <MetricRow 
               label="Payback Period" 
               value={`${randomMetrics.paybackPeriod} years`}
@@ -67,6 +61,12 @@ const EconomicCalculationsCard = () => {
               value={`${randomMetrics.roe}%`}
               level="Medium"
             />
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <h3 className="text-lg font-semibold mb-4">Battery</h3>
+          <div className="space-y-2">
           </div>
         </Card>
       </div>
