@@ -22,7 +22,7 @@ const PVProductionChart = () => {
 
   return (
     <div className="space-y-2">
-      <h3 className="text-lg font-medium">PV Generation</h3>
+      <h3 className="text-lg font-medium mb-4">PV Generation Yearly</h3>
       <div className="h-[150px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
