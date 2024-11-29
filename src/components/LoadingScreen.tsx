@@ -19,7 +19,7 @@ const LoadingScreen = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-[#1A0F0F]/80 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="space-y-8 text-center animate-fade-in">
         <h2 className="text-2xl font-semibold text-white">Analyzing your potential...</h2>
         <Progress value={progress} className="w-[300px]" />
