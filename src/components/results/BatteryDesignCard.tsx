@@ -6,11 +6,11 @@ const BatteryDesignCard = () => {
     additionalSelfConsumption: 14.9, // Fixed value as requested
     fullCycles: 113, // Fixed value as requested
     maxProfitability: {
-      size: Math.floor(Math.random() * 15 + 5),
+      size: 17, // Fixed value as requested
       roi: (Math.random() * 5 + 8).toFixed(2)
     },
     maxSelfConsumption: {
-      size: Math.floor(Math.random() * 25 + 10),
+      size: 25, // Fixed value as requested
       selfConsumption: (Math.random() * 20 + 60).toFixed(2)
     }
   };
