@@ -53,7 +53,7 @@ const PVProductionChart = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
+      <div className="space-y-2 mt-12">
         <h3 className="text-lg font-medium mb-4">PV Generation Daily</h3>
         <div className="h-[150px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -85,7 +85,7 @@ const PVProductionChart = () => {
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 mt-12">
         <h3 className="text-lg font-medium mb-4">PV Generation Yearly</h3>
         <div className="h-[150px] w-full">
           <ResponsiveContainer width="100%" height="100%">
