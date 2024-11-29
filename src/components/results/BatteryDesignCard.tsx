@@ -2,9 +2,9 @@ import { Card } from "@/components/ui/card"
 
 const BatteryDesignCard = () => {
   const randomMetrics = {
-    batterySize: Math.floor(Math.random() * 20 + 5),
-    additionalSelfConsumption: (Math.random() * 20 + 10).toFixed(1),
-    fullCycles: Math.floor(Math.random() * 200 + 100),
+    batterySize: 17, // Fixed value as requested
+    additionalSelfConsumption: 14.9, // Fixed value as requested
+    fullCycles: 113, // Fixed value as requested
     maxProfitability: {
       size: Math.floor(Math.random() * 15 + 5),
       roi: (Math.random() * 5 + 8).toFixed(2)
