@@ -3,6 +3,7 @@ import LoadProfileChart from "@/components/results/LoadProfileChart"
 import PVProductionChart from "@/components/results/PVProductionChart"
 import BatteryDesignCard from "@/components/results/BatteryDesignCard"
 import EconomicCalculationsCard from "@/components/results/EconomicCalculationsCard"
+import ComparisonCard from "@/components/results/ComparisonCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
@@ -61,6 +62,10 @@ const Results = () => {
           </Card>
 
           <BatteryDesignCard />
+          <ComparisonCard />
+        </div>
+
+        <div className="w-full">
           <EconomicCalculationsCard />
         </div>
 
