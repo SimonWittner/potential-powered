@@ -99,7 +99,7 @@ const PVProductionChart = () => {
                 stroke="#666"
                 tick={{ fill: '#666', fontSize: 12 }}
                 label={{ 
-                  value: 'kWh', 
+                  value: 'kW', 
                   angle: -90, 
                   position: 'insideLeft',
                   style: { textAnchor: 'middle', fill: '#666' }
