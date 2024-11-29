@@ -6,9 +6,13 @@ const EconomicCalculationsCard = () => {
     roi: (Math.random() * 10 + 8).toFixed(2),
     lcoe: (Math.random() * 0.1 + 0.08).toFixed(3),
     annualYield: Math.floor(Math.random() * 5000 + 8000),
-    // Battery metrics
     paybackPeriod: (Math.random() * 5 + 5).toFixed(1),
     roe: (Math.random() * 8 + 12).toFixed(2),
+    // Battery metrics
+    batteryRoi: (Math.random() * 8 + 6).toFixed(2),
+    batteryLcoe: (Math.random() * 0.12 + 0.1).toFixed(3),
+    batteryPaybackPeriod: (Math.random() * 6 + 6).toFixed(1),
+    batteryRoe: (Math.random() * 6 + 10).toFixed(2),
   };
 
   const getValueStyle = (level: "High" | "Medium" | "Low") => {
@@ -67,6 +71,26 @@ const EconomicCalculationsCard = () => {
         <Card className="p-4">
           <h3 className="text-lg font-semibold mb-4">Battery</h3>
           <div className="space-y-2">
+            <MetricRow 
+              label="Return on Investment (ROI)" 
+              value={`${randomMetrics.batteryRoi}%`}
+              level="Low"
+            />
+            <MetricRow 
+              label="LCOE" 
+              value={`${randomMetrics.batteryLcoe} €/kWh`}
+              level="Medium"
+            />
+            <MetricRow 
+              label="Payback Period" 
+              value={`${randomMetrics.batteryPaybackPeriod} years`}
+              level="Medium"
+            />
+            <MetricRow 
+              label="Return on Equity (ROE)" 
+              value={`${randomMetrics.batteryRoe}%`}
+              level="Low"
+            />
           </div>
         </Card>
       </div>
