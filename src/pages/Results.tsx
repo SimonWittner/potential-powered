@@ -4,6 +4,8 @@ import PVProductionChart from "@/components/results/PVProductionChart"
 import BatteryDesignCard from "@/components/results/BatteryDesignCard"
 import EconomicCalculationsCard from "@/components/results/EconomicCalculationsCard"
 import ComparisonCard from "@/components/results/ComparisonCard"
+import CostsCard from "@/components/results/CostsCard"
+import ESGReportingCard from "@/components/results/ESGReportingCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
@@ -20,7 +22,6 @@ const Results = () => {
 
   const handleExport = () => {
     console.log("Exporting analysis...");
-    // Export functionality would go here
   };
 
   return (
@@ -63,6 +64,8 @@ const Results = () => {
 
           <BatteryDesignCard />
           <ComparisonCard />
+          <CostsCard />
+          <ESGReportingCard />
         </div>
 
         <div className="w-full">
