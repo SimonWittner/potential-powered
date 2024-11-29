@@ -40,40 +40,39 @@ const EconomicCalculationsCard = () => {
       <div className="grid grid-cols-2 gap-6 mb-6">
         <Card className="p-4">
           <h3 className="text-lg font-semibold mb-4">PV</h3>
-          <div className="space-y-2">
-            <MetricRow 
-              label="Payback Period" 
-              value={`${randomMetrics.paybackPeriod} years`}
-              level="High"
-            />
-            <MetricRow 
-              label="Return on Equity (ROE)" 
-              value={`${randomMetrics.roe}%`}
-              level="Medium"
-            />
-            <MetricRow 
-              label="Return on Investment (ROI)" 
-              value={`${randomMetrics.roi}%`}
-              level="Medium"
-            />
-          </div>
         </Card>
 
         <Card className="p-4">
           <h3 className="text-lg font-semibold mb-4">Battery</h3>
-          <div className="space-y-2">
-            <MetricRow 
-              label="LCOE" 
-              value={`${randomMetrics.lcoe} €/kWh`}
-              level="Low"
-            />
-            <MetricRow 
-              label="Annual Yield" 
-              value={`${randomMetrics.annualYield} kWh`}
-              level="Medium"
-            />
-          </div>
         </Card>
+      </div>
+
+      <div className="space-y-2">
+        <MetricRow 
+          label="Payback Period" 
+          value={`${randomMetrics.paybackPeriod} years`}
+          level="High"
+        />
+        <MetricRow 
+          label="Return on Equity (ROE)" 
+          value={`${randomMetrics.roe}%`}
+          level="Medium"
+        />
+        <MetricRow 
+          label="Return on Investment (ROI)" 
+          value={`${randomMetrics.roi}%`}
+          level="Medium"
+        />
+        <MetricRow 
+          label="LCOE" 
+          value={`${randomMetrics.lcoe} €/kWh`}
+          level="Low"
+        />
+        <MetricRow 
+          label="Annual Yield" 
+          value={`${randomMetrics.annualYield} kWh`}
+          level="Medium"
+        />
       </div>
     </Card>
   );
