@@ -9,27 +9,20 @@ const EconomicCalculationsCard = () => {
     annualYield: Math.floor(Math.random() * 5000 + 8000),
   };
 
-  const MetricBadge = ({ level }: { level: "High" | "Medium" | "Low" }) => {
-    const bgColor = {
+  const getValueStyle = (level: "High" | "Medium" | "Low") => {
+    return {
       High: "bg-green-200 text-green-800",
       Medium: "bg-yellow-200 text-yellow-800",
       Low: "bg-red-200 text-red-800",
     }[level];
-
-    return (
-      <span className={`px-3 py-1 rounded-full text-sm font-medium ${bgColor}`}>
-        {level}
-      </span>
-    );
   };
 
   const MetricRow = ({ label, value, level }: { label: string; value: string | number; level: "High" | "Medium" | "Low" }) => (
     <div className="flex items-center justify-between py-2">
       <span className="text-gray-600">{label}</span>
-      <div className="flex items-center gap-4">
-        <span className="font-medium">{value}</span>
-        <MetricBadge level={level} />
-      </div>
+      <span className={`font-medium px-3 py-1 rounded-full text-sm ${getValueStyle(level)}`}>
+        {value}
+      </span>
     </div>
   );
 
