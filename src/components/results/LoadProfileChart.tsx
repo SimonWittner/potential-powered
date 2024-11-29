@@ -19,18 +19,18 @@ const generateLoadProfileData = () => {
 
 const generateCostData = () => {
   return [
-    { hour: "00:00", cost: 0.15 },
-    { hour: "02:00", cost: 0.15 },
-    { hour: "04:00", cost: 0.15 },
-    { hour: "06:00", cost: 0.25 },
-    { hour: "08:00", cost: 0.35 },
-    { hour: "10:00", cost: 0.35 },
-    { hour: "12:00", cost: 0.35 },
-    { hour: "14:00", cost: 0.25 },
-    { hour: "16:00", cost: 0.25 },
-    { hour: "18:00", cost: 0.15 },
-    { hour: "20:00", cost: 0.15 },
-    { hour: "22:00", cost: 0.15 }
+    { hour: "Januar", cost: 9779 },
+    { hour: "Februar", cost: 10486 },
+    { hour: "März", cost: 10732 },
+    { hour: "April", cost: 7290 },
+    { hour: "Mai", cost: 7116 },
+    { hour: "Juni", cost: 6050 },
+    { hour: "Juli", cost: 9514 },
+    { hour: "August", cost: 12556 },
+    { hour: "September", cost: 9043 },
+    { hour: "Oktober", cost: 7504 },
+    { hour: "November", cost: 6395 },
+    { hour: "Dezember", cost: 7656 }
   ];
 };
 
@@ -87,7 +87,7 @@ const LoadProfileChart = () => {
                 stroke="#666"
                 tick={{ fill: '#666', fontSize: 12 }}
                 label={{ 
-                  value: '€/kWh', 
+                  value: 'EUR', 
                   angle: -90, 
                   position: 'insideLeft',
                   style: { textAnchor: 'middle', fill: '#666' }
@@ -97,8 +97,8 @@ const LoadProfileChart = () => {
               <Area 
                 type="monotone" 
                 dataKey="cost" 
-                stroke="#16a34a" 
-                fill="#22c55e" 
+                stroke="#fda4af"
+                fill="#fecdd3" 
                 strokeWidth={2}
               />
             </AreaChart>
