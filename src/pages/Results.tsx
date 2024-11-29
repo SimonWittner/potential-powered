@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Header from "@/components/Header";
 import LoadProfileChart from "@/components/results/LoadProfileChart"
 import PVProductionChart from "@/components/results/PVProductionChart"
 import BatteryDesignCard from "@/components/results/BatteryDesignCard"
@@ -8,7 +9,7 @@ import CostsCard from "@/components/results/CostsCard"
 import ESGReportingCard from "@/components/results/ESGReportingCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Download } from "lucide-react"
+import { Download } from "lucide-react"
 
 const Results = () => {
   const navigate = useNavigate();
@@ -25,66 +26,69 @@ const Results = () => {
   };
 
   return (
-    <div className="pt-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex items-center">
-          <Button
-            variant="ghost"
-            className="mb-4 text-white hover:text-white/80"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </div>
+    <>
+      <Header
+        title="Analysis Results"
+        showBackButton={true}
+      />
+      <div className="pt-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              className="mb-4 text-white hover:text-white/80"
+              onClick={() => navigate(-1)}
+            >
+              Back
+            </Button>
+          </div>
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-white mb-4">Analysis Results</h1>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="p-6 bg-white/95 backdrop-blur-sm">
+              <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
+              <div className="space-y-4">
+                <p>Peak Demand: {randomMetrics.peakDemand} kW</p>
+                <p>High Tariff Coverage: {randomMetrics.highTariffCoverage}%</p>
+                <p>Low Tariff Coverage: {randomMetrics.lowTariffCoverage}%</p>
+                <LoadProfileChart />
+              </div>
+            </Card>
 
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Analysis Results</h1>
-        </div>
+            <Card className="p-6 bg-white/95 backdrop-blur-sm">
+              <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
+              <div className="space-y-4">
+                <p>Specific Yield: {randomMetrics.yield} kWh/kWp</p>
+                <p>Self-consumption Rate: {randomMetrics.selfConsumption}%</p>
+                <PVProductionChart />
+              </div>
+            </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="p-6 bg-white/95 backdrop-blur-sm">
-            <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
-            <div className="space-y-4">
-              <p>Peak Demand: {randomMetrics.peakDemand} kW</p>
-              <p>High Tariff Coverage: {randomMetrics.highTariffCoverage}%</p>
-              <p>Low Tariff Coverage: {randomMetrics.lowTariffCoverage}%</p>
-              <LoadProfileChart />
-            </div>
-          </Card>
+            <BatteryDesignCard />
+            <ComparisonCard />
+            <CostsCard />
+            <ESGReportingCard />
+          </div>
 
-          <Card className="p-6 bg-white/95 backdrop-blur-sm">
-            <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
-            <div className="space-y-4">
-              <p>Specific Yield: {randomMetrics.yield} kWh/kWp</p>
-              <p>Self-consumption Rate: {randomMetrics.selfConsumption}%</p>
-              <PVProductionChart />
-            </div>
-          </Card>
+          <div className="w-full">
+            <EconomicCalculationsCard />
+          </div>
 
-          <BatteryDesignCard />
-          <ComparisonCard />
-          <CostsCard />
-          <ESGReportingCard />
-        </div>
-
-        <div className="w-full">
-          <EconomicCalculationsCard />
-        </div>
-
-        <div className="flex justify-center mt-8 pb-32">
-          <Button 
-            variant="secondary"
-            size="lg"
-            onClick={handleExport}
-            className="w-48"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export Analysis
-          </Button>
+          <div className="flex justify-center mt-8 pb-32">
+            <Button 
+              variant="secondary"
+              size="lg"
+              onClick={handleExport}
+              className="w-48"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export Analysis
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

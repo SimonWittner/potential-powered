@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import Header from "@/components/Header";
 import AnalysisDialog from "@/components/AnalysisDialog";
 import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import InterestsForm from "@/components/form/InterestsForm";
@@ -48,19 +49,14 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-black">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Potential Analysis
-          </h1>
-          <p className="text-lg text-gray-300">
-            Analyse your potential for a PV and/or a battery. Get results in less
-            than 5 minutes.
-          </p>
-        </div>
-
-        <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in mb-12">
+    <>
+      <Header
+        title="Potential Analysis"
+        subtitle="Analyse your potential for a PV and/or a battery. Get results in less than 5 minutes."
+      />
+      <div className="min-h-screen pt-32 px-4 sm:px-6 lg:px-8 pb-12 bg-black">
+        <div className="max-w-7xl mx-auto">
+          <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in mb-12">
           <div className="space-y-8">
             <CompanyInfoForm 
               address={address}
@@ -121,14 +117,15 @@ const Index = () => {
               Analyse
             </Button>
           </div>
-        </Card>
+          </Card>
 
-        <AnalysisDialog 
-          open={showAnalysisDialog} 
-          onOpenChange={setShowAnalysisDialog}
-        />
+          <AnalysisDialog 
+            open={showAnalysisDialog} 
+            onOpenChange={setShowAnalysisDialog}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
