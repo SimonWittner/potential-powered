@@ -5,7 +5,8 @@ const CostsCard = () => {
     initialInvestment: {
       pv: (Math.random() * 20000 + 10000).toFixed(2),
       battery: (Math.random() * 15000 + 8000).toFixed(2),
-      installation: (Math.random() * 5000 + 2000).toFixed(2)
+      installation: (Math.random() * 5000 + 2000).toFixed(2),
+      grants: -1400
     },
     operationalCosts: {
       maintenance: (Math.random() * 500 + 200).toFixed(2),
@@ -31,6 +32,10 @@ const CostsCard = () => {
             <div className="flex justify-between items-center">
               <span>Installation</span>
               <span className="font-medium">{costs.initialInvestment.installation} €</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Grants</span>
+              <span className="font-medium text-green-600">{costs.initialInvestment.grants} €</span>
             </div>
           </div>
         </div>
