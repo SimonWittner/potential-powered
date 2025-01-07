@@ -64,6 +64,7 @@ const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => 
       {/* Map section - takes up the other half but with reduced height */}
       <div className="w-1/2 h-[100px] rounded-lg overflow-hidden">
         <MapContainer
+          style={{ height: "100%", width: "100%" }}
           center={[51.1657, 10.4515]} // Germany's center coordinates
           zoom={6}
           ref={mapRef}
