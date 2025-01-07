@@ -51,6 +51,8 @@ const Auth = () => {
                 }
               }
             }}
+            providers={[]}
+            view="sign_in"
           />
         </div>
       </div>
