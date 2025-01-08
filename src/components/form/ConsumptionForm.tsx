@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
+import { uploadFileToBucket } from "../integrations/supabase/fileUpload"; // Adjust the path as needed
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -18,18 +19,28 @@ const ConsumptionForm = ({
   onElectricityPriceChange,
   onLoadProfileChange,
 }: ConsumptionFormProps) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.type !== "text/csv") {
-        toast.error("Please upload a CSV file");
-        e.target.value = "";
-        return;
-      }
-      toast.success("File uploaded successfully");
-      onLoadProfileChange(file.name);
-    }
-  };
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  // Validate file type
+  if (file.type !== "text/csv") {
+    toast.error("Please upload a CSV file");
+    e.target.value = ""; // Reset the input
+    return;
+  }
+
+  // Upload the file to Supabase Storage
+  const bucketName = "load-profiles"; // Ensure this matches your bucket name
+  const filePath = await uploadFileToBucket(bucketName, file);
+
+  if (filePath) {
+    toast.success("File uploaded successfully");
+    onLoadProfileChange(filePath); // Pass the file path to the parent component
+  } else {
+    toast.error("File upload failed. Please try again.");
+  }
+};
 
   return (
     <div className="space-y-4">
