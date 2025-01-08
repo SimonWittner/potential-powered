@@ -20,6 +20,7 @@ const ConsumptionForm = ({
   onLoadProfileChange,
 }: ConsumptionFormProps) => {
 const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  console.log("File input triggered");
   const file = e.target.files?.[0];
   if (!file) return;
 

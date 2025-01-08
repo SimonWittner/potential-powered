@@ -2,6 +2,7 @@ import supabase from "./client";
 
 export async function uploadFileToBucket(bucketName: string, file: File): Promise<string | null> {
   try {
+    console.log("Uploading file:", file.name); // Debug log
     // Generate a unique file name using a timestamp
     const uniqueFileName = `${Date.now()}_${file.name}`;
 
