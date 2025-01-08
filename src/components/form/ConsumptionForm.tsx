@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
-import { uploadFileToBucket } from "../integrations/supabase/fileUpload"; // Adjust the path as needed
+import { uploadFileToBucket } from "../../integrations/supabase/fileUpload"; // Adjust the path as needed
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -68,7 +68,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           <Input
             id="electricityPrice"
             type="number"
-            placeholder="Enter price in €/kWh SIMON"
+            placeholder="Enter price in €/kWh"
             className="mt-1"
           />
         </div>
