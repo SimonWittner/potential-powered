@@ -68,7 +68,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           <Input
             id="electricityPrice"
             type="number"
-            placeholder="Enter price in €/kWh"
+            placeholder="Enter price in €/kWh SIMON"
             className="mt-1"
           />
         </div>
