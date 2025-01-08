@@ -1,4 +1,4 @@
-import supabase from "./client";
+import { supabase } from "./client";
 
 export async function uploadFileToBucket(bucketName: string, file: File): Promise<string | null> {
   try {
