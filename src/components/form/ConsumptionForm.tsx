@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import { useState } from "react"
+import { Upload, X } from "lucide-react"
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -18,20 +19,38 @@ const ConsumptionForm = ({
   onElectricityPriceChange,
 }: ConsumptionFormProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const validateCSVContent = async (file: File): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        const rows = text.split('\n').filter(row => row.trim() !== '');
+        if (rows.length !== 8760) {
+          toast.error("File must contain exactly 8760 values (hourly data for one year)");
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      };
+      reader.readAsText(file);
+    });
+  };
+
+  const handleFile = async (file: File) => {
     if (!file) return;
 
     if (file.type !== "text/csv") {
       toast.error("Please upload a CSV file");
-      e.target.value = "";
       return;
     }
 
+    const isValid = await validateCSVContent(file);
+    if (!isValid) return;
+
     setIsUploading(true);
     try {
-      // Create a unique filename
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
@@ -49,8 +68,36 @@ const ConsumptionForm = ({
       toast.error("Failed to upload file");
     } finally {
       setIsUploading(false);
-      e.target.value = "";
     }
+  };
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const file = e.dataTransfer.files[0];
+    await handleFile(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await handleFile(file);
+    }
+    e.target.value = '';
   };
 
   return (
@@ -74,32 +121,66 @@ const ConsumptionForm = ({
         </div>
 
         {showElectricityPrice && (
-          <div className="animate-fade-in">
-            <Label htmlFor="electricityPrice">Electricity Price</Label>
-            <Input
-              id="electricityPrice"
-              type="number"
-              placeholder="Enter price in €/kWh"
-              className="mt-1"
-            />
+          <div className="animate-fade-in space-y-4">
+            <div>
+              <Label htmlFor="electricityPrice">Electricity Price</Label>
+              <Input
+                id="electricityPrice"
+                type="number"
+                placeholder="Enter price in €/kWh"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
+              <Input
+                id="gridPowerCharges"
+                type="number"
+                placeholder="Enter price in €/kW/month"
+                className="mt-1"
+              />
+            </div>
           </div>
         )}
       </div>
 
       <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="loadProfile">Upload Load Profile</Label>
-          <Input
-            id="loadProfile"
+        <Label>Load Profile Upload</Label>
+        <div
+          className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+            dragActive 
+              ? "border-blue-500 bg-blue-50" 
+              : "border-gray-300 hover:border-gray-400"
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <input
             type="file"
             accept=".csv"
             onChange={handleFileChange}
-            disabled={isUploading}
-            className="mt-1"
+            className="hidden"
+            id="file-upload"
           />
-          {isUploading && (
-            <p className="text-sm text-muted-foreground">Uploading...</p>
-          )}
+          <label
+            htmlFor="file-upload"
+            className="cursor-pointer flex flex-col items-center gap-2"
+          >
+            {isUploading ? (
+              <div className="animate-pulse">Uploading...</div>
+            ) : (
+              <>
+                <Upload className="h-10 w-10 text-gray-400" />
+                <p className="text-sm text-gray-600">
+                  Drag and drop your CSV file here, or click to select
+                </p>
+                <p className="text-xs text-gray-500">
+                  File must contain 8760 values (hourly data for one year)
+                </p>
+              </>
+            )}
+          </label>
         </div>
       </div>
     </div>
