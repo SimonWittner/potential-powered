@@ -12,11 +12,13 @@ interface ConsumptionFormProps {
   showYearlyConsumption: boolean;
   onElectricityPriceChange: (value: string) => void;
   onLoadProfileChange: (value: string) => void;
+  onFileUpload: (filePath: string) => void;
 }
 
 const ConsumptionForm = ({
   showElectricityPrice,
   onElectricityPriceChange,
+  onFileUpload,
 }: ConsumptionFormProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -28,7 +30,7 @@ const ConsumptionForm = ({
         const text = e.target?.result as string;
         const rows = text.split('\n').filter(row => row.trim() !== '');
         if (rows.length !== 8760) {
-          toast.error("File must contain exactly 8760 values (hourly data for one year)");
+          toast.error("File must contain a single column with 8760 values in kW");
           resolve(false);
         } else {
           resolve(true);
@@ -54,7 +56,7 @@ const ConsumptionForm = ({
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
+      const { data, error: uploadError } = await supabase.storage
         .from('load_profiles')
         .upload(fileName, file);
 
@@ -62,6 +64,7 @@ const ConsumptionForm = ({
         throw uploadError;
       }
 
+      onFileUpload(fileName);
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -176,7 +179,7 @@ const ConsumptionForm = ({
                   Drag and drop your CSV file here, or click to select
                 </p>
                 <p className="text-xs text-gray-500">
-                  File must contain one column with 8760 values in kW (hourly data of one year)
+                  File must contain a single column with 8760 values in kW
                 </p>
               </>
             )}

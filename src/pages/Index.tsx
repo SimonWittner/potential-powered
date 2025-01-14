@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import AnalysisDialog from "@/components/AnalysisDialog";
 import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import InterestsForm from "@/components/form/InterestsForm";
@@ -18,6 +20,7 @@ const Index = () => {
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
   const [hasGridCapacity, setHasGridCapacity] = useState<string>("");
   const [gridCapacityAmount, setGridCapacityAmount] = useState<string>("");
+  const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
 
   const interests = [
     { id: "pv", label: "PV" },
@@ -45,6 +48,43 @@ const Index = () => {
   const handleLoadProfileChange = (value: string) => {
     setShowLoadProfileUpload(value === "yes");
     setShowYearlyConsumption(value === "no");
+  };
+
+  const handleFileUpload = (filePath: string) => {
+    setUploadedFilePath(filePath);
+  };
+
+  const handleAnalyze = async () => {
+    if (!uploadedFilePath) {
+      toast.error("Please upload a load profile file first");
+      return;
+    }
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("You must be logged in to perform analysis");
+        return;
+      }
+
+      const { error } = await supabase
+        .from('load_profile_analyses')
+        .insert({
+          user_id: user.id,
+          file_path: uploadedFilePath,
+          status: 'pending'
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      setShowAnalysisDialog(true);
+    } catch (error) {
+      console.error('Error creating analysis:', error);
+      toast.error("Failed to start analysis");
+    }
   };
 
   return (
@@ -79,6 +119,7 @@ const Index = () => {
               showYearlyConsumption={showYearlyConsumption}
               onElectricityPriceChange={handleElectricityPriceChange}
               onLoadProfileChange={handleLoadProfileChange}
+              onFileUpload={handleFileUpload}
             />
 
             <div className="space-y-4">
@@ -116,7 +157,7 @@ const Index = () => {
 
             <Button 
               className="w-full" 
-              onClick={() => setShowAnalysisDialog(true)}
+              onClick={handleAnalyze}
             >
               Analyse
             </Button>

@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import LoadProfileChart from "@/components/results/LoadProfileChart"
 import PVProductionChart from "@/components/results/PVProductionChart"
 import BatteryDesignCard from "@/components/results/BatteryDesignCard"
@@ -12,17 +14,41 @@ import { ArrowLeft, Download } from "lucide-react"
 
 const Results = () => {
   const navigate = useNavigate();
-  const randomMetrics = {
-    peakDemand: (Math.random() * 100 + 50).toFixed(2),
-    highTariffCoverage: (Math.random() * 30 + 40).toFixed(2),
-    lowTariffCoverage: (Math.random() * 20 + 60).toFixed(2),
-    yield: (Math.random() * 1000 + 800).toFixed(2),
-    selfConsumption: (Math.random() * 40 + 30).toFixed(2),
-  };
+
+  const { data: analysis, isLoading, error } = useQuery({
+    queryKey: ['analysis'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('load_profile_analyses')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const handleExport = () => {
     console.log("Exporting analysis...");
   };
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="text-white">Loading analysis results...</div>
+    </div>;
+  }
+
+  if (error) {
+    return <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="text-white">Error loading analysis results</div>
+    </div>;
+  }
 
   return (
     <div className="pt-20 px-4 sm:px-6 lg:px-8">
@@ -46,9 +72,6 @@ const Results = () => {
           <Card className="p-6 bg-white/95 backdrop-blur-sm">
             <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
             <div className="space-y-4">
-              <p>Peak Demand: {randomMetrics.peakDemand} kW</p>
-              <p>High Tariff Coverage: {randomMetrics.highTariffCoverage}%</p>
-              <p>Low Tariff Coverage: {randomMetrics.lowTariffCoverage}%</p>
               <LoadProfileChart />
             </div>
           </Card>
@@ -56,8 +79,6 @@ const Results = () => {
           <Card className="p-6 bg-white/95 backdrop-blur-sm">
             <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
             <div className="space-y-4">
-              <p>Specific Yield: {randomMetrics.yield} kWh/kWp</p>
-              <p>Self-consumption Rate: {randomMetrics.selfConsumption}%</p>
               <PVProductionChart />
             </div>
           </Card>
