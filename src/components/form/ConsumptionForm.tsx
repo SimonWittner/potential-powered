@@ -176,7 +176,7 @@ const ConsumptionForm = ({
                   Drag and drop your CSV file here, or click to select
                 </p>
                 <p className="text-xs text-gray-500">
-                  File must contain a single column with 8760 values in kW
+                  File must contain one column with 8760 values in kW (hourly data of one year)
                 </p>
               </>
             )}
