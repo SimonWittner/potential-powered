@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event, session);
-      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+      if (event === 'SIGNED_OUT') {
         navigate('/auth');
       } else if (event === 'SIGNED_IN') {
         navigate('/');
