@@ -10,8 +10,10 @@ import AnalysisDialog from "@/components/AnalysisDialog";
 import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
   const [showLoadProfileUpload, setShowLoadProfileUpload] = useState(false);
   const [showYearlyConsumption, setShowYearlyConsumption] = useState(false);
@@ -21,6 +23,7 @@ const Index = () => {
   const [hasGridCapacity, setHasGridCapacity] = useState<string>("");
   const [gridCapacityAmount, setGridCapacityAmount] = useState<string>("");
   const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const interests = [
     { id: "pv", label: "PV" },
@@ -60,6 +63,7 @@ const Index = () => {
       return;
     }
 
+    setIsAnalyzing(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -68,22 +72,39 @@ const Index = () => {
         return;
       }
 
-      const { error } = await supabase
+      // Create analysis record
+      const { data: analysis, error: insertError } = await supabase
         .from('load_profile_analyses')
         .insert({
           user_id: user.id,
           file_path: uploadedFilePath,
           status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (insertError || !analysis) {
+        throw insertError || new Error('Failed to create analysis');
+      }
+
+      // Call the Edge Function to process the file
+      const { data: processedData, error: processError } = await supabase.functions
+        .invoke('analyze-load-profile', {
+          body: { analysisId: analysis.id }
         });
 
-      if (error) {
-        throw error;
+      if (processError) {
+        throw processError;
       }
 
       setShowAnalysisDialog(true);
+      toast.success("Analysis completed successfully");
+      navigate('/results');
     } catch (error) {
-      console.error('Error creating analysis:', error);
-      toast.error("Failed to start analysis");
+      console.error('Error processing analysis:', error);
+      toast.error("Failed to process analysis");
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -158,8 +179,9 @@ const Index = () => {
             <Button 
               className="w-full" 
               onClick={handleAnalyze}
+              disabled={isAnalyzing}
             >
-              Analyse
+              {isAnalyzing ? "Analyzing..." : "Analyse"}
             </Button>
           </div>
         </Card>
