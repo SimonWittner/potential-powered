@@ -12,6 +12,8 @@ import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 
+const LOCAL_SERVER_URL = 'http://localhost:3001'; // Update this to match your local server port
+
 const Index = () => {
   const navigate = useNavigate();
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
@@ -57,6 +59,49 @@ const Index = () => {
     setUploadedFilePath(filePath);
   };
 
+  const checkLocalServer = async () => {
+    try {
+      const response = await fetch(`${LOCAL_SERVER_URL}/health`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      return response.ok;
+    } catch (error) {
+      console.log('Local server not available:', error);
+      return false;
+    }
+  };
+
+  const downloadFileLocally = async (filePath: string) => {
+    try {
+      const { data: fileData, error: downloadError } = await supabase.storage
+        .from('load_profiles')
+        .download(filePath);
+
+      if (downloadError) {
+        throw downloadError;
+      }
+
+      const response = await fetch(`${LOCAL_SERVER_URL}/process-file`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          fileName: filePath,
+          fileContent: await fileData.text()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process file locally');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      return false;
+    }
+  };
+
   const handleAnalyze = async () => {
     if (!uploadedFilePath) {
       toast.error("Please upload a load profile file first");
@@ -70,6 +115,14 @@ const Index = () => {
       if (!user) {
         toast.error("You must be logged in to perform analysis");
         return;
+      }
+
+      // Check if local server is available
+      const isLocalServerAvailable = await checkLocalServer();
+      let useLocalProcessing = false;
+
+      if (isLocalServerAvailable) {
+        useLocalProcessing = await downloadFileLocally(uploadedFilePath);
       }
 
       // Create analysis record
@@ -87,14 +140,16 @@ const Index = () => {
         throw insertError || new Error('Failed to create analysis');
       }
 
-      // Call the Edge Function to process the file
-      const { data: processedData, error: processError } = await supabase.functions
-        .invoke('analyze-load-profile', {
-          body: { analysisId: analysis.id }
-        });
+      if (!useLocalProcessing) {
+        // Fall back to edge function if local processing failed
+        const { data: processedData, error: processError } = await supabase.functions
+          .invoke('analyze-load-profile', {
+            body: { analysisId: analysis.id }
+          });
 
-      if (processError) {
-        throw processError;
+        if (processError) {
+          throw processError;
+        }
       }
 
       setShowAnalysisDialog(true);
