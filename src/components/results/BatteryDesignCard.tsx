@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 
 interface ProcessedData {
   battery_size_kwh?: number;
+  battery_size_kw?: number;
 }
 
 const BatteryDesignCard = () => {
@@ -23,6 +24,7 @@ const BatteryDesignCard = () => {
 
   const randomMetrics = {
     batterySize: processedData.battery_size_kwh || 17, // Use processed data or fallback to 17
+    batteryPower: processedData.battery_size_kw || 10, // Use processed data or fallback to 10
     additionalSelfConsumption: 14.9,
     fullCycles: 113,
     maxProfitability: {
@@ -40,6 +42,7 @@ const BatteryDesignCard = () => {
       <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
       <div className="space-y-4">
         <p>Recommended Battery Size: {randomMetrics.batterySize} kWh</p>
+        <p>Recommended Battery Power: {randomMetrics.batteryPower} kW</p>
         <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
         <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
         
