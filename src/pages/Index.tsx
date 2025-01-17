@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -27,12 +27,19 @@ const Index = () => {
   const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const interests = [
-    { id: "pv", label: "PV" },
-    { id: "battery", label: "Battery" },
-    { id: "evCharging", label: "EV Charging" },
-    { id: "heatpump", label: "Heatpump" },
-  ];
+  // Check auth status when component mounts
+  useEffect(() => {
+    checkAuth();
+  }, [navigate]);
+
+  const checkAuth = async () => {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error || !session) {
+      console.error("Auth error:", error);
+      toast.error("Please sign in to continue");
+      navigate('/auth');
+    }
+  };
 
   const handleAddressChange = async (value: string) => {
     setAddress(value);
@@ -79,23 +86,30 @@ const Index = () => {
         .download(filePath);
 
       if (downloadError) {
-        throw downloadError;
+        console.error("Download error:", downloadError);
+        return false;
       }
 
-      const response = await fetch(`${LOCAL_SERVER_URL}/process-file`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          fileName: filePath,
-          fileContent: await fileData.text()
-        })
-      });
+      try {
+        const response = await fetch(`${LOCAL_SERVER_URL}/process-file`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            fileName: filePath,
+            fileContent: await fileData.text()
+          })
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to process file locally');
+        if (!response.ok) {
+          console.error("Local processing failed:", await response.text());
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+        console.error("Local server error:", error);
+        return false;
       }
-
-      return true;
     } catch (error) {
       console.error('Error downloading file:', error);
       return false;
@@ -110,22 +124,22 @@ const Index = () => {
 
     setIsAnalyzing(true);
     try {
+      // Check auth status first
+      const { data: { session }, error: authError } = await supabase.auth.getSession();
+      if (authError || !session) {
+        console.error("Auth error:", authError);
+        toast.error("Please sign in to continue");
+        navigate('/auth');
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         toast.error("You must be logged in to perform analysis");
         return;
       }
 
-      // Check if local server is available
-      const isLocalServerAvailable = await checkLocalServer();
-      let useLocalProcessing = false;
-
-      if (isLocalServerAvailable) {
-        useLocalProcessing = await downloadFileLocally(uploadedFilePath);
-      }
-
-      // Create analysis record
+      // Create analysis record first
       const { data: analysis, error: insertError } = await supabase
         .from('load_profile_analyses')
         .insert({
@@ -140,9 +154,21 @@ const Index = () => {
         throw insertError || new Error('Failed to create analysis');
       }
 
+      // Try local processing first, fallback to edge function
+      let useLocalProcessing = false;
+      try {
+        const isLocalServerAvailable = await checkLocalServer();
+        if (isLocalServerAvailable) {
+          useLocalProcessing = await downloadFileLocally(uploadedFilePath);
+        }
+      } catch (error) {
+        console.error("Local processing error:", error);
+        // Continue with edge function
+      }
+
       if (!useLocalProcessing) {
-        // Fall back to edge function if local processing failed
-        const { data: processedData, error: processError } = await supabase.functions
+        console.log("Using edge function for processing");
+        const { error: processError } = await supabase.functions
           .invoke('analyze-load-profile', {
             body: { analysisId: analysis.id }
           });
