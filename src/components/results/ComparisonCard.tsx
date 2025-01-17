@@ -1,7 +1,36 @@
-import { Card } from "@/components/ui/card"
+import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const ComparisonCard = () => {
+  const [plotUrl, setPlotUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPlot = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/get-plot');
+        if (!response.ok) {
+          console.error('Failed to fetch plot');
+          return;
+        }
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setPlotUrl(url);
+      } catch (error) {
+        console.error('Error fetching plot:', error);
+      }
+    };
+
+    fetchPlot();
+
+    // Cleanup function to revoke the object URL
+    return () => {
+      if (plotUrl) {
+        URL.revokeObjectURL(plotUrl);
+      }
+    };
+  }, []);
+
   const generateComparisonData = () => {
     return [
       { month: "Januar", loadProfile: 33, loadWithPV: 31, loadWithPVAndBattery: 29 },
@@ -25,6 +54,16 @@ const ComparisonCard = () => {
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Comparison</h2>
       <div className="space-y-4">
+        {plotUrl && (
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-2">Generated Plot</h3>
+            <img 
+              src={plotUrl} 
+              alt="Generated comparison plot" 
+              className="w-full rounded-lg shadow-md"
+            />
+          </div>
+        )}
         <h3 className="text-lg font-medium">Load Average Week - Comparing Asset</h3>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
