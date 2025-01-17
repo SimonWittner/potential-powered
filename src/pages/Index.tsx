@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import AnalysisDialog from "@/components/AnalysisDialog";
@@ -12,7 +9,7 @@ import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 
-const LOCAL_SERVER_URL = 'http://localhost:3001'; // Update this to match your local server port
+const LOCAL_SERVER_URL = 'http://localhost:3001';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,6 +18,7 @@ const Index = () => {
   const [showYearlyConsumption, setShowYearlyConsumption] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [address, setAddress] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
   const [hasGridCapacity, setHasGridCapacity] = useState<string>("");
   const [gridCapacityAmount, setGridCapacityAmount] = useState<string>("");
@@ -36,6 +34,10 @@ const Index = () => {
 
   const handleAddressChange = async (value: string) => {
     setAddress(value);
+  };
+
+  const handleCompanyNameChange = (value: string) => {
+    setCompanyName(value);
   };
 
   const handleInterestChange = (interest: string) => {
@@ -55,16 +57,14 @@ const Index = () => {
     setShowYearlyConsumption(value === "no");
   };
 
-  const handleFileUpload = (filePath: string) => {
-    setUploadedFilePath(filePath);
-  };
-
   const checkLocalServer = async () => {
     try {
+      console.log('Checking local server availability...');
       const response = await fetch(`${LOCAL_SERVER_URL}/health`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
+      console.log('Local server response:', response.ok);
       return response.ok;
     } catch (error) {
       console.log('Local server not available:', error);
@@ -72,7 +72,11 @@ const Index = () => {
     }
   };
 
-  const downloadFileLocally = async (filePath: string) => {
+  const downloadFileLocally = async (
+    filePath: string, 
+    electricityPrice?: number,
+    gridPowerCharges?: number
+  ) => {
     try {
       const { data: fileData, error: downloadError } = await supabase.storage
         .from('load_profiles')
@@ -82,12 +86,20 @@ const Index = () => {
         throw downloadError;
       }
 
+      const companyData = {
+        companyName,
+        address,
+        electricityPrice,
+        gridPowerCharges
+      };
+
       const response = await fetch(`${LOCAL_SERVER_URL}/process-file`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           fileName: filePath,
-          fileContent: await fileData.text()
+          fileContent: await fileData.text(),
+          companyData
         })
       });
 
@@ -99,6 +111,22 @@ const Index = () => {
     } catch (error) {
       console.error('Error downloading file:', error);
       return false;
+    }
+  };
+
+  const handleFileUpload = async (
+    filePath: string, 
+    electricityPrice?: number,
+    gridPowerCharges?: number
+  ) => {
+    setUploadedFilePath(filePath);
+    
+    // Store the electricity price and grid power charges for later use
+    if (electricityPrice !== undefined) {
+      localStorage.setItem('electricityPrice', electricityPrice.toString());
+    }
+    if (gridPowerCharges !== undefined) {
+      localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
     }
   };
 
@@ -122,7 +150,14 @@ const Index = () => {
       let useLocalProcessing = false;
 
       if (isLocalServerAvailable) {
-        useLocalProcessing = await downloadFileLocally(uploadedFilePath);
+        const electricityPrice = localStorage.getItem('electricityPrice');
+        const gridPowerCharges = localStorage.getItem('gridPowerCharges');
+        
+        useLocalProcessing = await downloadFileLocally(
+          uploadedFilePath,
+          electricityPrice ? parseFloat(electricityPrice) : undefined,
+          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
+        );
       }
 
       // Create analysis record
@@ -141,8 +176,7 @@ const Index = () => {
       }
 
       if (!useLocalProcessing) {
-        // Fall back to edge function if local processing failed
-        const { data: processedData, error: processError } = await supabase.functions
+        const { error: processError } = await supabase.functions
           .invoke('analyze-load-profile', {
             body: { analysisId: analysis.id }
           });
@@ -181,6 +215,8 @@ const Index = () => {
             <CompanyInfoForm 
               address={address}
               onAddressChange={handleAddressChange}
+              companyName={companyName}
+              onCompanyNameChange={handleCompanyNameChange}
             />
 
             <InterestsForm
@@ -197,39 +233,6 @@ const Index = () => {
               onLoadProfileChange={handleLoadProfileChange}
               onFileUpload={handleFileUpload}
             />
-
-            <div className="space-y-4">
-              <div className="space-y-3">
-                <Label className="text-black">Do you know if you have available grid connection capacity?</Label>
-                <RadioGroup
-                  value={hasGridCapacity}
-                  onValueChange={setHasGridCapacity}
-                  className="flex gap-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="yes" id="grid-yes" />
-                    <Label htmlFor="grid-yes">Yes</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="no" id="grid-no" />
-                    <Label htmlFor="grid-no">No</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {hasGridCapacity === "yes" && (
-                <div className="space-y-2">
-                  <Label htmlFor="grid-capacity">How much (in kWh)?</Label>
-                  <Input
-                    id="grid-capacity"
-                    type="number"
-                    value={gridCapacityAmount}
-                    onChange={(e) => setGridCapacityAmount(e.target.value)}
-                    placeholder="Enter capacity in kWh"
-                  />
-                </div>
-              )}
-            </div>
 
             <Button 
               className="w-full" 
