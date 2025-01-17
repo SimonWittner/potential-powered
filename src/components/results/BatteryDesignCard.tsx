@@ -1,16 +1,41 @@
+import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 
 const BatteryDesignCard = () => {
+  const [batterySize, setBatterySize] = useState<number>(17); // Default value as fallback
+  
+  useEffect(() => {
+    const fetchProcessedData = async () => {
+      try {
+        console.log('Fetching processed data from local server...');
+        const response = await fetch('http://localhost:3001/get-processed-data');
+        if (!response.ok) {
+          throw new Error('Failed to fetch processed data');
+        }
+        const data = await response.json();
+        console.log('Received processed data:', data);
+        
+        if (data.battery_size_kwh) {
+          setBatterySize(data.battery_size_kwh);
+        }
+      } catch (error) {
+        console.error('Error fetching processed data:', error);
+        // Keep the default battery size if fetch fails
+      }
+    };
+
+    fetchProcessedData();
+  }, []);
+
   const randomMetrics = {
-    batterySize: 17, // Fixed value as requested
-    additionalSelfConsumption: 14.9, // Fixed value as requested
-    fullCycles: 113, // Fixed value as requested
+    additionalSelfConsumption: 14.9,
+    fullCycles: 113,
     maxProfitability: {
-      size: 17, // Fixed value as requested
+      size: 17,
       roi: (Math.random() * 5 + 8).toFixed(2)
     },
     maxSelfConsumption: {
-      size: 25, // Fixed value as requested
+      size: 25,
       selfConsumption: (Math.random() * 20 + 60).toFixed(2)
     }
   };
@@ -19,7 +44,7 @@ const BatteryDesignCard = () => {
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
       <div className="space-y-4">
-        <p>Recommended Battery Size: {randomMetrics.batterySize} kWh</p>
+        <p>Recommended Battery Size: {batterySize} kWh</p>
         <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
         <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
         
