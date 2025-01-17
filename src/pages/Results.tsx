@@ -8,6 +8,7 @@ import EconomicCalculationsCard from "@/components/results/EconomicCalculationsC
 import ComparisonCard from "@/components/results/ComparisonCard"
 import CostsCard from "@/components/results/CostsCard"
 import ESGReportingCard from "@/components/results/ESGReportingCard"
+import OverviewCard from "@/components/results/OverviewCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
@@ -69,6 +70,7 @@ const Results = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <OverviewCard />
           <Card className="p-6 bg-white/95 backdrop-blur-sm">
             <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
             <div className="space-y-4">
