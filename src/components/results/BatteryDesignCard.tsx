@@ -1,11 +1,8 @@
 import { Card } from "@/components/ui/card"
 
 const BatteryDesignCard = () => {
-  // Get processed data from localStorage
-  const processedData = localStorage.getItem('processedData') ? JSON.parse(localStorage.getItem('processedData')!) : null;
-  
   const randomMetrics = {
-    batterySize: processedData?.battery_size_kwh || 17, // Use fetched value or fallback to 17
+    batterySize: 17, // Fixed value as requested
     additionalSelfConsumption: 14.9, // Fixed value as requested
     fullCycles: 113, // Fixed value as requested
     maxProfitability: {
