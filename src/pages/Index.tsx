@@ -72,31 +72,6 @@ const Index = () => {
     }
   };
 
-  const getProcessedData = async () => {
-    try {
-      console.log('Fetching processed data...');
-      const response = await fetch(`${LOCAL_SERVER_URL}/get-processed-data`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch processed data');
-      }
-
-      const data = await response.json();
-      console.log('Received processed data:', data);
-      
-      // Store the processed data in localStorage for the results page
-      localStorage.setItem('processedData', JSON.stringify(data));
-      
-      return true;
-    } catch (error) {
-      console.error('Error fetching processed data:', error);
-      return false;
-    }
-  };
-
   const downloadFileLocally = async (
     filePath: string, 
     electricityPrice?: number,
@@ -183,14 +158,6 @@ const Index = () => {
           electricityPrice ? parseFloat(electricityPrice) : undefined,
           gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
         );
-
-        if (useLocalProcessing) {
-          // Wait for the data to be processed and fetch the results
-          const dataReceived = await getProcessedData();
-          if (!dataReceived) {
-            throw new Error('Failed to get processed data');
-          }
-        }
       }
 
       // Create analysis record

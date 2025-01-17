@@ -1,38 +1,16 @@
 import { Card } from "@/components/ui/card"
-import { useEffect, useState } from "react"
-
-interface ProcessedData {
-  battery_size_kwh?: number;
-  battery_size_kw?: number;
-}
 
 const BatteryDesignCard = () => {
-  const [processedData, setProcessedData] = useState<ProcessedData>({});
-
-  useEffect(() => {
-    const storedData = localStorage.getItem('processedData');
-    if (storedData) {
-      try {
-        const data = JSON.parse(storedData);
-        setProcessedData(data);
-        console.log('Loaded processed data:', data);
-      } catch (error) {
-        console.error('Error parsing processed data:', error);
-      }
-    }
-  }, []);
-
   const randomMetrics = {
-    batterySize: processedData.battery_size_kwh || 17, // Use processed data or fallback to 17
-    batteryPower: processedData.battery_size_kw || 10, // Use processed data or fallback to 10
-    additionalSelfConsumption: 14.9,
-    fullCycles: 113,
+    batterySize: 17, // Fixed value as requested
+    additionalSelfConsumption: 14.9, // Fixed value as requested
+    fullCycles: 113, // Fixed value as requested
     maxProfitability: {
-      size: 17,
+      size: 17, // Fixed value as requested
       roi: (Math.random() * 5 + 8).toFixed(2)
     },
     maxSelfConsumption: {
-      size: 25,
+      size: 25, // Fixed value as requested
       selfConsumption: (Math.random() * 20 + 60).toFixed(2)
     }
   };
@@ -42,7 +20,6 @@ const BatteryDesignCard = () => {
       <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
       <div className="space-y-4">
         <p>Recommended Battery Size: {randomMetrics.batterySize} kWh</p>
-        <p>Recommended Battery Power: {randomMetrics.batteryPower} kW</p>
         <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
         <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
         
