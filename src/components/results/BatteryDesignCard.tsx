@@ -1,16 +1,36 @@
 import { Card } from "@/components/ui/card"
+import { useEffect, useState } from "react"
+
+interface ProcessedData {
+  battery_size_kwh?: number;
+}
 
 const BatteryDesignCard = () => {
+  const [processedData, setProcessedData] = useState<ProcessedData>({});
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('processedData');
+    if (storedData) {
+      try {
+        const data = JSON.parse(storedData);
+        setProcessedData(data);
+        console.log('Loaded processed data:', data);
+      } catch (error) {
+        console.error('Error parsing processed data:', error);
+      }
+    }
+  }, []);
+
   const randomMetrics = {
-    batterySize: 17, // Fixed value as requested
-    additionalSelfConsumption: 14.9, // Fixed value as requested
-    fullCycles: 113, // Fixed value as requested
+    batterySize: processedData.battery_size_kwh || 17, // Use processed data or fallback to 17
+    additionalSelfConsumption: 14.9,
+    fullCycles: 113,
     maxProfitability: {
-      size: 17, // Fixed value as requested
+      size: 17,
       roi: (Math.random() * 5 + 8).toFixed(2)
     },
     maxSelfConsumption: {
-      size: 25, // Fixed value as requested
+      size: 25,
       selfConsumption: (Math.random() * 20 + 60).toFixed(2)
     }
   };
