@@ -7,7 +7,7 @@ const ComparisonCard = () => {
   useEffect(() => {
     const fetchPlot = async () => {
       try {
-        const response = await fetch('http://localhost:3001/get-plot');
+        const response = await fetch('http://localhost:3001/get-plot?name=plot.png');
         if (!response.ok) {
           console.error('Failed to fetch plot');
           return;
