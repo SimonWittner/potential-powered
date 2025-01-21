@@ -121,7 +121,6 @@ const Index = () => {
   ) => {
     setUploadedFilePath(filePath);
     
-    // Store the electricity price and grid power charges for later use
     if (electricityPrice !== undefined) {
       localStorage.setItem('electricityPrice', electricityPrice.toString());
     }
@@ -145,7 +144,6 @@ const Index = () => {
         return;
       }
 
-      // Check if local server is available
       const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
 
@@ -160,7 +158,6 @@ const Index = () => {
         );
       }
 
-      // Create analysis record
       const { data: analysis, error: insertError } = await supabase
         .from('load_profile_analyses')
         .insert({
@@ -173,6 +170,22 @@ const Index = () => {
 
       if (insertError || !analysis) {
         throw insertError || new Error('Failed to create analysis');
+      }
+
+      // Wait for 40 seconds and fetch the plot
+      await new Promise(resolve => setTimeout(resolve, 40000));
+
+      try {
+        const response = await fetch(`${LOCAL_SERVER_URL}/get-plot?name=daily_load.png`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch plot');
+        }
+        const blob = await response.blob();
+        const plotUrl = URL.createObjectURL(blob);
+        localStorage.setItem('dailyLoadPlot', plotUrl);
+      } catch (error) {
+        console.error('Error fetching plot:', error);
+        toast.error("Failed to fetch analysis plot");
       }
 
       if (!useLocalProcessing) {
