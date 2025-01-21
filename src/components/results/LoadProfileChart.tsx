@@ -1,53 +1,110 @@
-import { useEffect, useState } from "react";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-interface LoadProfileChartProps {
-  analysisComplete?: boolean;
-}
+const generateLoadProfileData = () => {
+  return [
+    { hour: "00:00", demand: 13 },
+    { hour: "02:00", demand: 14 },
+    { hour: "04:00", demand: 15 },
+    { hour: "06:00", demand: 22 },
+    { hour: "08:00", demand: 50 },
+    { hour: "10:00", demand: 52 },
+    { hour: "12:00", demand: 50 },
+    { hour: "14:00", demand: 38 },
+    { hour: "16:00", demand: 45 },
+    { hour: "18:00", demand: 25 },
+    { hour: "20:00", demand: 18 },
+    { hour: "22:00", demand: 13 }
+  ];
+};
 
-const LoadProfileChart = ({ analysisComplete = false }: LoadProfileChartProps) => {
-  const [plotUrl, setPlotUrl] = useState<string | null>(null);
+const generateCostData = () => {
+  return [
+    { hour: "Januar", cost: 9779 },
+    { hour: "Februar", cost: 10486 },
+    { hour: "März", cost: 10732 },
+    { hour: "April", cost: 7290 },
+    { hour: "Mai", cost: 7116 },
+    { hour: "Juni", cost: 6050 },
+    { hour: "Juli", cost: 9514 },
+    { hour: "August", cost: 12556 },
+    { hour: "September", cost: 9043 },
+    { hour: "Oktober", cost: 7504 },
+    { hour: "November", cost: 6395 },
+    { hour: "Dezember", cost: 7656 }
+  ];
+};
 
-  useEffect(() => {
-    const fetchPlot = async () => {
-      try {
-        console.log('Fetching plot after analysis completion');
-        const response = await fetch('http://localhost:3001/get-plot?name=average_daily_load.png');
-        if (!response.ok) {
-          console.error('Failed to fetch plot');
-          return;
-        }
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        setPlotUrl(url);
-      } catch (error) {
-        console.error('Error fetching plot:', error);
-      }
-    };
-
-    if (analysisComplete) {
-      fetchPlot();
-    }
-
-    // Cleanup function to revoke the object URL
-    return () => {
-      if (plotUrl) {
-        URL.revokeObjectURL(plotUrl);
-      }
-    };
-  }, [analysisComplete]); // Add analysisComplete to dependency array
+const LoadProfileChart = () => {
+  const loadData = generateLoadProfileData();
+  const costData = generateCostData();
 
   return (
     <div className="space-y-8">
-      {plotUrl && (
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Average Daily Load Profile</h3>
-          <img 
-            src={plotUrl} 
-            alt="Average daily load profile plot" 
-            className="w-full rounded-lg shadow-md"
-          />
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Load Profile</h3>
+        <div className="h-[150px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={loadData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <XAxis 
+                dataKey="hour" 
+                stroke="#666"
+                tick={{ fill: '#666', fontSize: 12 }}
+              />
+              <YAxis 
+                stroke="#666"
+                tick={{ fill: '#666', fontSize: 12 }}
+                label={{ 
+                  value: 'kW', 
+                  angle: -90, 
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle', fill: '#666' }
+                }}
+              />
+              <Tooltip />
+              <Area 
+                type="monotone" 
+                dataKey="demand" 
+                stroke="#2563eb" 
+                fill="#3b82f6" 
+                strokeWidth={2}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
-      )}
+      </div>
+
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Cost Allocation</h3>
+        <div className="h-[150px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={costData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <XAxis 
+                dataKey="hour" 
+                stroke="#666"
+                tick={{ fill: '#666', fontSize: 12 }}
+              />
+              <YAxis 
+                stroke="#666"
+                tick={{ fill: '#666', fontSize: 12 }}
+                label={{ 
+                  value: 'EUR', 
+                  angle: -90, 
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle', fill: '#666' }
+                }}
+              />
+              <Tooltip />
+              <Area 
+                type="monotone" 
+                dataKey="cost" 
+                stroke="#fda4af"
+                fill="#fecdd3" 
+                strokeWidth={2}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </div>
   );
 };
