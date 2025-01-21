@@ -9,16 +9,32 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check auth state when component mounts
-    checkUser();
+    // Initialize session from local storage
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      console.log("Initial session check:", session);
+      if (error) {
+        console.error("Session error:", error);
+        navigate('/auth');
+        return;
+      }
+      
+      if (!session) {
+        navigate('/auth');
+      }
+    });
 
     // Subscribe to auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
-      if (event === 'SIGNED_OUT') {
+      
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+        // Clear any application storage
+        localStorage.clear();
         navigate('/auth');
       } else if (event === 'SIGNED_IN') {
         navigate('/');
+      } else if (event === 'TOKEN_REFRESHED') {
+        console.log("Token refreshed successfully");
       }
     });
 
@@ -27,26 +43,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     };
   }, [navigate]);
 
-  const checkUser = async () => {
-    try {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      console.log("Checking session:", session);
-      
-      if (error) {
-        console.error("Session error:", error);
-        throw error;
-      }
-
-      if (!session) {
-        navigate('/auth');
-      }
-    } catch (error) {
-      console.error("Auth error:", error);
-      toast.error("Authentication error. Please sign in again.");
-      navigate('/auth');
-    }
-  };
-
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -54,6 +50,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         console.error("Sign out error:", error);
         toast.error("Error signing out");
       } else {
+        localStorage.clear();
         toast.success("Signed out successfully");
         navigate("/auth");
       }
