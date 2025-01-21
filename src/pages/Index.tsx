@@ -9,6 +9,8 @@ import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 
+const LOCAL_SERVER_URL = 'http://localhost:3001';
+
 const Index = () => {
   const navigate = useNavigate();
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
@@ -18,6 +20,8 @@ const Index = () => {
   const [address, setAddress] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
+  const [hasGridCapacity, setHasGridCapacity] = useState<string>("");
+  const [gridCapacityAmount, setGridCapacityAmount] = useState<string>("");
   const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -28,7 +32,7 @@ const Index = () => {
     { id: "heatpump", label: "Heatpump" },
   ];
 
-  const handleAddressChange = (value: string) => {
+  const handleAddressChange = async (value: string) => {
     setAddress(value);
   };
 
@@ -53,8 +57,77 @@ const Index = () => {
     setShowYearlyConsumption(value === "no");
   };
 
-  const handleFileUpload = async (filePath: string) => {
+  const checkLocalServer = async () => {
+    try {
+      console.log('Checking local server availability...');
+      const response = await fetch(`${LOCAL_SERVER_URL}/health`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      console.log('Local server response:', response.ok);
+      return response.ok;
+    } catch (error) {
+      console.log('Local server not available:', error);
+      return false;
+    }
+  };
+
+  const downloadFileLocally = async (
+    filePath: string, 
+    electricityPrice?: number,
+    gridPowerCharges?: number
+  ) => {
+    try {
+      const { data: fileData, error: downloadError } = await supabase.storage
+        .from('load_profiles')
+        .download(filePath);
+
+      if (downloadError) {
+        throw downloadError;
+      }
+
+      const companyData = {
+        companyName,
+        address,
+        electricityPrice,
+        gridPowerCharges
+      };
+
+      const response = await fetch(`${LOCAL_SERVER_URL}/process-file`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          fileName: filePath,
+          fileContent: await fileData.text(),
+          companyData
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process file locally');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      return false;
+    }
+  };
+
+  const handleFileUpload = async (
+    filePath: string, 
+    electricityPrice?: number,
+    gridPowerCharges?: number
+  ) => {
     setUploadedFilePath(filePath);
+    
+    // Store the electricity price and grid power charges for later use
+    if (electricityPrice !== undefined) {
+      localStorage.setItem('electricityPrice', electricityPrice.toString());
+    }
+    if (gridPowerCharges !== undefined) {
+      localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
+    }
   };
 
   const handleAnalyze = async () => {
@@ -72,6 +145,22 @@ const Index = () => {
         return;
       }
 
+      // Check if local server is available
+      const isLocalServerAvailable = await checkLocalServer();
+      let useLocalProcessing = false;
+
+      if (isLocalServerAvailable) {
+        const electricityPrice = localStorage.getItem('electricityPrice');
+        const gridPowerCharges = localStorage.getItem('gridPowerCharges');
+        
+        useLocalProcessing = await downloadFileLocally(
+          uploadedFilePath,
+          electricityPrice ? parseFloat(electricityPrice) : undefined,
+          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
+        );
+      }
+
+      // Create analysis record
       const { data: analysis, error: insertError } = await supabase
         .from('load_profile_analyses')
         .insert({
@@ -84,6 +173,17 @@ const Index = () => {
 
       if (insertError || !analysis) {
         throw insertError || new Error('Failed to create analysis');
+      }
+
+      if (!useLocalProcessing) {
+        const { error: processError } = await supabase.functions
+          .invoke('analyze-load-profile', {
+            body: { analysisId: analysis.id }
+          });
+
+        if (processError) {
+          throw processError;
+        }
       }
 
       setShowAnalysisDialog(true);
