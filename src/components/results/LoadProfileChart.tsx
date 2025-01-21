@@ -5,71 +5,45 @@ interface LoadProfileChartProps {
 }
 
 const LoadProfileChart = ({ analysisComplete = false }: LoadProfileChartProps) => {
-  const [dailyPlotUrl, setDailyPlotUrl] = useState<string | null>(null);
-  const [weeklyPlotUrl, setWeeklyPlotUrl] = useState<string | null>(null);
+  const [plotUrl, setPlotUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPlots = async () => {
+    const fetchPlot = async () => {
       try {
-        console.log('Fetching plots after analysis completion');
-        
-        // Fetch daily plot
-        const dailyResponse = await fetch('http://localhost:3001/get-plot?name=average_daily_load.png');
-        if (!dailyResponse.ok) {
-          console.error('Failed to fetch daily plot');
+        console.log('Fetching plot after analysis completion');
+        const response = await fetch('http://localhost:3001/get-plot?name=average_daily_load.png');
+        if (!response.ok) {
+          console.error('Failed to fetch plot');
           return;
         }
-        const dailyBlob = await dailyResponse.blob();
-        const dailyUrl = URL.createObjectURL(dailyBlob);
-        setDailyPlotUrl(dailyUrl);
-
-        // Fetch weekly plot
-        const weeklyResponse = await fetch('http://localhost:3001/get-plot?name=average_weekly_load.png');
-        if (!weeklyResponse.ok) {
-          console.error('Failed to fetch weekly plot');
-          return;
-        }
-        const weeklyBlob = await weeklyResponse.blob();
-        const weeklyUrl = URL.createObjectURL(weeklyBlob);
-        setWeeklyPlotUrl(weeklyUrl);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setPlotUrl(url);
       } catch (error) {
-        console.error('Error fetching plots:', error);
+        console.error('Error fetching plot:', error);
       }
     };
 
     if (analysisComplete) {
-      fetchPlots();
+      fetchPlot();
     }
 
-    // Cleanup function to revoke the object URLs
+    // Cleanup function to revoke the object URL
     return () => {
-      if (dailyPlotUrl) {
-        URL.revokeObjectURL(dailyPlotUrl);
-      }
-      if (weeklyPlotUrl) {
-        URL.revokeObjectURL(weeklyPlotUrl);
+      if (plotUrl) {
+        URL.revokeObjectURL(plotUrl);
       }
     };
-  }, [analysisComplete]);
+  }, [analysisComplete]); // Add analysisComplete to dependency array
 
   return (
     <div className="space-y-8">
-      {dailyPlotUrl && (
+      {plotUrl && (
         <div>
           <h3 className="text-lg font-semibold mb-4">Average Daily Load Profile</h3>
           <img 
-            src={dailyPlotUrl} 
+            src={plotUrl} 
             alt="Average daily load profile plot" 
-            className="w-full rounded-lg shadow-md"
-          />
-        </div>
-      )}
-      {weeklyPlotUrl && (
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-4">Average Weekly Load Profile</h3>
-          <img 
-            src={weeklyPlotUrl} 
-            alt="Average weekly load profile plot" 
             className="w-full rounded-lg shadow-md"
           />
         </div>
