@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 
-const LoadProfileChart = () => {
+interface LoadProfileChartProps {
+  analysisComplete?: boolean;
+}
+
+const LoadProfileChart = ({ analysisComplete = false }: LoadProfileChartProps) => {
   const [plotUrl, setPlotUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPlot = async () => {
       try {
+        console.log('Fetching plot after analysis completion');
         const response = await fetch('http://localhost:3001/get-plot?name=average_daily_load.png');
         if (!response.ok) {
           console.error('Failed to fetch plot');
@@ -19,7 +24,9 @@ const LoadProfileChart = () => {
       }
     };
 
-    fetchPlot();
+    if (analysisComplete) {
+      fetchPlot();
+    }
 
     // Cleanup function to revoke the object URL
     return () => {
@@ -27,7 +34,7 @@ const LoadProfileChart = () => {
         URL.revokeObjectURL(plotUrl);
       }
     };
-  }, []);
+  }, [analysisComplete]); // Add analysisComplete to dependency array
 
   return (
     <div className="space-y-8">
