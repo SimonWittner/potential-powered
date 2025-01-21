@@ -121,6 +121,7 @@ const Index = () => {
   ) => {
     setUploadedFilePath(filePath);
     
+    // Store the electricity price and grid power charges for later use
     if (electricityPrice !== undefined) {
       localStorage.setItem('electricityPrice', electricityPrice.toString());
     }
@@ -157,21 +158,6 @@ const Index = () => {
           electricityPrice ? parseFloat(electricityPrice) : undefined,
           gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
         );
-
-        // Fetch processed data from the server
-        try {
-          const response = await fetch(`${LOCAL_SERVER_URL}/get-processed-data`);
-          if (response.ok) {
-            const processedData = await response.json();
-            console.log('Processed data:', processedData);
-            // Store the processed data in localStorage for use in the results page
-            localStorage.setItem('processedData', JSON.stringify(processedData));
-          } else {
-            console.error('Failed to fetch processed data');
-          }
-        } catch (error) {
-          console.error('Error fetching processed data:', error);
-        }
       }
 
       // Create analysis record
