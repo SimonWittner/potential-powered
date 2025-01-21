@@ -1,5 +1,4 @@
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { useEffect, useState } from "react";
 
 const generateLoadProfileData = () => {
   return [
@@ -38,31 +37,9 @@ const generateCostData = () => {
 const LoadProfileChart = () => {
   const loadData = generateLoadProfileData();
   const costData = generateCostData();
-  const [plotUrl, setPlotUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const storedPlotUrl = localStorage.getItem('dailyLoadPlot');
-    if (storedPlotUrl) {
-      setPlotUrl(storedPlotUrl);
-    }
-
-    return () => {
-      // Cleanup the object URL when component unmounts
-      if (plotUrl) {
-        URL.revokeObjectURL(plotUrl);
-      }
-    };
-  }, []);
 
   return (
     <div className="space-y-8">
-      {plotUrl && (
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Daily Load Analysis</h3>
-          <img src={plotUrl} alt="Daily Load Analysis" className="w-full h-auto" />
-        </div>
-      )}
-
       <div>
         <h3 className="text-lg font-semibold mb-2">Load Profile</h3>
         <div className="h-[150px] w-full">

@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import { useState } from "react"
-import { Upload } from "lucide-react"
+import { Upload, X } from "lucide-react"
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -12,7 +12,7 @@ interface ConsumptionFormProps {
   showYearlyConsumption: boolean;
   onElectricityPriceChange: (value: string) => void;
   onLoadProfileChange: (value: string) => void;
-  onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number) => void;
+  onFileUpload: (filePath: string) => void;
 }
 
 const ConsumptionForm = ({
@@ -22,8 +22,6 @@ const ConsumptionForm = ({
 }: ConsumptionFormProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const [electricityPrice, setElectricityPrice] = useState<string>("");
-  const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
 
   const validateCSVContent = async (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -66,11 +64,7 @@ const ConsumptionForm = ({
         throw uploadError;
       }
 
-      onFileUpload(
-        fileName, 
-        electricityPrice ? parseFloat(electricityPrice) : undefined,
-        gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
-      );
+      onFileUpload(fileName);
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -138,8 +132,6 @@ const ConsumptionForm = ({
                 type="number"
                 placeholder="Enter price in €/kWh"
                 className="mt-1"
-                value={electricityPrice}
-                onChange={(e) => setElectricityPrice(e.target.value)}
               />
             </div>
             <div>
@@ -149,8 +141,6 @@ const ConsumptionForm = ({
                 type="number"
                 placeholder="Enter price in €/kW/month"
                 className="mt-1"
-                value={gridPowerCharges}
-                onChange={(e) => setGridPowerCharges(e.target.value)}
               />
             </div>
           </div>

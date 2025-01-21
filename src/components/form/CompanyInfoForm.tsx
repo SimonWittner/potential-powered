@@ -4,16 +4,9 @@ import { Input } from "@/components/ui/input";
 interface CompanyInfoFormProps {
   address: string;
   onAddressChange: (value: string) => void;
-  companyName: string;
-  onCompanyNameChange: (value: string) => void;
 }
 
-const CompanyInfoForm = ({ 
-  address, 
-  onAddressChange,
-  companyName,
-  onCompanyNameChange 
-}: CompanyInfoFormProps) => {
+const CompanyInfoForm = ({ address, onAddressChange }: CompanyInfoFormProps) => {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -21,8 +14,6 @@ const CompanyInfoForm = ({
         <Input
           id="companyName"
           placeholder="Enter your company name"
-          value={companyName}
-          onChange={(e) => onCompanyNameChange(e.target.value)}
         />
       </div>
 

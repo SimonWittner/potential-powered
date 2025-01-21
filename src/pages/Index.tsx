@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import AnalysisDialog from "@/components/AnalysisDialog";
@@ -9,7 +12,7 @@ import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 
-const LOCAL_SERVER_URL = 'http://localhost:3001';
+const LOCAL_SERVER_URL = 'http://localhost:3001'; // Update this to match your local server port
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,7 +21,6 @@ const Index = () => {
   const [showYearlyConsumption, setShowYearlyConsumption] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [address, setAddress] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
   const [hasGridCapacity, setHasGridCapacity] = useState<string>("");
   const [gridCapacityAmount, setGridCapacityAmount] = useState<string>("");
@@ -34,10 +36,6 @@ const Index = () => {
 
   const handleAddressChange = async (value: string) => {
     setAddress(value);
-  };
-
-  const handleCompanyNameChange = (value: string) => {
-    setCompanyName(value);
   };
 
   const handleInterestChange = (interest: string) => {
@@ -57,14 +55,16 @@ const Index = () => {
     setShowYearlyConsumption(value === "no");
   };
 
+  const handleFileUpload = (filePath: string) => {
+    setUploadedFilePath(filePath);
+  };
+
   const checkLocalServer = async () => {
     try {
-      console.log('Checking local server availability...');
       const response = await fetch(`${LOCAL_SERVER_URL}/health`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log('Local server response:', response.ok);
       return response.ok;
     } catch (error) {
       console.log('Local server not available:', error);
@@ -72,11 +72,7 @@ const Index = () => {
     }
   };
 
-  const downloadFileLocally = async (
-    filePath: string, 
-    electricityPrice?: number,
-    gridPowerCharges?: number
-  ) => {
+  const downloadFileLocally = async (filePath: string) => {
     try {
       const { data: fileData, error: downloadError } = await supabase.storage
         .from('load_profiles')
@@ -86,20 +82,12 @@ const Index = () => {
         throw downloadError;
       }
 
-      const companyData = {
-        companyName,
-        address,
-        electricityPrice,
-        gridPowerCharges
-      };
-
       const response = await fetch(`${LOCAL_SERVER_URL}/process-file`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           fileName: filePath,
-          fileContent: await fileData.text(),
-          companyData
+          fileContent: await fileData.text()
         })
       });
 
@@ -111,21 +99,6 @@ const Index = () => {
     } catch (error) {
       console.error('Error downloading file:', error);
       return false;
-    }
-  };
-
-  const handleFileUpload = async (
-    filePath: string, 
-    electricityPrice?: number,
-    gridPowerCharges?: number
-  ) => {
-    setUploadedFilePath(filePath);
-    
-    if (electricityPrice !== undefined) {
-      localStorage.setItem('electricityPrice', electricityPrice.toString());
-    }
-    if (gridPowerCharges !== undefined) {
-      localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
     }
   };
 
@@ -144,20 +117,15 @@ const Index = () => {
         return;
       }
 
+      // Check if local server is available
       const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
 
       if (isLocalServerAvailable) {
-        const electricityPrice = localStorage.getItem('electricityPrice');
-        const gridPowerCharges = localStorage.getItem('gridPowerCharges');
-        
-        useLocalProcessing = await downloadFileLocally(
-          uploadedFilePath,
-          electricityPrice ? parseFloat(electricityPrice) : undefined,
-          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
-        );
+        useLocalProcessing = await downloadFileLocally(uploadedFilePath);
       }
 
+      // Create analysis record
       const { data: analysis, error: insertError } = await supabase
         .from('load_profile_analyses')
         .insert({
@@ -172,24 +140,9 @@ const Index = () => {
         throw insertError || new Error('Failed to create analysis');
       }
 
-      // Wait for 40 seconds and fetch the plot
-      await new Promise(resolve => setTimeout(resolve, 40000));
-
-      try {
-        const response = await fetch(`${LOCAL_SERVER_URL}/get-plot?name=daily_load.png`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch plot');
-        }
-        const blob = await response.blob();
-        const plotUrl = URL.createObjectURL(blob);
-        localStorage.setItem('dailyLoadPlot', plotUrl);
-      } catch (error) {
-        console.error('Error fetching plot:', error);
-        toast.error("Failed to fetch analysis plot");
-      }
-
       if (!useLocalProcessing) {
-        const { error: processError } = await supabase.functions
+        // Fall back to edge function if local processing failed
+        const { data: processedData, error: processError } = await supabase.functions
           .invoke('analyze-load-profile', {
             body: { analysisId: analysis.id }
           });
@@ -228,8 +181,6 @@ const Index = () => {
             <CompanyInfoForm 
               address={address}
               onAddressChange={handleAddressChange}
-              companyName={companyName}
-              onCompanyNameChange={handleCompanyNameChange}
             />
 
             <InterestsForm
@@ -246,6 +197,39 @@ const Index = () => {
               onLoadProfileChange={handleLoadProfileChange}
               onFileUpload={handleFileUpload}
             />
+
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <Label className="text-black">Do you know if you have available grid connection capacity?</Label>
+                <RadioGroup
+                  value={hasGridCapacity}
+                  onValueChange={setHasGridCapacity}
+                  className="flex gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="yes" id="grid-yes" />
+                    <Label htmlFor="grid-yes">Yes</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="no" id="grid-no" />
+                    <Label htmlFor="grid-no">No</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {hasGridCapacity === "yes" && (
+                <div className="space-y-2">
+                  <Label htmlFor="grid-capacity">How much (in kWh)?</Label>
+                  <Input
+                    id="grid-capacity"
+                    type="number"
+                    value={gridCapacityAmount}
+                    onChange={(e) => setGridCapacityAmount(e.target.value)}
+                    placeholder="Enter capacity in kWh"
+                  />
+                </div>
+              )}
+            </div>
 
             <Button 
               className="w-full" 

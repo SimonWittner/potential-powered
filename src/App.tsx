@@ -43,8 +43,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/" element={
@@ -62,10 +64,8 @@ const App = () => (
             </ProtectedRoute>
           } />
         </Routes>
-        <Toaster />
-        <Sonner />
-      </TooltipProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 
