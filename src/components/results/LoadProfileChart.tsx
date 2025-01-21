@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const generateLoadProfileData = () => {
@@ -37,40 +38,65 @@ const generateCostData = () => {
 const LoadProfileChart = () => {
   const loadData = generateLoadProfileData();
   const costData = generateCostData();
+  const [plotImageUrl, setPlotImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedImageUrl = localStorage.getItem('plotImageUrl');
+    if (storedImageUrl) {
+      setPlotImageUrl(storedImageUrl);
+    }
+
+    // Cleanup
+    return () => {
+      if (plotImageUrl) {
+        URL.revokeObjectURL(plotImageUrl);
+      }
+    };
+  }, []);
 
   return (
     <div className="space-y-8">
       <div>
         <h3 className="text-lg font-semibold mb-2">Load Profile</h3>
-        <div className="h-[150px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={loadData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <XAxis 
-                dataKey="hour" 
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-              />
-              <YAxis 
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-                label={{ 
-                  value: 'kW', 
-                  angle: -90, 
-                  position: 'insideLeft',
-                  style: { textAnchor: 'middle', fill: '#666' }
-                }}
-              />
-              <Tooltip />
-              <Area 
-                type="monotone" 
-                dataKey="demand" 
-                stroke="#2563eb" 
-                fill="#3b82f6" 
-                strokeWidth={2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        {plotImageUrl ? (
+          <div className="h-[150px] w-full flex items-center justify-center">
+            <img 
+              src={plotImageUrl} 
+              alt="Load Profile Analysis" 
+              className="max-h-full w-auto"
+            />
+          </div>
+        ) : (
+          <div className="h-[150px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={loadData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <XAxis 
+                  dataKey="hour" 
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                  label={{ 
+                    value: 'kW', 
+                    angle: -90, 
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle', fill: '#666' }
+                  }}
+                />
+                <Tooltip />
+                <Area 
+                  type="monotone" 
+                  dataKey="demand" 
+                  stroke="#2563eb" 
+                  fill="#3b82f6" 
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
 
       <div>
