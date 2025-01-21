@@ -25,7 +25,10 @@ const Results = () => {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm">
-            <LoadProfileChart analysisComplete={analysisComplete} />
+            <div>
+              <h2 className="text-2xl font-semibold mb-8">Load Profile Analysis</h2>
+              <LoadProfileChart analysisComplete={analysisComplete} />
+            </div>
           </Card>
           <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm">
             <PVProductionChart />

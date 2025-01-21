@@ -40,7 +40,7 @@ const LoadProfileChart = ({ analysisComplete = false }: LoadProfileChartProps) =
     <div className="space-y-8">
       {plotUrl && (
         <div>
-          <h3 className="text-lg font-semibold mb-2">Average Daily Load Profile</h3>
+          <h3 className="text-lg font-semibold mb-4">Average Daily Load Profile</h3>
           <img 
             src={plotUrl} 
             alt="Average daily load profile plot" 
