@@ -56,8 +56,8 @@ const LoadProfileChart = () => {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Load Profile</h3>
+      <div className="bg-white rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Average Daily Load</h3>
         {plotImageUrl ? (
           <div className="h-[150px] w-full flex items-center justify-center">
             <img 
@@ -99,8 +99,8 @@ const LoadProfileChart = () => {
         )}
       </div>
 
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Cost Allocation</h3>
+      <div className="bg-white rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Cost Allocation</h3>
         <div className="h-[150px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={costData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
