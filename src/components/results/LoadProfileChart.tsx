@@ -18,27 +18,10 @@ const generateLoadProfileData = () => {
   ];
 };
 
-const generateCostData = () => {
-  return [
-    { hour: "Januar", cost: 9779 },
-    { hour: "Februar", cost: 10486 },
-    { hour: "März", cost: 10732 },
-    { hour: "April", cost: 7290 },
-    { hour: "Mai", cost: 7116 },
-    { hour: "Juni", cost: 6050 },
-    { hour: "Juli", cost: 9514 },
-    { hour: "August", cost: 12556 },
-    { hour: "September", cost: 9043 },
-    { hour: "Oktober", cost: 7504 },
-    { hour: "November", cost: 6395 },
-    { hour: "Dezember", cost: 7656 }
-  ];
-};
-
 const LoadProfileChart = () => {
   const loadData = generateLoadProfileData();
-  const costData = generateCostData();
   const [plotImageUrl, setPlotImageUrl] = useState<string | null>(null);
+  const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const storedImageUrl = localStorage.getItem('plotImageUrl');
@@ -46,10 +29,26 @@ const LoadProfileChart = () => {
       setPlotImageUrl(storedImageUrl);
     }
 
+    // Fetch weekly load plot after 30 seconds
+    const timer = setTimeout(() => {
+      fetch('http://localhost:3001/get-plot?name=weekly_load.png')
+        .then(response => response.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          setWeeklyPlotImageUrl(url);
+          localStorage.setItem('weeklyPlotImageUrl', url);
+        })
+        .catch(error => console.error('Error fetching weekly load plot:', error));
+    }, 30000);
+
     // Cleanup
     return () => {
+      clearTimeout(timer);
       if (plotImageUrl) {
         URL.revokeObjectURL(plotImageUrl);
+      }
+      if (weeklyPlotImageUrl) {
+        URL.revokeObjectURL(weeklyPlotImageUrl);
       }
     };
   }, []);
@@ -100,35 +99,17 @@ const LoadProfileChart = () => {
       </div>
 
       <div className="bg-white rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Cost Allocation</h3>
-        <div className="h-[150px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={costData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <XAxis 
-                dataKey="hour" 
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-              />
-              <YAxis 
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-                label={{ 
-                  value: 'EUR', 
-                  angle: -90, 
-                  position: 'insideLeft',
-                  style: { textAnchor: 'middle', fill: '#666' }
-                }}
-              />
-              <Tooltip />
-              <Area 
-                type="monotone" 
-                dataKey="cost" 
-                stroke="#fda4af"
-                fill="#fecdd3" 
-                strokeWidth={2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+        <h3 className="text-lg font-semibold mb-4">Weekly Average Load</h3>
+        <div className="h-[150px] w-full flex items-center justify-center">
+          {weeklyPlotImageUrl ? (
+            <img 
+              src={weeklyPlotImageUrl} 
+              alt="Weekly Load Analysis" 
+              className="max-h-full w-auto"
+            />
+          ) : (
+            <div className="text-gray-500">Loading weekly load data...</div>
+          )}
         </div>
       </div>
     </div>
