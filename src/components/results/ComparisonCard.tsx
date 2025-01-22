@@ -7,7 +7,7 @@ const ComparisonCard = () => {
       <div className="space-y-4">
         <div className="mb-6">
           <h3 className="text-lg font-medium mb-2">Load Profile - Exemplary Week</h3>
-          <div className="w-full overflow-hidden">
+          <div className="w-full overflow-hidden bg-white rounded-lg p-6">
             <img 
               src="/lovable-uploads/d4cb65d7-45ff-43cb-b489-6b46338d2cb2.png" 
               alt="Load Profile - Exemplary Week" 
