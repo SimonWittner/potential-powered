@@ -23,6 +23,7 @@ const LoadProfileChart = () => {
   const [plotImageUrl, setPlotImageUrl] = useState<string | null>(null);
   const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
 
+  // Fetch daily load plot
   useEffect(() => {
     const storedImageUrl = localStorage.getItem('plotImageUrl');
     if (storedImageUrl) {
