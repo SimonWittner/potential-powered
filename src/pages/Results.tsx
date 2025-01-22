@@ -11,6 +11,8 @@ import ESGReportingCard from "@/components/results/ESGReportingCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
+import { toast } from "sonner"
+import html2pdf from 'html2pdf.js'
 
 const Results = () => {
   const navigate = useNavigate();
@@ -34,8 +36,40 @@ const Results = () => {
     },
   });
 
-  const handleExport = () => {
-    console.log("Exporting analysis...");
+  const handleExport = async () => {
+    try {
+      console.log("Starting PDF export...");
+      const element = document.getElementById('results-content');
+      if (!element) {
+        console.error("Results content element not found");
+        toast.error("Could not generate PDF");
+        return;
+      }
+
+      const opt = {
+        margin: 10,
+        filename: 'analysis-results.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          logging: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      toast.promise(
+        html2pdf().set(opt).from(element).save(),
+        {
+          loading: 'Generating PDF...',
+          success: 'PDF downloaded successfully',
+          error: 'Failed to generate PDF'
+        }
+      );
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Failed to generate PDF");
+    }
   };
 
   if (isLoading) {
@@ -68,29 +102,31 @@ const Results = () => {
           <h1 className="text-4xl font-bold text-white mb-4">Analysis Results</h1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="p-6 bg-white/95 backdrop-blur-sm">
-            <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
-            <div className="space-y-4">
-              <LoadProfileChart />
-            </div>
-          </Card>
+        <div id="results-content" className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="p-6 bg-white/95 backdrop-blur-sm">
+              <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
+              <div className="space-y-4">
+                <LoadProfileChart />
+              </div>
+            </Card>
 
-          <Card className="p-6 bg-white/95 backdrop-blur-sm">
-            <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
-            <div className="space-y-4">
-              <PVProductionChart />
-            </div>
-          </Card>
+            <Card className="p-6 bg-white/95 backdrop-blur-sm">
+              <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
+              <div className="space-y-4">
+                <PVProductionChart />
+              </div>
+            </Card>
 
-          <BatteryDesignCard />
-          <ComparisonCard />
-          <CostsCard />
-          <ESGReportingCard />
-        </div>
+            <BatteryDesignCard />
+            <ComparisonCard />
+            <CostsCard />
+            <ESGReportingCard />
+          </div>
 
-        <div className="w-full">
-          <EconomicCalculationsCard />
+          <div className="w-full">
+            <EconomicCalculationsCard />
+          </div>
         </div>
 
         <div className="flex justify-center mt-8 pb-32">
