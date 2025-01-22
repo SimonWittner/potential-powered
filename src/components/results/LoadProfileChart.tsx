@@ -40,7 +40,7 @@ const LoadProfileChart = () => {
           localStorage.setItem('weeklyPlotImageUrl', url);
         })
         .catch(error => console.error('Error fetching weekly load plot:', error));
-    }, 5000);
+    }, 10000);
 
     // Cleanup
     return () => {
