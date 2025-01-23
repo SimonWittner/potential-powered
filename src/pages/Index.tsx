@@ -197,7 +197,7 @@ const Index = () => {
       }
 
       // Wait for 30 seconds and fetch the plot
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise(resolve => setTimeout(resolve, 30000));
       await fetchPlot();
 
       setShowAnalysisDialog(true);
