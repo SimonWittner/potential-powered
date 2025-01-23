@@ -22,6 +22,7 @@ const LoadProfileChart = () => {
   const loadData = generateLoadProfileData();
   const [plotImageUrl, setPlotImageUrl] = useState<string | null>(null);
   const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
+  const [peakLoadPlotImageUrl, setPeakLoadPlotImageUrl] = useState<string | null>(null);
 
   // Fetch daily load plot
   useEffect(() => {
@@ -30,8 +31,8 @@ const LoadProfileChart = () => {
       setPlotImageUrl(storedImageUrl);
     }
 
-    // Fetch weekly load plot after 30 seconds
-    const timer = setTimeout(() => {
+    // Fetch weekly load plot after 10 seconds
+    const weeklyTimer = setTimeout(() => {
       fetch('http://localhost:3001/get-plot?name=weekly_load.png')
         .then(response => response.blob())
         .then(blob => {
@@ -42,75 +43,111 @@ const LoadProfileChart = () => {
         .catch(error => console.error('Error fetching weekly load plot:', error));
     }, 10000);
 
+    // Fetch peak load plot
+    const peakLoadTimer = setTimeout(() => {
+      fetch('http://localhost:3001/get-plot?name=peak_load.png')
+        .then(response => response.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          setPeakLoadPlotImageUrl(url);
+          localStorage.setItem('peakLoadPlotImageUrl', url);
+        })
+        .catch(error => console.error('Error fetching peak load plot:', error));
+    }, 12000);
+
     // Cleanup
     return () => {
-      clearTimeout(timer);
-      if (plotImageUrl) {
-        URL.revokeObjectURL(plotImageUrl);
-      }
-      if (weeklyPlotImageUrl) {
-        URL.revokeObjectURL(weeklyPlotImageUrl);
-      }
+      clearTimeout(weeklyTimer);
+      clearTimeout(peakLoadTimer);
+      if (plotImageUrl) URL.revokeObjectURL(plotImageUrl);
+      if (weeklyPlotImageUrl) URL.revokeObjectURL(weeklyPlotImageUrl);
+      if (peakLoadPlotImageUrl) URL.revokeObjectURL(peakLoadPlotImageUrl);
     };
   }, []);
 
   return (
-    <div className="space-y-8">
-      <div className="bg-white rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Average Daily Load</h3>
-        {plotImageUrl ? (
+    <div className="grid grid-cols-2 gap-8">
+      <div className="space-y-8">
+        <div className="bg-white rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Average Daily Load</h3>
+          {plotImageUrl ? (
+            <div className="h-[150px] w-full flex items-center justify-center">
+              <img 
+                src={plotImageUrl} 
+                alt="Load Profile Analysis" 
+                className="max-h-full w-auto"
+              />
+            </div>
+          ) : (
+            <div className="h-[150px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={loadData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis 
+                    dataKey="hour" 
+                    stroke="#666"
+                    tick={{ fill: '#666', fontSize: 12 }}
+                  />
+                  <YAxis 
+                    stroke="#666"
+                    tick={{ fill: '#666', fontSize: 12 }}
+                    label={{ 
+                      value: 'kW', 
+                      angle: -90, 
+                      position: 'insideLeft',
+                      style: { textAnchor: 'middle', fill: '#666' }
+                    }}
+                  />
+                  <Tooltip />
+                  <Area 
+                    type="monotone" 
+                    dataKey="demand" 
+                    stroke="#2563eb" 
+                    fill="#3b82f6" 
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Weekly Average Load</h3>
           <div className="h-[150px] w-full flex items-center justify-center">
-            <img 
-              src={plotImageUrl} 
-              alt="Load Profile Analysis" 
-              className="max-h-full w-auto"
-            />
+            {weeklyPlotImageUrl ? (
+              <img 
+                src={weeklyPlotImageUrl} 
+                alt="Weekly Load Analysis" 
+                className="max-h-full w-auto"
+              />
+            ) : (
+              <div className="text-gray-500">Loading weekly load data...</div>
+            )}
           </div>
-        ) : (
-          <div className="h-[150px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={loadData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <XAxis 
-                  dataKey="hour" 
-                  stroke="#666"
-                  tick={{ fill: '#666', fontSize: 12 }}
-                />
-                <YAxis 
-                  stroke="#666"
-                  tick={{ fill: '#666', fontSize: 12 }}
-                  label={{ 
-                    value: 'kW', 
-                    angle: -90, 
-                    position: 'insideLeft',
-                    style: { textAnchor: 'middle', fill: '#666' }
-                  }}
-                />
-                <Tooltip />
-                <Area 
-                  type="monotone" 
-                  dataKey="demand" 
-                  stroke="#2563eb" 
-                  fill="#3b82f6" 
-                  strokeWidth={2}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Weekly Average Load</h3>
-        <div className="h-[150px] w-full flex items-center justify-center">
-          {weeklyPlotImageUrl ? (
-            <img 
-              src={weeklyPlotImageUrl} 
-              alt="Weekly Load Analysis" 
-              className="max-h-full w-auto"
-            />
-          ) : (
-            <div className="text-gray-500">Loading weekly load data...</div>
-          )}
+      <div className="space-y-8">
+        <div className="bg-white rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Peak Load</h3>
+          <div className="h-[150px] w-full flex items-center justify-center">
+            {peakLoadPlotImageUrl ? (
+              <img 
+                src={peakLoadPlotImageUrl} 
+                alt="Peak Load Analysis" 
+                className="max-h-full w-auto"
+              />
+            ) : (
+              <div className="text-gray-500">Loading peak load data...</div>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Additional Analysis</h3>
+          <div className="h-[150px] w-full flex items-center justify-center">
+            <div className="text-gray-500">Coming soon...</div>
+          </div>
         </div>
       </div>
     </div>

@@ -104,12 +104,14 @@ const Results = () => {
 
         <div id="results-content" className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="p-6 bg-white/95 backdrop-blur-sm">
-              <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
-              <div className="space-y-4">
-                <LoadProfileChart />
-              </div>
-            </Card>
+            <div className="col-span-2">
+              <Card className="p-6 bg-white/95 backdrop-blur-sm">
+                <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
+                <div className="space-y-4">
+                  <LoadProfileChart />
+                </div>
+              </Card>
+            </div>
 
             <Card className="p-6 bg-white/95 backdrop-blur-sm">
               <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
