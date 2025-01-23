@@ -41,7 +41,7 @@ const ComparisonCard = () => {
   }, []);
 
   return (
-    <Card className="p-6 bg-white/95 backdrop-blur-sm w-full">
+    <Card className="p-6 bg-white/95 backdrop-blur-sm col-span-2">
       <h2 className="text-2xl font-semibold mb-4">Comparison</h2>
       <div className="space-y-6">
         <div className="w-full overflow-hidden bg-white rounded-lg p-6">
