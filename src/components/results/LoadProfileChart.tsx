@@ -53,7 +53,7 @@ const LoadProfileChart = () => {
           localStorage.setItem('peakLoadPlotImageUrl', url);
         })
         .catch(error => console.error('Error fetching peak load plot:', error));
-    }, 1000);
+    }, 1000); 
 
     // Cleanup
     return () => {
