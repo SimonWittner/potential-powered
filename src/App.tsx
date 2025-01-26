@@ -14,38 +14,27 @@ const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Checking authentication status...");
     const checkAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log("Auth session check complete:", !!session);
-        setIsAuthenticated(!!session);
-      } catch (error) {
-        console.error("Error checking auth:", error);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
     };
 
     checkAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event);
       setIsAuthenticated(!!session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  if (isLoading) {
+  if (isAuthenticated === null) {
     return <div className="min-h-screen bg-[#1A0F0F]" />;
   }
 
-  if (!isAuthenticated && !isLoading) {
+  if (!isAuthenticated) {
     return <Navigate to="/auth" replace />;
   }
 
