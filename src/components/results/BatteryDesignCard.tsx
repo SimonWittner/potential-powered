@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const BatteryDesignCard = () => {
@@ -46,7 +47,7 @@ const BatteryDesignCard = () => {
   });
 
   const randomMetrics = {
-    batterySize: batteryData?.battery_size_kwh || 0, // Changed default to 0
+    batterySize: batteryData?.battery_size_kwh || 0,
     additionalSelfConsumption: 14.9,
     fullCycles: 113,
     maxProfitability: {
@@ -77,7 +78,9 @@ const BatteryDesignCard = () => {
           </div>
         ) : (
           <>
-            <p>Recommended Battery Size: {randomMetrics.batterySize} kWh</p>
+            <div className="bg-gray-100 p-3 rounded-lg">
+              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0}</span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0}</span></p>
+            </div>
             <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
             <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
 
