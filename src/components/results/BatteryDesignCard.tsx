@@ -79,7 +79,7 @@ const BatteryDesignCard = () => {
         ) : (
           <>
             <div className="bg-gray-100 p-3 rounded-lg">
-              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0}</span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0}</span></p>
+              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
             </div>
             <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
             <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
