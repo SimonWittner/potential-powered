@@ -58,14 +58,16 @@ const ConsumptionForm = ({
       const fileExt = file.name.split('.').pop();
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
 
+      console.log('Attempting to upload file to load-profiles bucket:', fileName);
       const { data, error: uploadError } = await supabase.storage
-        .from('load_profiles')
+        .from('load-profiles') // Changed from load_profiles to load-profiles
         .upload(fileName, file);
 
       if (uploadError) {
         throw uploadError;
       }
 
+      console.log('File uploaded successfully:', data);
       onFileUpload(
         fileName, 
         electricityPrice ? parseFloat(electricityPrice) : undefined,
