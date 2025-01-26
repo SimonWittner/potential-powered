@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
 import { toast } from "sonner"
 import html2pdf from 'html2pdf.js'
+import { useEffect } from "react";
 
 const Results = () => {
   const navigate = useNavigate();
@@ -20,6 +21,14 @@ const Results = () => {
   const { data: analysis, isLoading, error } = useQuery({
     queryKey: ['analysis'],
     queryFn: async () => {
+      console.log("Fetching analysis data...");
+      // First check localStorage
+      const cachedData = localStorage.getItem('analysisResults');
+      if (cachedData) {
+        console.log("Found cached analysis data");
+        return JSON.parse(cachedData);
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
@@ -32,9 +41,18 @@ const Results = () => {
         .single();
 
       if (error) throw error;
+      console.log("Fetched fresh analysis data");
       return data;
     },
   });
+
+  // Store analysis data in localStorage whenever it changes
+  useEffect(() => {
+    if (analysis) {
+      console.log("Storing analysis data in localStorage");
+      localStorage.setItem('analysisResults', JSON.stringify(analysis));
+    }
+  }, [analysis]);
 
   const handleExport = async () => {
     try {
