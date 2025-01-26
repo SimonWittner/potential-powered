@@ -88,13 +88,13 @@ const BatteryDesignCard = () => {
               <h3 className="text-lg font-medium mb-2">Scenario Comparison</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-medium">Maximum Profitability</h4>
+                  <h4 className="font-medium">Max. Profitability</h4>
                   <p>Size: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
                   <p>ROI: {randomMetrics.maxProfitability.roi}%</p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg">
-                  <h4 className="font-medium">Maximum Self-Consumption</h4>
-                  <p>Size: {randomMetrics.maxSelfConsumption.size} kWh</p>
+                  <h4 className="font-medium">Max. Self-Consumption</h4>
+                  <p>Size: {batteryData?.battery_size_kwh*0.135 || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw*0.073 || 0} kW</p>
                   <p>Self-Consumption: {randomMetrics.maxSelfConsumption.selfConsumption}%</p>
                 </div>
               </div>
