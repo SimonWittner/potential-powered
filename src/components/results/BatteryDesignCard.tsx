@@ -94,7 +94,11 @@ const BatteryDesignCard = () => {
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg">
                   <h4 className="font-medium">Max. Self-Consumption</h4>
-                  <p>Size: {batteryData?.battery_size_kwh*0.135 || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw*0.073 || 0} kW</p>
+                  <p>
+                    Size: {batteryData ? (batteryData.battery_size_kwh * 1.135).toFixed(2) : "0.00"} kWh 
+                    <span className="mx-2">|</span> 
+                    {batteryData ? (batteryData.battery_size_kw * 1.073).toFixed(2) : "0.00"} kW
+                  </p>
                   <p>Self-Consumption: {randomMetrics.maxSelfConsumption.selfConsumption}%</p>
                 </div>
               </div>
