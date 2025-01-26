@@ -1,16 +1,31 @@
 import { Card } from "@/components/ui/card"
+import { useQuery } from "@tanstack/react-query";
 
 const BatteryDesignCard = () => {
+  const { data: batteryData } = useQuery({
+    queryKey: ['batteryDesign'],
+    queryFn: async () => {
+      console.log("Fetching battery design data...");
+      const response = await fetch('http://localhost:3001/get-plot?name=example.json');
+      if (!response.ok) {
+        throw new Error('Failed to fetch battery design data');
+      }
+      const data = await response.json();
+      console.log("Battery design data received:", data);
+      return data;
+    },
+  });
+
   const randomMetrics = {
-    batterySize: 17, // Fixed value as requested
-    additionalSelfConsumption: 14.9, // Fixed value as requested
-    fullCycles: 113, // Fixed value as requested
+    batterySize: batteryData?.battery_size_kwh || 17, // Use fetched value or fallback to 17
+    additionalSelfConsumption: 14.9,
+    fullCycles: 113,
     maxProfitability: {
-      size: 17, // Fixed value as requested
+      size: 17,
       roi: (Math.random() * 5 + 8).toFixed(2)
     },
     maxSelfConsumption: {
-      size: 25, // Fixed value as requested
+      size: 25,
       selfConsumption: (Math.random() * 20 + 60).toFixed(2)
     }
   };
