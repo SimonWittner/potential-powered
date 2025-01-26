@@ -1,8 +1,19 @@
 import { Card } from "@/components/ui/card"
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 const BatteryDesignCard = () => {
-  const { data: batteryData } = useQuery({
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShouldFetch(true);
+    }, 90000); // 90 seconds delay
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const { data: batteryData, isLoading } = useQuery({
     queryKey: ['batteryDesign'],
     queryFn: async () => {
       console.log("Fetching battery design data...");
@@ -14,10 +25,11 @@ const BatteryDesignCard = () => {
       console.log("Battery design data received:", data);
       return data;
     },
+    enabled: shouldFetch,
   });
 
   const randomMetrics = {
-    batterySize: batteryData?.battery_size_kwh || 17, // Use fetched value or fallback to 17
+    batterySize: batteryData?.battery_size_kwh || 0, // Default to 0 instead of 17
     additionalSelfConsumption: 14.9,
     fullCycles: 113,
     maxProfitability: {
@@ -34,7 +46,14 @@ const BatteryDesignCard = () => {
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
       <div className="space-y-4">
-        <p>Recommended Battery Size: {randomMetrics.batterySize} kWh</p>
+        <p>
+          Recommended Battery Size:{' '}
+          {!shouldFetch || isLoading ? (
+            <span className="text-gray-500">loading...</span>
+          ) : (
+            `${randomMetrics.batterySize} kWh`
+          )}
+        </p>
         <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
         <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
         
