@@ -16,17 +16,6 @@ const Index = () => {
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
   const [showLoadProfileUpload, setShowLoadProfileUpload] = useState(false);
   const [showYearlyConsumption, setShowYearlyConsumption] = useState(false);
-</lov-replace>
-
-<lov-search>
-  const interests = [
-    { id: "pv", label: "PV" },
-    { id: "battery", label: "Battery" },
-    { id: "evCharging", label: "EV Charging" },
-    { id: "heatpump", label: "Heatpump" },
-  ];
-</lov-search>
-<lov-replace>
   const [address, setAddress] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
@@ -35,13 +24,6 @@ const Index = () => {
   const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const interests = [
-    { id: "pv", label: "PV" },
-    { id: "battery", label: "Battery" },
-    { id: "evCharging", label: "EV Charging" },
-    { id: "heatpump", label: "Heatpump" },
-  ];
-
   const handleAddressChange = async (value: string) => {
     setAddress(value);
   };
@@ -49,17 +31,6 @@ const Index = () => {
   const handleCompanyNameChange = (value: string) => {
     setCompanyName(value);
   };
-
-</lov-replace>
-
-<lov-search>
-            <InterestsForm
-              interests={interests}
-              selectedInterests={selectedInterests}
-              onInterestChange={handleInterestChange}
-            />
-</lov-search>
-<lov-replace>
 
   const handleElectricityPriceChange = (value: string) => {
     setShowElectricityPrice(value === "yes");
@@ -209,7 +180,6 @@ const Index = () => {
         }
       }
 
-      // Wait for 30 seconds and fetch the plot
       await new Promise(resolve => setTimeout(resolve, 30000));
       await fetchPlot();
 
@@ -244,12 +214,6 @@ const Index = () => {
               onAddressChange={handleAddressChange}
               companyName={companyName}
               onCompanyNameChange={handleCompanyNameChange}
-            />
-
-            <InterestsForm
-              interests={interests}
-              selectedInterests={selectedInterests}
-              onInterestChange={handleInterestChange}
             />
 
             <ConsumptionForm
