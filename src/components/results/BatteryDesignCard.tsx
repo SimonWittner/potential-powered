@@ -50,7 +50,7 @@ const BatteryDesignCard = () => {
     additionalSelfConsumption: 14.9,
     fullCycles: 113,
     maxProfitability: {
-      size: 17,
+      size: batteryData?.battery_size_kwh || 0,
       roi: (Math.random() * 5 + 8).toFixed(2),
     },
     maxSelfConsumption: {
