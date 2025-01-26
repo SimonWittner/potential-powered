@@ -24,6 +24,9 @@ const ConsumptionForm = ({
   const [dragActive, setDragActive] = useState(false);
   const [electricityPrice, setElectricityPrice] = useState<string>("");
   const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
+  const [hasExistingPV, setHasExistingPV] = useState<string>("");
+  const [pvSize, setPvSize] = useState<string>("");
+  const [includesPVGeneration, setIncludesPVGeneration] = useState<string>("");
 
   const validateCSVContent = async (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -112,6 +115,55 @@ const ConsumptionForm = ({
   return (
     <div className="grid grid-cols-2 gap-8">
       <div className="space-y-4">
+        <div className="space-y-2">
+          <Label>Do you have an existing PV?</Label>
+          <RadioGroup
+            onValueChange={(value) => setHasExistingPV(value)}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="pv-yes" />
+              <Label htmlFor="pv-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="pv-no" />
+              <Label htmlFor="pv-no">No</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {hasExistingPV === "yes" && (
+          <div className="animate-fade-in space-y-4">
+            <div>
+              <Label htmlFor="pvSize">PV Size</Label>
+              <Input
+                id="pvSize"
+                type="number"
+                placeholder="Enter size in kWp"
+                className="mt-1"
+                value={pvSize}
+                onChange={(e) => setPvSize(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Does the load profile include the PV generation (net metering with existing PV)?</Label>
+              <RadioGroup
+                onValueChange={(value) => setIncludesPVGeneration(value)}
+                className="flex space-x-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="yes" id="generation-yes" />
+                  <Label htmlFor="generation-yes">Yes</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="no" id="generation-no" />
+                  <Label htmlFor="generation-no">No</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-2">
           <Label>Do you know your electricity price?</Label>
           <RadioGroup
