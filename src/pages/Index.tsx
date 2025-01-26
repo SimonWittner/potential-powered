@@ -16,7 +16,17 @@ const Index = () => {
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
   const [showLoadProfileUpload, setShowLoadProfileUpload] = useState(false);
   const [showYearlyConsumption, setShowYearlyConsumption] = useState(false);
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+</lov-replace>
+
+<lov-search>
+  const interests = [
+    { id: "pv", label: "PV" },
+    { id: "battery", label: "Battery" },
+    { id: "evCharging", label: "EV Charging" },
+    { id: "heatpump", label: "Heatpump" },
+  ];
+</lov-search>
+<lov-replace>
   const [address, setAddress] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
@@ -40,13 +50,16 @@ const Index = () => {
     setCompanyName(value);
   };
 
-  const handleInterestChange = (interest: string) => {
-    setSelectedInterests((current) =>
-      current.includes(interest)
-        ? current.filter((i) => i !== interest)
-        : [...current, interest]
-    );
-  };
+</lov-replace>
+
+<lov-search>
+            <InterestsForm
+              interests={interests}
+              selectedInterests={selectedInterests}
+              onInterestChange={handleInterestChange}
+            />
+</lov-search>
+<lov-replace>
 
   const handleElectricityPriceChange = (value: string) => {
     setShowElectricityPrice(value === "yes");
