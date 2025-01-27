@@ -8,7 +8,7 @@ import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = 'https://bfab-185-197-236-130.ngrok-free.app';
+const API_URL = 'https://d3cd-185-197-236-130.ngrok-free.app';
 
 const Index = () => {
   const navigate = useNavigate();

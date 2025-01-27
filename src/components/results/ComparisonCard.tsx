@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 
-const API_URL = 'https://bfab-185-197-236-130.ngrok-free.app';
+const API_URL = 'https://d3cd-185-197-236-130.ngrok-free.app';
 
 const ComparisonCard = () => {
   const [comparisonLoadPlot, setComparisonLoadPlot] = useState<string | null>(null);

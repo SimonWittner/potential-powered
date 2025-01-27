@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-const API_URL = 'https://bfab-185-197-236-130.ngrok-free.app';
+const API_URL = 'https://d3cd-185-197-236-130.ngrok-free.app';
 
 const generateLoadProfileData = () => {
   return [
@@ -155,3 +155,4 @@ const LoadProfileChart = () => {
 };
 
 export default LoadProfileChart;
+

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const API_URL = 'https://bfab-185-197-236-130.ngrok-free.app';
+const API_URL = 'https://d3cd-185-197-236-130.ngrok-free.app';
 
 const BatteryDesignCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
