@@ -58,8 +58,7 @@ const Index = () => {
   const downloadFileLocally = async (
     filePath: string, 
     electricityPrice?: number,
-    gridPowerCharges?: number,
-    pvPeak?: number
+    gridPowerCharges?: number
   ) => {
     try {
       const { data: fileData, error: downloadError } = await supabase.storage
@@ -74,8 +73,7 @@ const Index = () => {
         companyName,
         address,
         ...(electricityPrice !== undefined && { electricityPrice }),
-        ...(gridPowerCharges !== undefined && { gridPowerCharges }),
-        ...(pvPeak !== undefined && { pv_peak: pvPeak })
+        ...(gridPowerCharges !== undefined && { gridPowerCharges })
       };
 
       const response = await fetch(`${API_URL}/process-file`, {
@@ -102,8 +100,7 @@ const Index = () => {
   const handleFileUpload = async (
     filePath: string, 
     electricityPrice?: number,
-    gridPowerCharges?: number,
-    pvPeak?: number
+    gridPowerCharges?: number
   ) => {
     setUploadedFilePath(filePath);
     
@@ -117,12 +114,6 @@ const Index = () => {
       localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
     } else {
       localStorage.removeItem('gridPowerCharges');
-    }
-
-    if (pvPeak !== undefined) {
-      localStorage.setItem('pvPeak', pvPeak.toString());
-    } else {
-      localStorage.removeItem('pvPeak');
     }
   };
 
@@ -160,13 +151,11 @@ const Index = () => {
       if (isLocalServerAvailable) {
         const electricityPrice = localStorage.getItem('electricityPrice');
         const gridPowerCharges = localStorage.getItem('gridPowerCharges');
-        const pvPeak = localStorage.getItem('pvPeak');
         
         useLocalProcessing = await downloadFileLocally(
           uploadedFilePath,
           electricityPrice ? parseFloat(electricityPrice) : undefined,
-          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
-          pvPeak ? parseFloat(pvPeak) : undefined
+          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
         );
       }
 
