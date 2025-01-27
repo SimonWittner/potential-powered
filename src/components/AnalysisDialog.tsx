@@ -16,7 +16,7 @@ const AnalysisDialog = ({ open, onOpenChange }: AnalysisDialogProps) => {
       const timer = setTimeout(() => {
         onOpenChange(false);
         navigate("/results");
-      }, 60000); // Changed from 15000 to 60000 milliseconds (60 seconds)
+      }, 120000); // Changed from 15000 to 60000 milliseconds (60 seconds)
 
       return () => clearTimeout(timer);
     }
