@@ -9,7 +9,7 @@ import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 
-const LOCAL_SERVER_URL = 'http://localhost:3001';
+const API_URL = 'https://google-server-843669231634.europe-west4.run.app';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -43,15 +43,15 @@ const Index = () => {
 
   const checkLocalServer = async () => {
     try {
-      console.log('Checking local server availability...');
-      const response = await fetch(`${LOCAL_SERVER_URL}/health`, {
+      console.log('Checking server availability...');
+      const response = await fetch(`${API_URL}/health`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log('Local server response:', response.ok);
+      console.log('Server response:', response.ok);
       return response.ok;
     } catch (error) {
-      console.log('Local server not available:', error);
+      console.log('Server not available:', error);
       return false;
     }
   };
@@ -77,7 +77,7 @@ const Index = () => {
         gridPowerCharges
       };
 
-      const response = await fetch(`${LOCAL_SERVER_URL}/process-file`, {
+      const response = await fetch(`${API_URL}/process-file`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -88,7 +88,7 @@ const Index = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to process file locally');
+        throw new Error('Failed to process file');
       }
 
       return true;
@@ -115,7 +115,7 @@ const Index = () => {
 
   const fetchPlot = async () => {
     try {
-      const response = await fetch(`${LOCAL_SERVER_URL}/get-plot?name=daily_load.png`);
+      const response = await fetch(`${API_URL}/get-plot?name=daily_load.png`);
       if (!response.ok) throw new Error('Failed to fetch plot');
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);

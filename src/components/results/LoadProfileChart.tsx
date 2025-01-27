@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+const API_URL = "https://google-server-843669231634.europe-west4.run.app";
+
 const generateLoadProfileData = () => {
   return [
     { hour: "00:00", demand: 13 },
@@ -24,7 +26,6 @@ const LoadProfileChart = () => {
   const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
   const [peakLoadPlotImageUrl, setPeakLoadPlotImageUrl] = useState<string | null>(null);
 
-  // Fetch daily load plot
   useEffect(() => {
     const storedImageUrl = localStorage.getItem('plotImageUrl');
     if (storedImageUrl) {
@@ -33,7 +34,7 @@ const LoadProfileChart = () => {
 
     // Fetch weekly load plot after 10 seconds
     const weeklyTimer = setTimeout(() => {
-      fetch('http://localhost:3001/get-plot?name=weekly_load.png')
+      fetch(`${API_URL}/get-plot?name=weekly_load.png`)
         .then(response => response.blob())
         .then(blob => {
           const url = URL.createObjectURL(blob);
@@ -45,7 +46,7 @@ const LoadProfileChart = () => {
 
     // Fetch peak load plot
     const peakLoadTimer = setTimeout(() => {
-      fetch('http://localhost:3001/get-plot?name=peak_load.png')
+      fetch(`${API_URL}/get-plot?name=peak_load.png`)
         .then(response => response.blob())
         .then(blob => {
           const url = URL.createObjectURL(blob);
@@ -55,7 +56,6 @@ const LoadProfileChart = () => {
         .catch(error => console.error('Error fetching peak load plot:', error));
     }, 1000); 
 
-    // Cleanup
     return () => {
       clearTimeout(weeklyTimer);
       clearTimeout(peakLoadTimer);
