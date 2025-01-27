@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-
-const API_URL = "https://google-server-843669231634.europe-west4.run.app";
+import { API_URL } from "@/config/api";
 
 const generateLoadProfileData = () => {
   return [

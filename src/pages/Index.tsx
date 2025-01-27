@@ -8,8 +8,7 @@ import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
-
-const API_URL = 'https://google-server-843669231634.europe-west4.run.app';
+import { API_URL } from "@/config/api";
 
 const Index = () => {
   const navigate = useNavigate();

@@ -2,8 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
-
-const API_URL = "https://google-server-843669231634.europe-west4.run.app";
+import { API_URL } from "@/config/api";
 
 const BatteryDesignCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);

@@ -1,0 +1,1 @@
+export const API_URL = "https://google-server-843669231634.europe-west4.run.app";
