@@ -1,8 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 
-const API_URL = 'https://d3cd-185-197-236-130.ngrok-free.app';
-
 const ComparisonCard = () => {
   const [comparisonLoadPlot, setComparisonLoadPlot] = useState<string | null>(null);
   const [newPeakLoadPlot, setNewPeakLoadPlot] = useState<string | null>(null);
@@ -11,7 +9,7 @@ const ComparisonCard = () => {
     console.log("Starting 45s delay for comparison load plot fetch");
     const comparisonLoadTimer = setTimeout(async () => {
       try {
-        const response = await fetch(`${API_URL}/get-plot?name=comparison_load.png`);
+        const response = await fetch('http://localhost:3001/get-plot?name=comparison_load.png');
         if (!response.ok) throw new Error('Failed to fetch comparison load plot');
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
@@ -25,7 +23,7 @@ const ComparisonCard = () => {
     console.log("Starting 45s delay for new peak load plot fetch");
     const newPeakLoadTimer = setTimeout(async () => {
       try {
-        const response = await fetch(`${API_URL}/get-plot?name=new_peak_load.png`);
+        const response = await fetch('http://localhost:3001/get-plot?name=new_peak_load.png');
         if (!response.ok) throw new Error('Failed to fetch new peak load plot');
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
