@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 
+const API_URL = 'https://bfab-185-197-236-130.ngrok-free.app';
+
 const BatteryDesignCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -34,7 +36,7 @@ const BatteryDesignCard = () => {
     queryFn: async () => {
       console.log("Fetching battery design data...");
       const response = await fetch(
-        "http://localhost:3001/get-plot?name=example.json"
+        `${API_URL}/get-plot?name=example.json`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch battery design data");
