@@ -69,11 +69,11 @@ const ConsumptionForm = ({
         throw uploadError;
       }
 
-      onFileUpload(
-        fileName, 
-        electricityPrice ? parseFloat(electricityPrice) : undefined,
-        gridPowerCharges ? parseFloat(gridPowerCharges) : undefined
-      );
+      // Only pass values if they are not empty strings
+      const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
+      const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
+
+      onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges);
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error('Error uploading file:', error);

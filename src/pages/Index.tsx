@@ -72,8 +72,8 @@ const Index = () => {
       const companyData = {
         companyName,
         address,
-        electricityPrice,
-        gridPowerCharges
+        ...(electricityPrice !== undefined && { electricityPrice }),
+        ...(gridPowerCharges !== undefined && { gridPowerCharges })
       };
 
       const response = await fetch(`${API_URL}/process-file`, {
@@ -106,9 +106,14 @@ const Index = () => {
     
     if (electricityPrice !== undefined) {
       localStorage.setItem('electricityPrice', electricityPrice.toString());
+    } else {
+      localStorage.removeItem('electricityPrice');
     }
+    
     if (gridPowerCharges !== undefined) {
       localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
+    } else {
+      localStorage.removeItem('gridPowerCharges');
     }
   };
 
