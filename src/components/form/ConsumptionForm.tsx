@@ -12,7 +12,7 @@ interface ConsumptionFormProps {
   showYearlyConsumption: boolean;
   onElectricityPriceChange: (value: string) => void;
   onLoadProfileChange: (value: string) => void;
-  onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number) => void;
+  onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number, pvPeak?: number) => void;
 }
 
 const ConsumptionForm = ({
@@ -72,8 +72,9 @@ const ConsumptionForm = ({
       // Only pass values if they are not empty strings
       const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
       const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
+      const parsedPvPeak = pvSize ? parseFloat(pvSize) : undefined;
 
-      onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges);
+      onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges, parsedPvPeak);
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error('Error uploading file:', error);
