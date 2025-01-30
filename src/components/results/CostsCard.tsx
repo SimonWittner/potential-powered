@@ -81,7 +81,7 @@ const CostsCard = () => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span>Total</span>
-                  <span className="font-medium">{costs.initialInvestment.total} €</span>
+                  <span className="font-medium">{costs.initialInvestment.total.toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Battery System</span>
