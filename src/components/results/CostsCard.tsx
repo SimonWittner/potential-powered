@@ -1,6 +1,16 @@
 import { Card } from "@/components/ui/card"
 
-const CostsCard = () => {
+interface BatteryData {
+  initial_capital_cost?: number;
+  battery_size_kwh?: number;
+  battery_size_kw?: number;
+}
+
+interface CostsCardProps {
+  batteryData?: BatteryData;
+}
+
+const CostsCard = ({ batteryData }: CostsCardProps) => {
   const costs = {
     initialInvestment: {
       pv: (Math.random() * 20000 + 10000).toFixed(2),
@@ -18,16 +28,20 @@ const CostsCard = () => {
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Costs</h2>
       <div className="space-y-6">
-        <div>
+        <div className="bg-gray-50 p-4 rounded-lg">
           <h3 className="text-lg font-medium mb-3">Initial Investment</h3>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span>PV System</span>
-              <span className="font-medium">{costs.initialInvestment.pv} €</span>
+              <span>Total</span>
+              <span className="font-medium">{batteryData?.initial_capital_cost?.toFixed(2) || "0.00"} €</span>
             </div>
             <div className="flex justify-between items-center">
-              <span>Battery System</span>
+              <span>Battery</span>
               <span className="font-medium">{costs.initialInvestment.battery} €</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>PV System</span>
+              <span className="font-medium">{costs.initialInvestment.pv} €</span>
             </div>
             <div className="flex justify-between items-center">
               <span>Installation</span>
