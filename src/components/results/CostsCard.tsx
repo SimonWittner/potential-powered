@@ -2,14 +2,14 @@ import { Card } from "@/components/ui/card"
 
 const CostsCard = () => {
   const costs = {
-    initialInvestment: {
-      total: (Math.random() * 40000 + 20000).toFixed(2),
-      battery: (Math.random() * 15000 + 8000).toFixed(2),
+    initialInvestment: { 
+      total: 95850,
+      battery: 95850,
     },
     savings: {
-      paybackTime: (Math.random() * 5 + 3).toFixed(1),
-      yearlySavings: (Math.random() * 3000 + 2000).toFixed(2),
-      npv: (Math.random() * 25000 + 15000).toFixed(2),
+      paybackTime: 6.7,
+      yearlySavings: 8444,
+      npv: 12956,
     }
   };
 
