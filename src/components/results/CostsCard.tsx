@@ -60,7 +60,7 @@ const CostsCard = () => {
 
   return (
     <Card className="p-6 bg-white/95 backdrop-blur-sm col-span-2">
-      <h2 className="text-2xl font-semibold mb-4">Costs</h2>
+      <h2 className="text-2xl font-semibold mb-4">Economics</h2>
       <div className="space-y-6">
         {!shouldFetch || isLoading ? (
           <div className="w-full">
@@ -95,15 +95,15 @@ const CostsCard = () => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span>Simple Payback Time</span>
-                  <span className="font-medium">{costs.savings.paybackTime} years</span>
+                  <span className="font-medium text-green-600">{costs.savings.paybackTime} years</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Yearly Savings</span>
-                  <span className="font-medium text-green-600">{costs.savings.yearlySavings} €/year</span>
+                  <span className="font-medium text-green-600">{costs.savings.yearlySavings.toFixed(2)} €/year</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Net Present Value</span>
-                  <span className="font-medium">{costs.savings.npv} €</span>
+                  <span className="font-medium text-green-600">{costs.savings.npv} €</span>
                 </div>
               </div>
             </div>
