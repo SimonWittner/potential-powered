@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { API_URL } from "@/config/api";
-import CostsCard from "./CostsCard";
 
 const BatteryDesignCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
@@ -63,55 +62,52 @@ const BatteryDesignCard = () => {
   };
 
   return (
-    <>
-      <Card className="p-6">
-        <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
-        <div className="space-y-4">
-          {!shouldFetch || isLoading ? (
-            <div className="w-full">
-              <div className="relative w-full h-4 bg-gray-200 rounded">
-                <div
-                  className="absolute top-0 left-0 h-full bg-blue-500 rounded"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-              <p className="mt-2 text-gray-500">
-                Loading battery design data... {Math.floor(progress)}%
-              </p>
+    <Card className="p-6">
+      <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
+      <div className="space-y-4">
+        {!shouldFetch || isLoading ? (
+          <div className="w-full">
+            <div className="relative w-full h-4 bg-gray-200 rounded">
+              <div
+                className="absolute top-0 left-0 h-full bg-blue-500 rounded"
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
-          ) : (
-            <>
-              <div className="bg-gray-100 p-3 rounded-lg">
-                <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
-              </div>
-              <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
-              <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
+            <p className="mt-2 text-gray-500">
+              Loading battery design data... {Math.floor(progress)}%
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="bg-gray-100 p-3 rounded-lg">
+              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
+            </div>
+            <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
+            <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
 
-              <div className="mt-6">
-                <h3 className="text-lg font-medium mb-2">Scenario Comparison</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium">Max. Profitability</h4>
-                    <p>Size: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
-                    <p>ROI: {randomMetrics.maxProfitability.roi}%</p>
-                  </div>
-                  <div className="p-4 bg-green-50 rounded-lg">
-                    <h4 className="font-medium">Max. Self-Consumption</h4>
-                    <p>
-                      Size: {batteryData ? (batteryData.battery_size_kwh * 1.135).toFixed(0) : "0.00"} kWh 
-                      <span className="mx-2">|</span> 
-                      {batteryData ? (batteryData.battery_size_kw * 1.073).toFixed(0) : "0.00"} kW
-                    </p>
-                    <p>Self-Consumption: {randomMetrics.maxSelfConsumption.selfConsumption}%</p>
-                  </div>
+            <div className="mt-6">
+              <h3 className="text-lg font-medium mb-2">Scenario Comparison</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium">Max. Profitability</h4>
+                  <p>Size: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
+                  <p>ROI: {randomMetrics.maxProfitability.roi}%</p>
+                </div>
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-medium">Max. Self-Consumption</h4>
+                  <p>
+                    Size: {batteryData ? (batteryData.battery_size_kwh * 1.135).toFixed(0) : "0.00"} kWh 
+                    <span className="mx-2">|</span> 
+                    {batteryData ? (batteryData.battery_size_kw * 1.073).toFixed(0) : "0.00"} kW
+                  </p>
+                  <p>Self-Consumption: {randomMetrics.maxSelfConsumption.selfConsumption}%</p>
                 </div>
               </div>
-            </>
-          )}
-        </div>
-      </Card>
-      <CostsCard batteryData={batteryData} />
-    </>
+            </div>
+          </>
+        )}
+      </div>
+    </Card>
   );
 };
 
