@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import LoadProfileChart from "@/components/results/LoadProfileChart"
 import PVProductionChart from "@/components/results/PVProductionChart"
 import BatteryDesignCard from "@/components/results/BatteryDesignCard"
-import EconomicCalculationsCard from "@/components/results/EconomicCalculationsCard"
 import ComparisonCard from "@/components/results/ComparisonCard"
 import CostsCard from "@/components/results/CostsCard"
 import ESGReportingCard from "@/components/results/ESGReportingCard"
@@ -124,10 +123,6 @@ const Results = () => {
             <ComparisonCard />
             <CostsCard />
             <ESGReportingCard />
-          </div>
-
-          <div className="w-full">
-            <EconomicCalculationsCard />
           </div>
         </div>
 
