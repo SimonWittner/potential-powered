@@ -36,8 +36,8 @@ const ESGReportingCard = () => {
   };
 
   return (
-    <Card className="bg-gray-100 p-6">
-      <h2 className="text-2xl font-semibold mb-4 bg-neutral-600 text-white p-4 rounded-md">ESG Reporting</h2>
+    <Card className="p-6 bg-white/95 backdrop-blur-sm">
+      <h2 className="text-2xl font-semibold mb-4">ESG Reporting</h2>
       <div className="space-y-6">
         {!shouldFetch ? (
           <div className="w-full">
@@ -52,7 +52,7 @@ const ESGReportingCard = () => {
             </p>
           </div>
         ) : (
-          <div className="bg-white shadow-sm p-6 rounded-lg">
+          <div className="bg-gray-50 rounded-lg p-4">
             <h3 className="text-lg font-medium mb-4 text-neutral-800">Environmental Impact</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
