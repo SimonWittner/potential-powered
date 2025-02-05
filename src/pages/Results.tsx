@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,16 +23,28 @@ const Results = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase
-        .from('load_profile_analyses')
+      // First try to get from Supabase
+      const { data: supabaseData, error: supabaseError } = await supabase
+        .from('analysis_results')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
 
-      if (error) throw error;
-      return data;
+      if (supabaseData && !supabaseError) {
+        console.log("Found analysis in Supabase:", supabaseData);
+        return supabaseData;
+      }
+
+      // If not in Supabase, try localStorage as fallback
+      const localData = localStorage.getItem('analysisResults');
+      if (localData) {
+        console.log("Found analysis in localStorage:", localData);
+        return JSON.parse(localData);
+      }
+
+      throw new Error('No analysis results found');
     },
   });
 
