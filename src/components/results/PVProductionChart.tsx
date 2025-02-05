@@ -1,58 +1,83 @@
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-const generateMonthlyData = () => {
-  return [
-    { month: "Januar", production: 1779 },
-    { month: "Februar", production: 2486 },
-    { month: "März", production: 4732 },
-    { month: "April", production: 5290 },
-    { month: "Mai", production: 6116 },
-    { month: "Juni", production: 6550 },
-    { month: "Juli", production: 6514 },
-    { month: "August", production: 5556 },
-    { month: "September", production: 4043 },
-    { month: "Oktober", production: 2504 },
-    { month: "November", production: 1395 },
-    { month: "Dezember", production: 1156 }
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useEffect, useState } from "react";
+
+const generateMonthlyData = (pvSize: number) => {
+  const baseValues = [
+    { month: "Januar", baseProduction: 1779 },
+    { month: "Februar", baseProduction: 2486 },
+    { month: "März", baseProduction: 4732 },
+    { month: "April", baseProduction: 5290 },
+    { month: "Mai", baseProduction: 6116 },
+    { month: "Juni", baseProduction: 6550 },
+    { month: "Juli", baseProduction: 6514 },
+    { month: "August", baseProduction: 5556 },
+    { month: "September", baseProduction: 4043 },
+    { month: "Oktober", baseProduction: 2504 },
+    { month: "November", baseProduction: 1395 },
+    { month: "Dezember", baseProduction: 1156 }
   ];
+
+  // Scale the production values based on PV size
+  return baseValues.map(item => ({
+    month: item.month,
+    production: (item.baseProduction * pvSize) / 100 // Assuming base values are for 100kWp
+  }));
 };
 
-const generateDailyData = () => {
+const generateDailyData = (pvSize: number) => {
   const data = [];
   for (let hour = 0; hour <= 23; hour++) {
-    let production = 0;
+    let baseProduction = 0;
     
     // Night hours (0-5 and 20-23)
     if (hour <= 5 || hour >= 20) {
-      production = 12;
+      baseProduction = 12;
     }
     // Morning ramp up (6-8)
     else if (hour >= 6 && hour <= 8) {
-      production = 12 + ((hour - 6) * 13);
+      baseProduction = 12 + ((hour - 6) * 13);
     }
     // Peak hours (9-16)
     else if (hour >= 9 && hour <= 16) {
-      production = 51;
+      baseProduction = 51;
     }
     // Evening ramp down (17-19)
     else if (hour >= 17 && hour <= 19) {
-      production = 51 - ((hour - 16) * 13);
+      baseProduction = 51 - ((hour - 16) * 13);
     }
 
     data.push({
       hour: `${hour.toString().padStart(2, '0')}:00`,
-      production: production
+      production: (baseProduction * pvSize) / 100 // Scale based on PV size
     });
   }
   return data;
 };
 
 const PVProductionChart = () => {
-  const monthlyData = generateMonthlyData();
-  const dailyData = generateDailyData();
+  const [pvSize, setPvSize] = useState<number>(0);
+
+  useEffect(() => {
+    const storedPvSize = localStorage.getItem('pvPeak');
+    const hasExistingPV = localStorage.getItem('hasExistingPV');
+    
+    if (hasExistingPV === 'yes' && storedPvSize) {
+      setPvSize(parseFloat(storedPvSize));
+    } else {
+      setPvSize(0);
+    }
+  }, []);
+
+  const monthlyData = generateMonthlyData(pvSize);
+  const dailyData = generateDailyData(pvSize);
 
   return (
     <div className="space-y-6">
+      <div>
+        <p className="text-sm text-gray-600 mb-2">PV System Size: {pvSize} kWp</p>
+      </div>
+      
       <div className="space-y-2 mt-12">
         <h3 className="text-lg font-medium mb-4">PV Generation Daily</h3>
         <div className="h-[150px] w-full">
