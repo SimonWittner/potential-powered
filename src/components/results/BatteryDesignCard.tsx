@@ -47,10 +47,10 @@ const BatteryDesignCard = () => {
     enabled: shouldFetch,
   });
 
-  const randomMetrics = {
+  const Metrics = {
     batterySize: batteryData?.battery_size_kwh || 0,
-    additionalSelfConsumption: 14.9,
-    fullCycles: 113,
+    additionalSelfConsumption: batteryData?.additional_own_consumption || 0,
+    fullCycles: 17,
     maxProfitability: {
       size: batteryData?.battery_size_kwh || 0,
       roi: (Math.random() * 5 + 8).toFixed(2),
@@ -81,17 +81,16 @@ const BatteryDesignCard = () => {
           <>
             <div className="bg-gray-100 p-3 rounded-lg">
               <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
+              <p>Additional Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
+              <p>Estimated Full Cycles per Year: {Metrics.fullCycles}</p>
             </div>
-            <p>Additional Self-consumption: +{randomMetrics.additionalSelfConsumption}%</p>
-            <p>Estimated Full Cycles per Year: {randomMetrics.fullCycles}</p>
-
             <div className="mt-6">
               <h3 className="text-lg font-medium mb-2">Scenario Comparison</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <h4 className="font-medium">Max. Profitability</h4>
                   <p>Size: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
-                  <p>ROI: {randomMetrics.maxProfitability.roi}%</p>
+                  <p>ROI: {Metrics.maxProfitability.roi}%</p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg">
                   <h4 className="font-medium">Max. Self-Consumption</h4>
@@ -100,7 +99,7 @@ const BatteryDesignCard = () => {
                     <span className="mx-2">|</span> 
                     {batteryData ? (batteryData.battery_size_kw * 1.073).toFixed(0) : "0.00"} kW
                   </p>
-                  <p>Self-Consumption: {randomMetrics.maxSelfConsumption.selfConsumption}%</p>
+                  <p>Self-Consumption: {Metrics.maxSelfConsumption.selfConsumption}%</p>
                 </div>
               </div>
             </div>
