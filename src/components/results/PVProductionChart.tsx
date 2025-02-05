@@ -26,33 +26,38 @@ const generateMonthlyData = (pvSize: number) => {
 };
 
 const generateDailyData = (pvSize: number) => {
-  const data = [];
-  for (let hour = 0; hour <= 23; hour++) {
-    let baseProduction = 0;
-    
-    // Night hours (0-5 and 20-23)
-    if (hour <= 5 || hour >= 20) {
-      baseProduction = 12;
-    }
-    // Morning ramp up (6-8)
-    else if (hour >= 6 && hour <= 8) {
-      baseProduction = 12 + ((hour - 6) * 13);
-    }
-    // Peak hours (9-16)
-    else if (hour >= 9 && hour <= 16) {
-      baseProduction = 51;
-    }
-    // Evening ramp down (17-19)
-    else if (hour >= 17 && hour <= 19) {
-      baseProduction = 51 - ((hour - 16) * 13);
-    }
+  const baseValues = [
+    { hour: "00:00", baseProduction: 0 },
+    { hour: "01:00", baseProduction: 0 },
+    { hour: "02:00", baseProduction: 0 },
+    { hour: "03:00", baseProduction: 0 },
+    { hour: "04:00", baseProduction: 0 },
+    { hour: "05:00", baseProduction: 0 },
+    { hour: "06:00", baseProduction: 12 },
+    { hour: "07:00", baseProduction: 25 },
+    { hour: "08:00", baseProduction: 38 },
+    { hour: "09:00", baseProduction: 51 },
+    { hour: "10:00", baseProduction: 51 },
+    { hour: "11:00", baseProduction: 51 },
+    { hour: "12:00", baseProduction: 51 },
+    { hour: "13:00", baseProduction: 51 },
+    { hour: "14:00", baseProduction: 51 },
+    { hour: "15:00", baseProduction: 51 },
+    { hour: "16:00", baseProduction: 51 },
+    { hour: "17:00", baseProduction: 38 },
+    { hour: "18:00", baseProduction: 25 },
+    { hour: "19:00", baseProduction: 12 },
+    { hour: "20:00", baseProduction: 0 },
+    { hour: "21:00", baseProduction: 0 },
+    { hour: "22:00", baseProduction: 0 },
+    { hour: "23:00", baseProduction: 0 }
+  ];
 
-    data.push({
-      hour: `${hour.toString().padStart(2, '0')}:00`,
-      production: (baseProduction * pvSize) / 100 // Scale based on PV size
-    });
-  }
-  return data;
+  // Scale the production values based on PV size
+  return baseValues.map(item => ({
+    hour: item.hour,
+    production: (item.baseProduction * pvSize) / 100 // Assuming base values are for 100kWp
+  }));
 };
 
 const PVProductionChart = () => {
