@@ -11,7 +11,7 @@ const CostsCard = () => {
     console.log("Starting 120-second delay before fetching costs data...");
     const interval = setInterval(() => {
       setProgress((prev) => {
-        const nextProgress = prev + (100 / 120); // Increment progress every second
+        const nextProgress = prev + (100 / 60); // Increment progress every second
         return nextProgress >= 100 ? 100 : nextProgress;
       });
     }, 1000); // Update progress every second
@@ -21,7 +21,7 @@ const CostsCard = () => {
       setShouldFetch(true);
       setProgress(100);
       clearInterval(interval);
-    }, 120000); // 120 seconds
+    }, 60000); // 120 seconds
 
     return () => {
       clearTimeout(timer);
@@ -97,7 +97,7 @@ const CostsCard = () => {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span>Simple Payback Time</span>
-                  <span className="font-medium text-green-600">{costs.savings.paybackTime} years</span>
+                  <span className="font-medium text-green-600">{costs.savings.paybackTime.toFixed(2)} years</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Yearly Grid Power Charge Savings (Savings Peak Reduction)</span>
