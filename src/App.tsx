@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -41,32 +42,53 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
-        <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/" element={
-            <ProtectedRoute>
-              <Layout>
-                <Index />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/results" element={
-            <ProtectedRoute>
-              <Layout>
-                <Results />
-              </Layout>
-            </ProtectedRoute>
-          } />
-        </Routes>
-        <Toaster />
-        <Sonner />
-      </TooltipProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+const App = () => {
+  useEffect(() => {
+    const loadFont = async () => {
+      const font = new FontFace(
+        'Open Sans',
+        'url(https://fonts.gstatic.com/s/opensans/v35/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2)'
+      );
+
+      try {
+        await font.load();
+        document.fonts.add(font);
+        console.log('Open Sans font loaded successfully');
+      } catch (error) {
+        console.error('Error loading Open Sans font:', error);
+      }
+    };
+
+    loadFont();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <TooltipProvider>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Index />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            <Route path="/results" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Results />
+                </Layout>
+              </ProtectedRoute>
+            } />
+          </Routes>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
