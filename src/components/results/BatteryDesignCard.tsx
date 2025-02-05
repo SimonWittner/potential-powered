@@ -90,7 +90,6 @@ const BatteryDesignCard = () => {
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <h4 className="font-medium">Max. Profitability</h4>
                   <p>Size: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
-                  <p>ROI: {Metrics.maxProfitability.roi}%</p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg">
                   <h4 className="font-medium">Max. Self-Consumption</h4>
