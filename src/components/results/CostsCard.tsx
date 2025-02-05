@@ -82,10 +82,6 @@ const CostsCard = () => {
               <h3 className="text-lg font-medium mb-3">Initial Investment</h3>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span>Total</span>
-                  <span className="font-medium">{costs.initialInvestment.total.toFixed(2)} €</span>
-                </div>
-                <div className="flex justify-between items-center">
                   <span>Battery System</span>
                   <span className="font-medium">{costs.initialInvestment.battery} €</span>
                 </div>
