@@ -59,7 +59,8 @@ const Index = () => {
     filePath: string, 
     electricityPrice?: number,
     gridPowerCharges?: number,
-    pvPeak?: number
+    pvPeak?: number,
+    loadsKwIsNet?: boolean
   ) => {
     try {
       const { data: fileData, error: downloadError } = await supabase.storage
@@ -75,7 +76,8 @@ const Index = () => {
         address,
         ...(electricityPrice !== undefined && { electricityPrice }),
         ...(gridPowerCharges !== undefined && { gridPowerCharges }),
-        ...(pvPeak !== undefined && { pv_peak: pvPeak })
+        ...(pvPeak !== undefined && { pv_peak: pvPeak }),
+        ...(loadsKwIsNet !== undefined && { loads_kw_is_net: loadsKwIsNet })
       };
 
       const response = await fetch(`${API_URL}/process-file`, {
@@ -103,7 +105,8 @@ const Index = () => {
     filePath: string, 
     electricityPrice?: number,
     gridPowerCharges?: number,
-    pvPeak?: number
+    pvPeak?: number,
+    loadsKwIsNet?: boolean
   ) => {
     setUploadedFilePath(filePath);
     
@@ -123,6 +126,12 @@ const Index = () => {
       localStorage.setItem('pvPeak', pvPeak.toString());
     } else {
       localStorage.removeItem('pvPeak');
+    }
+
+    if (loadsKwIsNet !== undefined) {
+      localStorage.setItem('loadsKwIsNet', loadsKwIsNet.toString());
+    } else {
+      localStorage.removeItem('loadsKwIsNet');
     }
   };
 
@@ -161,12 +170,14 @@ const Index = () => {
         const electricityPrice = localStorage.getItem('electricityPrice');
         const gridPowerCharges = localStorage.getItem('gridPowerCharges');
         const pvPeak = localStorage.getItem('pvPeak');
+        const loadsKwIsNet = localStorage.getItem('loadsKwIsNet');
         
         useLocalProcessing = await downloadFileLocally(
           uploadedFilePath,
           electricityPrice ? parseFloat(electricityPrice) : undefined,
           gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
-          pvPeak ? parseFloat(pvPeak) : undefined
+          pvPeak ? parseFloat(pvPeak) : undefined,
+          loadsKwIsNet ? (loadsKwIsNet === 'true') : undefined
         );
       }
 
