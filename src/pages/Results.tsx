@@ -30,7 +30,7 @@ const Results = () => {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (supabaseData && !supabaseError) {
         console.log("Found analysis in Supabase:", supabaseData);
@@ -44,6 +44,8 @@ const Results = () => {
         return JSON.parse(localData);
       }
 
+      // If no data is found anywhere, redirect to home page
+      navigate('/');
       throw new Error('No analysis results found');
     },
   });
