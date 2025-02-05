@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -12,7 +13,7 @@ interface ConsumptionFormProps {
   showYearlyConsumption: boolean;
   onElectricityPriceChange: (value: string) => void;
   onLoadProfileChange: (value: string) => void;
-  onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number, pvPeak?: number) => void;
+  onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number, pvPeak?: number, loadsKwIsNet?: boolean) => void;
 }
 
 const ConsumptionForm = ({
@@ -73,8 +74,11 @@ const ConsumptionForm = ({
       const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
       const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
       const parsedPvPeak = pvSize ? parseFloat(pvSize) : undefined;
+      
+      // Pass loads_kw_is_net as false when user selects "no" for net metering
+      const loadsKwIsNet = includesPVGeneration === "no" ? false : undefined;
 
-      onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges, parsedPvPeak);
+      onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges, parsedPvPeak, loadsKwIsNet);
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error('Error uploading file:', error);
