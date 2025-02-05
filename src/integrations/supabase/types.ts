@@ -9,30 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      analysis_results: {
-        Row: {
-          battery_data: Json | null
-          created_at: string | null
-          id: string
-          input_data: Json
-          user_id: string
-        }
-        Insert: {
-          battery_data?: Json | null
-          created_at?: string | null
-          id?: string
-          input_data: Json
-          user_id: string
-        }
-        Update: {
-          battery_data?: Json | null
-          created_at?: string | null
-          id?: string
-          input_data?: Json
-          user_id?: string
-        }
-        Relationships: []
-      }
       load_profile_analyses: {
         Row: {
           created_at: string | null
