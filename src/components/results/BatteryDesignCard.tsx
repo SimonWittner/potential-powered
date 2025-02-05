@@ -12,7 +12,7 @@ const BatteryDesignCard = () => {
     console.log("Starting 90-second delay before fetching battery data...");
     const interval = setInterval(() => {
       setProgress((prev) => {
-        const nextProgress = prev + (100 / 60); // Increment progress every second
+        const nextProgress = prev + (100 / 15); // Increment progress every second
         return nextProgress >= 100 ? 100 : nextProgress;
       });
     }, 1000); // Update progress every second

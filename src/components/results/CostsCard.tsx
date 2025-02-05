@@ -11,7 +11,7 @@ const CostsCard = () => {
     console.log("Starting 120-second delay before fetching costs data...");
     const interval = setInterval(() => {
       setProgress((prev) => {
-        const nextProgress = prev + (100 / 60); // Increment progress every second
+        const nextProgress = prev + (100 / 15); // Increment progress every second
         return nextProgress >= 100 ? 100 : nextProgress;
       });
     }, 1000); // Update progress every second
