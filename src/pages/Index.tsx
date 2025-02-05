@@ -217,8 +217,7 @@ const Index = () => {
             Potential Analysis
           </h1>
           <p className="text-lg text-gray-300">
-            Analyse your potential for a PV and/or a battery. Get results in less
-            than 5 minutes.
+            Analyse your battery potential.
           </p>
         </div>
 
