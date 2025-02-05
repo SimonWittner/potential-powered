@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -42,53 +41,32 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const App = () => {
-  useEffect(() => {
-    const loadFont = async () => {
-      const font = new FontFace(
-        'M PLUS 1',
-        'url(https://fonts.gstatic.com/s/mplus1/v6/R70EjygA28ymD4HgBqGjN6KCh4Mo.woff2)'
-      );
-
-      try {
-        await font.load();
-        document.fonts.add(font);
-        console.log('M PLUS 1 font loaded successfully');
-      } catch (error) {
-        console.error('Error loading M PLUS 1 font:', error);
-      }
-    };
-
-    loadFont();
-  }, []);
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TooltipProvider>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Index />
-                </Layout>
-              </ProtectedRoute>
-            } />
-            <Route path="/results" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Results />
-                </Layout>
-              </ProtectedRoute>
-            } />
-          </Routes>
-          <Toaster />
-          <Sonner />
-        </TooltipProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
-  );
-};
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <TooltipProvider>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <Layout>
+                <Index />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/results" element={
+            <ProtectedRoute>
+              <Layout>
+                <Results />
+              </Layout>
+            </ProtectedRoute>
+          } />
+        </Routes>
+        <Toaster />
+        <Sonner />
+      </TooltipProvider>
+    </BrowserRouter>
+  </QueryClientProvider>
+);
 
 export default App;
