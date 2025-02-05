@@ -217,7 +217,7 @@ const Index = () => {
             Potential Analysis
           </h1>
           <p className="text-lg text-gray-300">
-            Analyse your battery potential.
+            Analyse your battery potential in less than 5 minutes.
           </p>
         </div>
 
