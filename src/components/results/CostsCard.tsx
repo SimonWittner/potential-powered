@@ -53,7 +53,9 @@ const CostsCard = () => {
     },
     savings: {
       paybackTime: batteryData?.simple_payback_years || 0,
-      yearlySavings: batteryData?.yearly_savings || 0,
+      yearlyGridSavings: batteryData?.yearly_grid_savings_manual || 0,
+      yearlyWorkingSavings: batteryData?.yearly_working_savings_manual || 0,
+      yearlySavings: batteryData?.yearly_savings_manual || 0,
       npv: batteryData?.net_present_value || 0,
     }
   };
@@ -98,7 +100,15 @@ const CostsCard = () => {
                   <span className="font-medium text-green-600">{costs.savings.paybackTime} years</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>Yearly Savings</span>
+                  <span>Yearly Grid Power Charge Savings (Savings Peak Reduction)</span>
+                  <span className="font-medium text-green-600">{costs.savings.yearlyGridSavings.toFixed(2)} €/year</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Yearly Electricity Price Savings</span>
+                  <span className="font-medium text-green-600">{costs.savings.yearlyWorkingSavings.toFixed(2)} €/year</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Total Yearly Savings</span>
                   <span className="font-medium text-green-600">{costs.savings.yearlySavings.toFixed(2)} €/year</span>
                 </div>
                 <div className="flex justify-between items-center">
