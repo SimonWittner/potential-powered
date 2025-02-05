@@ -4,18 +4,18 @@ import { useEffect, useState } from "react";
 
 const generateMonthlyData = (pvSize: number) => {
   const baseValues = [
-    { month: "Januar", baseProduction: 1779 },
-    { month: "Februar", baseProduction: 2486 },
-    { month: "März", baseProduction: 4732 },
-    { month: "April", baseProduction: 5290 },
+    { month: "Jan", baseProduction: 1779 },
+    { month: "Feb", baseProduction: 2486 },
+    { month: "March", baseProduction: 4732 },
+    { month: "Apr", baseProduction: 5290 },
     { month: "Mai", baseProduction: 6116 },
     { month: "Juni", baseProduction: 6550 },
-    { month: "Juli", baseProduction: 6514 },
-    { month: "August", baseProduction: 5556 },
-    { month: "September", baseProduction: 4043 },
-    { month: "Oktober", baseProduction: 2504 },
-    { month: "November", baseProduction: 1395 },
-    { month: "Dezember", baseProduction: 1156 }
+    { month: "July", baseProduction: 6514 },
+    { month: "Aug", baseProduction: 5556 },
+    { month: "Sep", baseProduction: 4643 },
+    { month: "Oct", baseProduction: 2504 },
+    { month: "Nov", baseProduction: 1395 },
+    { month: "Dec", baseProduction: 1156 }
   ];
 
   // Scale the production values based on PV size
