@@ -22,7 +22,7 @@ const BatteryDesignCard = () => {
       setShouldFetch(true);
       setProgress(100); // Ensure the progress bar reaches 100%
       clearInterval(interval); // Stop progress updates
-    }, 60000); // 90 seconds
+    }, 15000); // 90 seconds
 
     return () => {
       clearTimeout(timer);
