@@ -59,15 +59,23 @@ const PVProductionChart = () => {
   const [pvSize, setPvSize] = useState<number>(0);
 
   useEffect(() => {
+    // Add console.log to debug localStorage values
+    console.log('Reading from localStorage:', {
+      pvPeak: localStorage.getItem('pvPeak'),
+      hasExistingPV: localStorage.getItem('hasExistingPV')
+    });
+
     const storedPvSize = localStorage.getItem('pvPeak');
     const hasExistingPV = localStorage.getItem('hasExistingPV');
     
-    if (hasExistingPV === 'yes' && storedPvSize) {
+    if (storedPvSize) {
+      console.log('Setting PV size to:', parseFloat(storedPvSize));
       setPvSize(parseFloat(storedPvSize));
     } else {
+      console.log('Setting PV size to 0');
       setPvSize(0);
     }
-  }, []);
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const monthlyData = generateMonthlyData(pvSize);
   const dailyData = generateDailyData(pvSize);
