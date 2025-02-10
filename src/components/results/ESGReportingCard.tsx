@@ -1,10 +1,12 @@
 
 import { Card } from "@/components/ui/card"
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const ESGReportingCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [progress, setProgress] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     console.log("Starting 15-second delay before fetching ESG data...");
@@ -37,7 +39,7 @@ const ESGReportingCard = () => {
 
   return (
     <Card className="p-6 bg-white/95 backdrop-blur-sm">
-      <h2 className="text-2xl font-semibold mb-4">ESG Reporting</h2>
+      <h2 className="text-2xl font-semibold mb-4">{t('esgReporting')}</h2>
       <div className="space-y-6">
         {!shouldFetch ? (
           <div className="w-full">
@@ -48,19 +50,19 @@ const ESGReportingCard = () => {
               ></div>
             </div>
             <p className="mt-2 text-gray-500">
-              Loading ESG data... {Math.floor(progress)}%
+              {t('loadingEsgData')} {Math.floor(progress)}%
             </p>
           </div>
         ) : (
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="text-lg font-medium mb-4 text-neutral-800">Environmental Impact</h3>
+            <h3 className="text-lg font-medium mb-4 text-neutral-800">{t('environmentalImpact')}</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-neutral-600">CO₂ Reduction</span>
+                <span className="text-neutral-600">{t('co2Reduction')}</span>
                 <span className="font-medium text-neutral-800">{esgMetrics.environmental.co2Reduction} kg/year</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-neutral-600">Equivalent Trees Planted</span>
+                <span className="text-neutral-600">{t('equivalentTrees')}</span>
                 <span className="font-medium text-neutral-800">{esgMetrics.environmental.treeEquivalent} trees</span>
               </div>
             </div>
