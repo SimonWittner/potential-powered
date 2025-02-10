@@ -21,7 +21,7 @@ const CostsCard = () => {
       setShouldFetch(true);
       setProgress(100);
       clearInterval(interval);
-    }, 8000); // 120 seconds
+    }, 15000); // 120 seconds
 
     return () => {
       clearTimeout(timer);

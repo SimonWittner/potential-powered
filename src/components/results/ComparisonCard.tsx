@@ -19,7 +19,7 @@ const ComparisonCard = () => {
       } catch (error) {
         console.error("Error fetching comparison load plot:", error);
       }
-    }, 10000);
+    }, 120000);
 
     console.log("Starting 45s delay for new peak load plot fetch");
     const newPeakLoadTimer = setTimeout(async () => {
@@ -33,7 +33,7 @@ const ComparisonCard = () => {
       } catch (error) {
         console.error("Error fetching new peak load plot:", error);
       }
-    }, 15000);
+    }, 140000);
 
     return () => {
       clearTimeout(comparisonLoadTimer);
