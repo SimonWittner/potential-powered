@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import LoadingScreen from "./LoadingScreen"
 import { useEffect, useState } from "react"
@@ -16,7 +17,7 @@ const AnalysisDialog = ({ open, onOpenChange }: AnalysisDialogProps) => {
       const timer = setTimeout(() => {
         onOpenChange(false);
         navigate("/results");
-      }, 5000); // Changed from 15000 to 60000 milliseconds (60 seconds) - SIMON: not working!?
+      }, 5000); // Changed to 5000 milliseconds (5 seconds)
 
       return () => clearTimeout(timer);
     }
