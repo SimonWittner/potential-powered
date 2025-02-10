@@ -5,7 +5,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import { useState } from "react"
-import { Upload } from "lucide-react"
+import { Upload, Info } from "lucide-react"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -215,7 +216,19 @@ const ConsumptionForm = ({
       </div>
 
       <div className="space-y-4">
-        <Label>Load Profile Upload</Label>
+        <div className="flex items-center gap-2">
+          <Label>Load Profile Upload</Label>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <button className="inline-flex items-center justify-center rounded-full w-4 h-4 hover:bg-gray-100">
+                <Info className="h-3 w-3 text-gray-500" />
+              </button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-64">
+              <p>Lorem Ipsum</p>
+            </HoverCardContent>
+          </HoverCard>
+        </div>
         <div
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
             dragActive 
