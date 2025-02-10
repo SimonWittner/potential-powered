@@ -225,7 +225,7 @@ const ConsumptionForm = ({
               </button>
             </HoverCardTrigger>
             <HoverCardContent className="w-64">
-              <p>Lorem Ipsum</p>
+              <p>The load profile is needed for the most accurate analysis results.</p>
             </HoverCardContent>
           </HoverCard>
         </div>
