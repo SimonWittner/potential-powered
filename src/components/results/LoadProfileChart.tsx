@@ -41,7 +41,7 @@ const LoadProfileChart = () => {
           localStorage.setItem('weeklyPlotImageUrl', url);
         })
         .catch(error => console.error('Error fetching weekly load plot:', error));
-    }, 160000);
+    }, 20000);
 
     // Fetch peak load plot
     const peakLoadTimer = setTimeout(() => {
