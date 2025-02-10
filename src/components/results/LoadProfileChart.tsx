@@ -41,7 +41,7 @@ const LoadProfileChart = () => {
           localStorage.setItem('weeklyPlotImageUrl', url);
         })
         .catch(error => console.error('Error fetching weekly load plot:', error));
-    }, 20000);
+    }, 7000);
 
     // Fetch peak load plot
     const peakLoadTimer = setTimeout(() => {
@@ -53,7 +53,7 @@ const LoadProfileChart = () => {
           localStorage.setItem('peakLoadPlotImageUrl', url);
         })
         .catch(error => console.error('Error fetching peak load plot:', error));
-    }, 10000); 
+    }, 5000); 
 
     return () => {
       clearTimeout(weeklyTimer);
