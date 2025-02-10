@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -6,12 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { AuthError } from "@supabase/supabase-js";
-import { useLanguage } from "@/context/LanguageContext";
 
 const Auth = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
-  const { t } = useLanguage();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -55,20 +52,6 @@ const Auth = () => {
               }
             }}
             providers={[]}
-            localization={{
-              variables: {
-                sign_in: {
-                  email_label: t('email'),
-                  password_label: t('password'),
-                  button_label: t('signIn'),
-                },
-                sign_up: {
-                  email_label: t('email'),
-                  password_label: t('password'),
-                  button_label: t('signUp'),
-                }
-              }
-            }}
             view="sign_in"
           />
         </div>

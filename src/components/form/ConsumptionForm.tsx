@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client"
 import { useState } from "react"
 import { Upload, Info } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import { useLanguage } from "@/context/LanguageContext";
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -23,7 +22,6 @@ const ConsumptionForm = ({
   onElectricityPriceChange,
   onFileUpload,
 }: ConsumptionFormProps) => {
-  const { t } = useLanguage();
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [electricityPrice, setElectricityPrice] = useState<string>("");
@@ -39,7 +37,7 @@ const ConsumptionForm = ({
         const text = e.target?.result as string;
         const rows = text.split('\n').filter(row => row.trim() !== '');
         if (rows.length !== 8760) {
-          toast.error(t('csvRequirement'));
+          toast.error("File must contain a single column with 8760 values in kW");
           resolve(false);
         } else {
           resolve(true);
@@ -124,18 +122,18 @@ const ConsumptionForm = ({
     <div className="grid grid-cols-2 gap-8">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label>{t('existingPV')}</Label>
+          <Label>Do you have an existing PV?</Label>
           <RadioGroup
             onValueChange={(value) => setHasExistingPV(value)}
             className="flex space-x-4"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="yes" id="pv-yes" />
-              <Label htmlFor="pv-yes">{t('yes')}</Label>
+              <Label htmlFor="pv-yes">Yes</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="no" id="pv-no" />
-              <Label htmlFor="pv-no">{t('no')}</Label>
+              <Label htmlFor="pv-no">No</Label>
             </div>
           </RadioGroup>
         </div>
@@ -143,29 +141,29 @@ const ConsumptionForm = ({
         {hasExistingPV === "yes" && (
           <div className="animate-fade-in space-y-4">
             <div>
-              <Label htmlFor="pvSize">{t('pvSize')}</Label>
+              <Label htmlFor="pvSize">PV Size</Label>
               <Input
                 id="pvSize"
                 type="number"
-                placeholder={t('enterSizeKwp')}
+                placeholder="Enter size in kWp"
                 className="mt-1"
                 value={pvSize}
                 onChange={(e) => setPvSize(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>{t('loadProfileAfterPV')}</Label>
+              <Label>Load profile after PV generation (net metering with existing PV)?</Label>
               <RadioGroup
                 onValueChange={(value) => setIncludesPVGeneration(value)}
                 className="flex space-x-4"
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="yes" id="generation-yes" />
-                  <Label htmlFor="generation-yes">{t('yes')}</Label>
+                  <Label htmlFor="generation-yes">Yes</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="no" id="generation-no" />
-                  <Label htmlFor="generation-no">{t('no')}</Label>
+                  <Label htmlFor="generation-no">No</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -173,18 +171,18 @@ const ConsumptionForm = ({
         )}
 
         <div className="space-y-2">
-          <Label>{t('electricityPrice')}</Label>
+          <Label>Do you know your electricity price?</Label>
           <RadioGroup
             onValueChange={(value) => onElectricityPriceChange(value)}
             className="flex space-x-4"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="yes" id="price-yes" />
-              <Label htmlFor="price-yes">{t('yes')}</Label>
+              <Label htmlFor="price-yes">Yes</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="no" id="price-no" />
-              <Label htmlFor="price-no">{t('no')}</Label>
+              <Label htmlFor="price-no">No</Label>
             </div>
           </RadioGroup>
         </div>
@@ -192,22 +190,22 @@ const ConsumptionForm = ({
         {showElectricityPrice && (
           <div className="animate-fade-in space-y-4">
             <div>
-              <Label htmlFor="electricityPrice">{t('electricityPrice')}</Label>
+              <Label htmlFor="electricityPrice">Electricity Price</Label>
               <Input
                 id="electricityPrice"
                 type="number"
-                placeholder={t('enterPriceKwh')}
+                placeholder="Enter price in €/kWh"
                 className="mt-1"
                 value={electricityPrice}
                 onChange={(e) => setElectricityPrice(e.target.value)}
               />
             </div>
             <div>
-              <Label htmlFor="gridPowerCharges">{t('gridPowerCharges')}</Label>
+              <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
               <Input
                 id="gridPowerCharges"
                 type="number"
-                placeholder={t('enterPriceKwMonth')}
+                placeholder="Enter price in €/kW/month"
                 className="mt-1"
                 value={gridPowerCharges}
                 onChange={(e) => setGridPowerCharges(e.target.value)}
@@ -219,7 +217,7 @@ const ConsumptionForm = ({
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Label>{t('loadProfileUpload')}</Label>
+          <Label>Load Profile Upload</Label>
           <HoverCard>
             <HoverCardTrigger asChild>
               <button className="inline-flex items-center justify-center rounded-full w-4 h-4 hover:bg-gray-100">
@@ -227,7 +225,7 @@ const ConsumptionForm = ({
               </button>
             </HoverCardTrigger>
             <HoverCardContent className="w-64">
-              <p>{t('csvRequirement')}</p>
+              <p>The load profile is needed for the most accurate analysis results.</p>
             </HoverCardContent>
           </HoverCard>
         </div>
@@ -253,15 +251,15 @@ const ConsumptionForm = ({
             className="cursor-pointer flex flex-col items-center gap-2"
           >
             {isUploading ? (
-              <div className="animate-pulse">{t('analyzing')}</div>
+              <div className="animate-pulse">Uploading...</div>
             ) : (
               <>
                 <Upload className="h-10 w-10 text-gray-400" />
                 <p className="text-sm text-gray-600">
-                  {t('dragDropCsv')}
+                  Drag and drop your CSV file here, or click to select
                 </p>
                 <p className="text-xs text-gray-500">
-                  {t('csvRequirement')}
+                  File must contain a single column with 8760 values in kW
                 </p>
               </>
             )}

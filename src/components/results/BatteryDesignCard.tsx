@@ -1,14 +1,12 @@
-
 import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { API_URL } from "@/config/api";
-import { useLanguage } from "@/context/LanguageContext";
 
 const BatteryDesignCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [progress, setProgress] = useState(0);
-  const { t } = useLanguage();
 
   useEffect(() => {
     console.log("Starting 90-second delay before fetching battery data...");
@@ -65,7 +63,7 @@ const BatteryDesignCard = () => {
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">{t('batteryDesign')}</h2>
+      <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
       <div className="space-y-4">
         {!shouldFetch || isLoading ? (
           <div className="w-full">
@@ -76,31 +74,31 @@ const BatteryDesignCard = () => {
               ></div>
             </div>
             <p className="mt-2 text-gray-500">
-              {t('loading')}... {Math.floor(progress)}%
+              Loading battery design data... {Math.floor(progress)}%
             </p>
           </div>
         ) : (
           <>
             <div className="bg-gray-100 p-3 rounded-lg">
-              <p>{t('recommendedBattery')}: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
-              <p>{t('additionalSelfConsumption')}: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
-              <p>{t('estimatedFullCycles')}: {Metrics.fullCycles}</p>
+              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
+              <p>Additional Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
+              <p>Estimated Full Cycles per Year: {Metrics.fullCycles}</p>
             </div>
             <div className="mt-6">
-              <h3 className="text-lg font-medium mb-2">{t('scenarioComparison')}</h3>
+              <h3 className="text-lg font-medium mb-2">Scenario Comparison</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-medium">{t('maxProfitability')}</h4>
-                  <p>{t('size')}: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
+                  <h4 className="font-medium">Max. Profitability</h4>
+                  <p>Size: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg">
-                  <h4 className="font-medium">{t('maxSelfConsumption')}</h4>
+                  <h4 className="font-medium">Max. Self-Consumption</h4>
                   <p>
-                    {t('size')}: {batteryData ? (batteryData.battery_size_kwh * 1.135).toFixed(0) : "0.00"} kWh 
+                    Size: {batteryData ? (batteryData.battery_size_kwh * 1.135).toFixed(0) : "0.00"} kWh 
                     <span className="mx-2">|</span> 
                     {batteryData ? (batteryData.battery_size_kw * 1.073).toFixed(0) : "0.00"} kW
                   </p>
-                  <p>{t('additionalSelfConsumption')}: {Metrics.maxSelfConsumption.selfConsumption}%</p>
+                  <p>Self-Consumption: {Metrics.maxSelfConsumption.selfConsumption}%</p>
                 </div>
               </div>
             </div>

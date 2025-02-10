@@ -1,14 +1,11 @@
-
 import { Card } from "@/components/ui/card"
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { API_URL } from "@/config/api";
-import { useLanguage } from "@/context/LanguageContext";
 
 const CostsCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [progress, setProgress] = useState(0);
-  const { t } = useLanguage();
 
   useEffect(() => {
     console.log("Starting 120-second delay before fetching costs data...");
@@ -65,7 +62,7 @@ const CostsCard = () => {
 
   return (
     <Card className="p-6 bg-white/95 backdrop-blur-sm col-span-2">
-      <h2 className="text-2xl font-semibold mb-4">{t('economics')}</h2>
+      <h2 className="text-2xl font-semibold mb-4">Economics</h2>
       <div className="space-y-6">
         {!shouldFetch || isLoading ? (
           <div className="w-full">
@@ -76,42 +73,42 @@ const CostsCard = () => {
               ></div>
             </div>
             <p className="mt-2 text-gray-500">
-              {t('loading')}... {Math.floor(progress)}%
+              Loading costs data... {Math.floor(progress)}%
             </p>
           </div>
         ) : (
           <>
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-medium mb-3">{t('initialInvestment')}</h3>
+              <h3 className="text-lg font-medium mb-3">Initial Investment</h3>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span>{t('batterySystem')}</span>
+                  <span>Battery System</span>
                   <span className="font-medium">{costs.initialInvestment.battery.toFixed(2)} €</span>
                 </div>
               </div>
             </div>
 
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-medium mb-3">{t('savings')}</h3>
+              <h3 className="text-lg font-medium mb-3">Savings</h3>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span>{t('simplePaybackTime')}</span>
-                  <span className="font-medium text-green-600">{costs.savings.paybackTime.toFixed(2)} {t('years')}</span>
+                  <span>Simple Payback Time</span>
+                  <span className="font-medium text-green-600">{costs.savings.paybackTime.toFixed(2)} years</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>{t('yearlyGridSavings')}</span>
+                  <span>Yearly Grid Power Charge Savings (Savings Peak Reduction)</span>
                   <span className="font-medium text-green-600">{costs.savings.yearlyGridSavings.toFixed(2)} €/year</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>{t('yearlyElectricitySavings')}</span>
+                  <span>Yearly Electricity Price Savings</span>
                   <span className="font-medium text-green-600">{costs.savings.yearlyWorkingSavings.toFixed(2)} €/year</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>{t('totalYearlySavings')}</span>
+                  <span>Total Yearly Savings</span>
                   <span className="font-medium text-green-600">{costs.savings.yearlySavings.toFixed(2)} €/year</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>{t('netPresentValue')}</span>
+                  <span>Net Present Value</span>
                   <span className="font-medium text-green-600">{costs.savings.npv} €</span>
                 </div>
               </div>

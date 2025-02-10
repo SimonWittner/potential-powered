@@ -1,11 +1,9 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect } from "react";
-import LanguageSwitcher from "./LanguageSwitcher";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
@@ -68,7 +66,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-[#1A0F0F]">
       <header className="p-4 fixed top-0 right-0 z-50 flex items-center gap-4">
-        <LanguageSwitcher />
         <Button
           variant="ghost"
           size="icon"
