@@ -29,14 +29,15 @@ const ComparisonCard = () => {
           });
 
         if (peakLoadExists && peakLoadExists.length > 0) {
-          const { data: peakLoadUrl } = supabase
+          const { data: peakLoadData } = await supabase
             .storage
             .from('analysis_results')
-            .getPublicUrl(peakLoadName);
+            .download(peakLoadName);
           
-          if (peakLoadUrl) {
-            console.log("Successfully fetched peak load plot");
-            setNewPeakLoadPlot(peakLoadUrl.publicUrl);
+          if (peakLoadData) {
+            const url = URL.createObjectURL(peakLoadData);
+            console.log("Successfully fetched and created URL for peak load plot:", url);
+            setNewPeakLoadPlot(url);
           }
         }
 
@@ -50,14 +51,15 @@ const ComparisonCard = () => {
           });
 
         if (comparisonExists && comparisonExists.length > 0) {
-          const { data: comparisonUrl } = supabase
+          const { data: comparisonData } = await supabase
             .storage
             .from('analysis_results')
-            .getPublicUrl(comparisonName);
+            .download(comparisonName);
           
-          if (comparisonUrl) {
-            console.log("Successfully fetched comparison load plot");
-            setComparisonLoadPlot(comparisonUrl.publicUrl);
+          if (comparisonData) {
+            const url = URL.createObjectURL(comparisonData);
+            console.log("Successfully fetched and created URL for comparison load plot:", url);
+            setComparisonLoadPlot(url);
           }
         }
       } catch (error) {
@@ -71,8 +73,12 @@ const ComparisonCard = () => {
     // Set up polling interval to check for new files
     const interval = setInterval(checkAndFetchPlots, 5000); // Check every 5 seconds
 
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval);
+    // Cleanup interval and object URLs on component unmount
+    return () => {
+      clearInterval(interval);
+      if (comparisonLoadPlot) URL.revokeObjectURL(comparisonLoadPlot);
+      if (newPeakLoadPlot) URL.revokeObjectURL(newPeakLoadPlot);
+    };
   }, []); // Empty dependency array means this runs once when component mounts
 
   return (
@@ -82,11 +88,13 @@ const ComparisonCard = () => {
         <div className="w-full overflow-hidden bg-white rounded-lg p-6">
           <h3 className="text-lg font-medium mb-4">Load Profile Comparison</h3>
           {comparisonLoadPlot ? (
-            <img 
-              src={comparisonLoadPlot} 
-              alt="Load Profile Comparison" 
-              className="w-full h-auto object-contain"
-            />
+            <div className="w-full h-64">
+              <img 
+                src={comparisonLoadPlot} 
+                alt="Load Profile Comparison" 
+                className="w-full h-full object-contain"
+              />
+            </div>
           ) : (
             <div className="w-full h-64 flex items-center justify-center">
               <p className="text-gray-500">Loading comparison plot...</p>
@@ -97,11 +105,13 @@ const ComparisonCard = () => {
         <div className="w-full overflow-hidden bg-white rounded-lg p-6">
           <h3 className="text-lg font-medium mb-4">New Peak Load</h3>
           {newPeakLoadPlot ? (
-            <img 
-              src={newPeakLoadPlot} 
-              alt="New Peak Load" 
-              className="w-full h-auto object-contain"
-            />
+            <div className="w-full h-64">
+              <img 
+                src={newPeakLoadPlot} 
+                alt="New Peak Load" 
+                className="w-full h-full object-contain"
+              />
+            </div>
           ) : (
             <div className="w-full h-64 flex items-center justify-center">
               <p className="text-gray-500">Loading peak load plot...</p>
@@ -114,3 +124,4 @@ const ComparisonCard = () => {
 };
 
 export default ComparisonCard;
+
