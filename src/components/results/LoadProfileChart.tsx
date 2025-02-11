@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { API_URL } from "@/config/api";
@@ -26,14 +27,35 @@ const LoadProfileChart = () => {
   const [peakLoadPlotImageUrl, setPeakLoadPlotImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    const analysisFileName = localStorage.getItem('analysisFileName');
+    if (!analysisFileName) {
+      console.error("No analysis file name found");
+      return;
+    }
+
+    // Remove file extension from analysisFileName if it exists
+    const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
+
     const storedImageUrl = localStorage.getItem('plotImageUrl');
     if (storedImageUrl) {
       setPlotImageUrl(storedImageUrl);
     }
 
-    // Fetch weekly load plot after 10 seconds
+    // Fetch daily load plot
+    const dailyLoadTimer = setTimeout(() => {
+      fetch(`${API_URL}/get-plot?name=daily_load_${fileId}.png`)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          setPlotImageUrl(url);
+          localStorage.setItem('plotImageUrl', url);
+        })
+        .catch(error => console.error('Error fetching daily load plot:', error));
+    }, 10000);
+
+    // Fetch weekly load plot
     const weeklyTimer = setTimeout(() => {
-      fetch(`${API_URL}/get-plot?name=weekly_load.png`)
+      fetch(`${API_URL}/get-plot?name=weekly_load_${fileId}.png`)
         .then(response => response.blob())
         .then(blob => {
           const url = URL.createObjectURL(blob);
@@ -45,7 +67,7 @@ const LoadProfileChart = () => {
 
     // Fetch peak load plot
     const peakLoadTimer = setTimeout(() => {
-      fetch(`${API_URL}/get-plot?name=peak_load.png`)
+      fetch(`${API_URL}/get-plot?name=peak_load_${fileId}.png`)
         .then(response => response.blob())
         .then(blob => {
           const url = URL.createObjectURL(blob);
@@ -56,6 +78,7 @@ const LoadProfileChart = () => {
     }, 10000); 
 
     return () => {
+      clearTimeout(dailyLoadTimer);
       clearTimeout(weeklyTimer);
       clearTimeout(peakLoadTimer);
       if (plotImageUrl) URL.revokeObjectURL(plotImageUrl);
