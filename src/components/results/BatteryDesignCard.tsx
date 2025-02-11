@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 const BatteryDesignCard = () => {
   const [batteryData, setBatteryData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const analysisFileName = localStorage.getItem('analysisFileName');
@@ -16,6 +17,14 @@ const BatteryDesignCard = () => {
 
     // Remove file extension from analysisFileName if it exists
     const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
+
+    // Progress bar animation
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const nextProgress = prev + (100 / 15); // Increment progress every second
+        return nextProgress >= 100 ? 100 : nextProgress;
+      });
+    }, 1000); // Update progress every second
 
     const checkAndFetchData = async () => {
       try {
@@ -40,6 +49,7 @@ const BatteryDesignCard = () => {
             console.log("Battery design data received:", parsedData);
             setBatteryData(parsedData);
             setIsLoading(false);
+            setProgress(100);
             return true;
           }
         }
@@ -50,28 +60,33 @@ const BatteryDesignCard = () => {
       }
     };
 
-    let intervalId: NodeJS.Timeout;
+    let dataCheckInterval: NodeJS.Timeout;
     
     const startPolling = async () => {
       const dataFetched = await checkAndFetchData();
       
       if (!dataFetched) {
         // Only set up polling if data hasn't been fetched yet
-        intervalId = setInterval(async () => {
+        dataCheckInterval = setInterval(async () => {
           const success = await checkAndFetchData();
           if (success) {
             console.log("Battery design data fetched successfully, stopping polling");
-            clearInterval(intervalId);
+            clearInterval(dataCheckInterval);
           }
         }, 5000); // Check every 5 seconds
       }
     };
 
-    startPolling();
+    // Start the initial check after a delay to allow for data processing
+    const timer = setTimeout(() => {
+      startPolling();
+    }, 15000); // 15 seconds delay
 
-    // Cleanup interval on component unmount
+    // Cleanup
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      clearTimeout(timer);
+      clearInterval(interval);
+      if (dataCheckInterval) clearInterval(dataCheckInterval);
     };
   }, []); // Empty dependency array means this runs once when component mounts
 
@@ -98,11 +113,11 @@ const BatteryDesignCard = () => {
             <div className="relative w-full h-4 bg-gray-200 rounded">
               <div
                 className="absolute top-0 left-0 h-full bg-blue-500 rounded"
-                style={{ width: '100%' }}
+                style={{ width: `${progress}%` }}
               ></div>
             </div>
             <p className="mt-2 text-gray-500">
-              Loading battery design data...
+              Loading battery design data... {Math.floor(progress)}%
             </p>
           </div>
         ) : (
