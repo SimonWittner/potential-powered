@@ -84,7 +84,7 @@ const LoadProfileChart = () => {
       if (plotImageUrl) URL.revokeObjectURL(plotImageUrl);
       if (weeklyPlotImageUrl) URL.revokeObjectURL(weeklyPlotImageUrl);
       if (peakLoadPlotImageUrl) URL.revokeObjectURL(peakLoadPlotImageUrl);
-    };
+    }; 
   }, []);
 
   return (

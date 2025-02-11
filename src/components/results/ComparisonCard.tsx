@@ -20,7 +20,7 @@ const ComparisonCard = () => {
     const checkAndFetchPlots = async () => {
       try {
         // Check if peak load plot exists
-        const peakLoadName = `peak_load_${fileId}.png`;
+        const peakLoadName = `new_peak_load_${fileId}.png`;
         const { data: peakLoadExists } = await supabase
           .storage
           .from('analysis_results')
