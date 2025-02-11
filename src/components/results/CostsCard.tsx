@@ -1,14 +1,24 @@
+
 import { Card } from "@/components/ui/card"
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/config/api";
+import { supabase } from "@/integrations/supabase/client";
 
 const CostsCard = () => {
-  const [shouldFetch, setShouldFetch] = useState(false);
+  const [batteryData, setBatteryData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    console.log("Starting 120-second delay before fetching costs data...");
+    const analysisFileName = localStorage.getItem('analysisFileName');
+    if (!analysisFileName) {
+      console.error("No analysis file name found");
+      return;
+    }
+
+    // Remove file extension from analysisFileName if it exists
+    const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
+
+    // Progress bar animation
     const interval = setInterval(() => {
       setProgress((prev) => {
         const nextProgress = prev + (100 / 15); // Increment progress every second
@@ -16,35 +26,69 @@ const CostsCard = () => {
       });
     }, 1000); // Update progress every second
 
-    const timer = setTimeout(() => {
-      console.log("Delay complete, initiating costs data fetch");
-      setShouldFetch(true);
-      setProgress(100);
-      clearInterval(interval);
-    }, 15000); // 120 seconds
+    const checkAndFetchData = async () => {
+      try {
+        // Check if data file exists
+        const fileName = `data_${fileId}.json`;
+        const { data: fileExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: fileName
+          });
 
+        if (fileExists && fileExists.length > 0) {
+          const { data } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(fileName);
+          
+          if (data) {
+            const jsonData = await data.text();
+            const parsedData = JSON.parse(jsonData);
+            console.log("Costs data received:", parsedData);
+            setBatteryData(parsedData);
+            setIsLoading(false);
+            setProgress(100);
+            return true;
+          }
+        }
+        return false;
+      } catch (error) {
+        console.error("Error fetching costs data:", error);
+        return false;
+      }
+    };
+
+    let dataCheckInterval: NodeJS.Timeout;
+    
+    const startPolling = async () => {
+      const dataFetched = await checkAndFetchData();
+      
+      if (!dataFetched) {
+        // Only set up polling if data hasn't been fetched yet
+        dataCheckInterval = setInterval(async () => {
+          const success = await checkAndFetchData();
+          if (success) {
+            console.log("Costs data fetched successfully, stopping polling");
+            clearInterval(dataCheckInterval);
+          }
+        }, 5000); // Check every 5 seconds
+      }
+    };
+
+    // Start the initial check after a delay to allow for data processing
+    const timer = setTimeout(() => {
+      startPolling();
+    }, 15000); // 15 seconds delay
+
+    // Cleanup
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
+      if (dataCheckInterval) clearInterval(dataCheckInterval);
     };
-  }, []);
-
-  const { data: batteryData, isLoading } = useQuery({
-    queryKey: ["costsData"],
-    queryFn: async () => {
-      console.log("Fetching costs data...");
-      const response = await fetch(
-        `${API_URL}/get-plot?name=example.json`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch costs data");
-      }
-      const data = await response.json();
-      console.log("Costs data received:", data);
-      return data;
-    },
-    enabled: shouldFetch,
-  });
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const costs = {
     initialInvestment: {
@@ -64,7 +108,7 @@ const CostsCard = () => {
     <Card className="p-6 bg-white/95 backdrop-blur-sm col-span-2">
       <h2 className="text-2xl font-semibold mb-4">Economics</h2>
       <div className="space-y-6">
-        {!shouldFetch || isLoading ? (
+        {isLoading ? (
           <div className="w-full">
             <div className="relative w-full h-4 bg-gray-200 rounded">
               <div
