@@ -20,7 +20,7 @@ const BatteryDesignCard = () => {
     const checkAndFetchData = async () => {
       try {
         // Check if data file exists
-        const fileName = `data_${fileId}`;
+        const fileName = `data_${fileId}.json`;
         const { data: fileExists } = await supabase
           .storage
           .from('analysis_results')
