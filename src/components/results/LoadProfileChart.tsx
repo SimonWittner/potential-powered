@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { API_URL } from "@/config/api";
+import { supabase } from "@/integrations/supabase/client";
 
 const generateLoadProfileData = () => {
   return [
@@ -36,56 +36,109 @@ const LoadProfileChart = () => {
     // Remove file extension from analysisFileName if it exists
     const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
 
-    const storedImageUrl = localStorage.getItem('plotImageUrl');
-    if (storedImageUrl) {
-      setPlotImageUrl(storedImageUrl);
-    }
+    const checkAndFetchPlots = async () => {
+      try {
+        // Check if daily load plot exists
+        const dailyLoadName = `daily_load_${fileId}.png`;
+        const { data: dailyLoadExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: dailyLoadName
+          });
 
-    // Fetch daily load plot
-    const dailyLoadTimer = setTimeout(() => {
-      fetch(`${API_URL}/get-plot?name=daily_load_${fileId}.png`)
-        .then(response => response.blob())
-        .then(blob => {
-          const url = URL.createObjectURL(blob);
-          setPlotImageUrl(url);
-          localStorage.setItem('plotImageUrl', url);
-        })
-        .catch(error => console.error('Error fetching daily load plot:', error));
-    }, 10000);
+        if (dailyLoadExists && dailyLoadExists.length > 0) {
+          const { data: dailyLoadData } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(dailyLoadName);
+          
+          if (dailyLoadData) {
+            const url = URL.createObjectURL(dailyLoadData);
+            console.log("Successfully fetched and created URL for daily load plot:", url);
+            setPlotImageUrl(url);
+          }
+        }
 
-    // Fetch weekly load plot
-    const weeklyTimer = setTimeout(() => {
-      fetch(`${API_URL}/get-plot?name=weekly_load_${fileId}.png`)
-        .then(response => response.blob())
-        .then(blob => {
-          const url = URL.createObjectURL(blob);
-          setWeeklyPlotImageUrl(url);
-          localStorage.setItem('weeklyPlotImageUrl', url);
-        })
-        .catch(error => console.error('Error fetching weekly load plot:', error));
-    }, 160000);
+        // Check if weekly load plot exists
+        const weeklyLoadName = `weekly_load_${fileId}.png`;
+        const { data: weeklyLoadExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: weeklyLoadName
+          });
 
-    // Fetch peak load plot
-    const peakLoadTimer = setTimeout(() => {
-      fetch(`${API_URL}/get-plot?name=peak_load_${fileId}.png`)
-        .then(response => response.blob())
-        .then(blob => {
-          const url = URL.createObjectURL(blob);
-          setPeakLoadPlotImageUrl(url);
-          localStorage.setItem('peakLoadPlotImageUrl', url);
-        })
-        .catch(error => console.error('Error fetching peak load plot:', error));
-    }, 10000); 
+        if (weeklyLoadExists && weeklyLoadExists.length > 0) {
+          const { data: weeklyLoadData } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(weeklyLoadName);
+          
+          if (weeklyLoadData) {
+            const url = URL.createObjectURL(weeklyLoadData);
+            console.log("Successfully fetched and created URL for weekly load plot:", url);
+            setWeeklyPlotImageUrl(url);
+          }
+        }
 
+        // Check if peak load plot exists
+        const peakLoadName = `peak_load_${fileId}.png`;
+        const { data: peakLoadExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: peakLoadName
+          });
+
+        if (peakLoadExists && peakLoadExists.length > 0) {
+          const { data: peakLoadData } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(peakLoadName);
+          
+          if (peakLoadData) {
+            const url = URL.createObjectURL(peakLoadData);
+            console.log("Successfully fetched and created URL for peak load plot:", url);
+            setPeakLoadPlotImageUrl(url);
+          }
+        }
+
+        // Return true if all plots are fetched
+        return !!(dailyLoadData && weeklyLoadData && peakLoadData);
+      } catch (error) {
+        console.error("Error fetching plots:", error);
+        return false;
+      }
+    };
+
+    let intervalId: NodeJS.Timeout;
+    
+    const startPolling = async () => {
+      const allPlotsFetched = await checkAndFetchPlots();
+      
+      if (!allPlotsFetched) {
+        // Only set up polling if plots haven't been fetched yet
+        intervalId = setInterval(async () => {
+          const success = await checkAndFetchPlots();
+          if (success) {
+            console.log("All plots fetched successfully, stopping polling");
+            clearInterval(intervalId);
+          }
+        }, 5000); // Check every 5 seconds
+      }
+    };
+
+    startPolling();
+
+    // Cleanup interval and object URLs on component unmount
     return () => {
-      clearTimeout(dailyLoadTimer);
-      clearTimeout(weeklyTimer);
-      clearTimeout(peakLoadTimer);
+      if (intervalId) clearInterval(intervalId);
       if (plotImageUrl) URL.revokeObjectURL(plotImageUrl);
       if (weeklyPlotImageUrl) URL.revokeObjectURL(weeklyPlotImageUrl);
       if (peakLoadPlotImageUrl) URL.revokeObjectURL(peakLoadPlotImageUrl);
-    }; 
-  }, []);
+    };
+  }, []); // Empty dependency array means this runs once when component mounts
 
   return (
     <div className="grid grid-cols-2 gap-8">
