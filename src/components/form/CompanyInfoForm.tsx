@@ -1,7 +1,5 @@
-
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useLanguage } from "@/context/LanguageContext";
 
 interface CompanyInfoFormProps {
   address: string;
@@ -16,25 +14,23 @@ const CompanyInfoForm = ({
   companyName,
   onCompanyNameChange 
 }: CompanyInfoFormProps) => {
-  const { t } = useLanguage();
-
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="companyName">{t('companyName')}</Label>
+        <Label htmlFor="companyName">Company Name</Label>
         <Input
           id="companyName"
-          placeholder={t('enterCompanyName')}
+          placeholder="Enter your company name"
           value={companyName}
           onChange={(e) => onCompanyNameChange(e.target.value)}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="address">{t('address')}</Label>
+        <Label htmlFor="address">Address</Label>
         <Input
           id="address"
-          placeholder={t('enterAddress')}
+          placeholder="Enter your address"
           value={address}
           onChange={(e) => onAddressChange(e.target.value)}
         />
