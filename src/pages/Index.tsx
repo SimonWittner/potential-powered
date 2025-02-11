@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,21 +81,25 @@ const Index = () => {
         ...(loadsKwIsNet !== undefined && { loads_kw_is_net: loadsKwIsNet })
       };
 
-      const response = await fetch(`${API_URL}/process-file`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          fileName: filePath,
-          fileContent: await fileData.text(),
-          companyData
-        })
-      });
+      // Only attempt local processing if in development
+      if (!import.meta.env.PROD) {
+        const response = await fetch(`${API_URL}/process-file`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            fileName: filePath,
+            fileContent: await fileData.text(),
+            companyData
+          })
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to process file');
+        if (!response.ok) {
+          throw new Error('Failed to process file');
+        }
+
+        return true;
       }
-
-      return true;
+      return false;
     } catch (error) {
       console.error('Error downloading file:', error);
       return false;
@@ -163,22 +168,26 @@ const Index = () => {
         return;
       }
 
-      const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
-
-      if (isLocalServerAvailable) {
-        const electricityPrice = localStorage.getItem('electricityPrice');
-        const gridPowerCharges = localStorage.getItem('gridPowerCharges');
-        const pvPeak = localStorage.getItem('pvPeak');
-        const loadsKwIsNet = localStorage.getItem('loadsKwIsNet');
+      
+      // Only attempt local processing in development
+      if (!import.meta.env.PROD) {
+        const isLocalServerAvailable = await checkLocalServer();
         
-        useLocalProcessing = await downloadFileLocally(
-          uploadedFilePath,
-          electricityPrice ? parseFloat(electricityPrice) : undefined,
-          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
-          pvPeak ? parseFloat(pvPeak) : undefined,
-          loadsKwIsNet ? (loadsKwIsNet === 'true') : undefined
-        );
+        if (isLocalServerAvailable) {
+          const electricityPrice = localStorage.getItem('electricityPrice');
+          const gridPowerCharges = localStorage.getItem('gridPowerCharges');
+          const pvPeak = localStorage.getItem('pvPeak');
+          const loadsKwIsNet = localStorage.getItem('loadsKwIsNet');
+          
+          useLocalProcessing = await downloadFileLocally(
+            uploadedFilePath,
+            electricityPrice ? parseFloat(electricityPrice) : undefined,
+            gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
+            pvPeak ? parseFloat(pvPeak) : undefined,
+            loadsKwIsNet ? (loadsKwIsNet === 'true') : undefined
+          );
+        }
       }
 
       const { data: analysis, error: insertError } = await supabase
