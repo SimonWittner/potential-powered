@@ -88,7 +88,7 @@ const ComparisonCard = () => {
         <div className="w-full overflow-hidden bg-white rounded-lg p-6">
           <h3 className="text-lg font-medium mb-4">Load Profile Comparison</h3>
           {comparisonLoadPlot ? (
-            <div className="w-full h-64">
+            <div className="w-full h-[400px]">
               <img 
                 src={comparisonLoadPlot} 
                 alt="Load Profile Comparison" 
@@ -96,7 +96,7 @@ const ComparisonCard = () => {
               />
             </div>
           ) : (
-            <div className="w-full h-64 flex items-center justify-center">
+            <div className="w-full h-[400px] flex items-center justify-center">
               <p className="text-gray-500">Loading comparison plot...</p>
             </div>
           )}
@@ -105,7 +105,7 @@ const ComparisonCard = () => {
         <div className="w-full overflow-hidden bg-white rounded-lg p-6">
           <h3 className="text-lg font-medium mb-4">New Peak Load</h3>
           {newPeakLoadPlot ? (
-            <div className="w-full h-64">
+            <div className="w-full h-[400px]">
               <img 
                 src={newPeakLoadPlot} 
                 alt="New Peak Load" 
@@ -113,7 +113,7 @@ const ComparisonCard = () => {
               />
             </div>
           ) : (
-            <div className="w-full h-64 flex items-center justify-center">
+            <div className="w-full h-[400px] flex items-center justify-center">
               <p className="text-gray-500">Loading peak load plot...</p>
             </div>
           )}
