@@ -1,51 +1,79 @@
+
 import { Card } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
-import { API_URL } from "@/config/api";
+import { supabase } from "@/integrations/supabase/client";
 
 const BatteryDesignCard = () => {
-  const [shouldFetch, setShouldFetch] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [batteryData, setBatteryData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Starting 90-second delay before fetching battery data...");
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        const nextProgress = prev + (100 / 15); // Increment progress every second
-        return nextProgress >= 100 ? 100 : nextProgress;
-      });
-    }, 1000); // Update progress every second
+    const analysisFileName = localStorage.getItem('analysisFileName');
+    if (!analysisFileName) {
+      console.error("No analysis file name found");
+      return;
+    }
 
-    const timer = setTimeout(() => {
-      console.log("Delay complete, initiating battery data fetch");
-      setShouldFetch(true);
-      setProgress(100); // Ensure the progress bar reaches 100%
-      clearInterval(interval); // Stop progress updates
-    }, 15000); // 90 seconds
+    // Remove file extension from analysisFileName if it exists
+    const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
 
-    return () => {
-      clearTimeout(timer);
-      clearInterval(interval);
-    };
-  }, []);
+    const checkAndFetchData = async () => {
+      try {
+        // Check if data file exists
+        const fileName = `data_${fileId}`;
+        const { data: fileExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: fileName
+          });
 
-  const { data: batteryData, isLoading } = useQuery({
-    queryKey: ["batteryDesign"],
-    queryFn: async () => {
-      console.log("Fetching battery design data...");
-      const response = await fetch(
-        `${API_URL}/get-plot?name=example.json`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch battery design data");
+        if (fileExists && fileExists.length > 0) {
+          const { data } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(fileName);
+          
+          if (data) {
+            const jsonData = await data.text();
+            const parsedData = JSON.parse(jsonData);
+            console.log("Battery design data received:", parsedData);
+            setBatteryData(parsedData);
+            setIsLoading(false);
+            return true;
+          }
+        }
+        return false;
+      } catch (error) {
+        console.error("Error fetching battery design data:", error);
+        return false;
       }
-      const data = await response.json();
-      console.log("Battery design data received:", data);
-      return data;
-    },
-    enabled: shouldFetch,
-  });
+    };
+
+    let intervalId: NodeJS.Timeout;
+    
+    const startPolling = async () => {
+      const dataFetched = await checkAndFetchData();
+      
+      if (!dataFetched) {
+        // Only set up polling if data hasn't been fetched yet
+        intervalId = setInterval(async () => {
+          const success = await checkAndFetchData();
+          if (success) {
+            console.log("Battery design data fetched successfully, stopping polling");
+            clearInterval(intervalId);
+          }
+        }, 5000); // Check every 5 seconds
+      }
+    };
+
+    startPolling();
+
+    // Cleanup interval on component unmount
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const Metrics = {
     batterySize: batteryData?.battery_size_kwh || 0,
@@ -65,16 +93,16 @@ const BatteryDesignCard = () => {
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
       <div className="space-y-4">
-        {!shouldFetch || isLoading ? (
+        {isLoading ? (
           <div className="w-full">
             <div className="relative w-full h-4 bg-gray-200 rounded">
               <div
                 className="absolute top-0 left-0 h-full bg-blue-500 rounded"
-                style={{ width: `${progress}%` }}
+                style={{ width: '100%' }}
               ></div>
             </div>
             <p className="mt-2 text-gray-500">
-              Loading battery design data... {Math.floor(progress)}%
+              Loading battery design data...
             </p>
           </div>
         ) : (
