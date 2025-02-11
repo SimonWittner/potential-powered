@@ -38,6 +38,8 @@ const LoadProfileChart = () => {
 
     const checkAndFetchPlots = async () => {
       try {
+        let hasDaily = false, hasWeekly = false, hasPeak = false;
+
         // Check if daily load plot exists
         const dailyLoadName = `daily_load_${fileId}.png`;
         const { data: dailyLoadExists } = await supabase
@@ -57,6 +59,7 @@ const LoadProfileChart = () => {
             const url = URL.createObjectURL(dailyLoadData);
             console.log("Successfully fetched and created URL for daily load plot:", url);
             setPlotImageUrl(url);
+            hasDaily = true;
           }
         }
 
@@ -79,6 +82,7 @@ const LoadProfileChart = () => {
             const url = URL.createObjectURL(weeklyLoadData);
             console.log("Successfully fetched and created URL for weekly load plot:", url);
             setWeeklyPlotImageUrl(url);
+            hasWeekly = true;
           }
         }
 
@@ -101,11 +105,12 @@ const LoadProfileChart = () => {
             const url = URL.createObjectURL(peakLoadData);
             console.log("Successfully fetched and created URL for peak load plot:", url);
             setPeakLoadPlotImageUrl(url);
+            hasPeak = true;
           }
         }
 
         // Return true if all plots are fetched
-        return !!(dailyLoadData && weeklyLoadData && peakLoadData);
+        return hasDaily && hasWeekly && hasPeak;
       } catch (error) {
         console.error("Error fetching plots:", error);
         return false;
