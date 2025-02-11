@@ -131,12 +131,12 @@ const LoadProfileChart = () => {
       <div className="space-y-8">
         <div className="bg-white rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Average Daily Load</h3>
-          <div className="h-[150px] w-full flex items-center justify-center">
+          <div className="h-[400px] w-full flex items-center justify-center">
             {plotImageUrl ? (
               <img 
                 src={plotImageUrl} 
                 alt="Load Profile Analysis" 
-                className="max-h-full w-auto"
+                className="max-h-full w-auto object-contain"
               />
             ) : (
               <div className="text-gray-500">Loading daily load data...</div>
@@ -146,12 +146,12 @@ const LoadProfileChart = () => {
 
         <div className="bg-white rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Weekly Average Load</h3>
-          <div className="h-[150px] w-full flex items-center justify-center">
+          <div className="h-[400px] w-full flex items-center justify-center">
             {weeklyPlotImageUrl ? (
               <img 
                 src={weeklyPlotImageUrl} 
                 alt="Weekly Load Analysis" 
-                className="max-h-full w-auto"
+                className="max-h-full w-auto object-contain"
               />
             ) : (
               <div className="text-gray-500">Loading weekly load data...</div>
@@ -163,12 +163,12 @@ const LoadProfileChart = () => {
       <div className="space-y-8">
         <div className="bg-white rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Peak Load</h3>
-          <div className="h-[150px] w-full flex items-center justify-center">
+          <div className="h-[400px] w-full flex items-center justify-center">
             {peakLoadPlotImageUrl ? (
               <img 
                 src={peakLoadPlotImageUrl} 
                 alt="Peak Load Analysis" 
-                className="max-h-full w-auto"
+                className="max-h-full w-auto object-contain"
               />
             ) : (
               <div className="text-gray-500">Loading peak load data...</div>
@@ -178,7 +178,7 @@ const LoadProfileChart = () => {
 
         <div className="bg-white rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Additional Analysis</h3>
-          <div className="h-[150px] w-full flex items-center justify-center">
+          <div className="h-[400px] w-full flex items-center justify-center">
             <div className="text-gray-500">Coming soon...</div>
           </div>
         </div>
@@ -188,3 +188,4 @@ const LoadProfileChart = () => {
 };
 
 export default LoadProfileChart;
+
