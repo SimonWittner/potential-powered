@@ -145,7 +145,7 @@ const LoadProfileChart = () => {
         </div>
 
         <div className="bg-white rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">Weekly Average Load</h3>
+          <h3 className="text-lg font-semibold mb-4">Average Weekly Load</h3>
           <div className="h-[250px] w-full flex items-center justify-center">
             {weeklyPlotImageUrl ? (
               <img 
