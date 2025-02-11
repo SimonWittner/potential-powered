@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import AnalysisDialog from "@/components/AnalysisDialog";
 import CompanyInfoForm from "@/components/form/CompanyInfoForm";
-import InterestsForm from "@/components/form/InterestsForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "@/config/api";
@@ -19,8 +18,6 @@ const Index = () => {
   const [address, setAddress] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
-  const [hasGridCapacity, setHasGridCapacity] = useState<string>("");
-  const [gridCapacityAmount, setGridCapacityAmount] = useState<string>("");
   const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -136,19 +133,6 @@ const Index = () => {
     }
   };
 
-  const fetchPlot = async () => {
-    try {
-      const response = await fetch(`${API_URL}/get-plot?name=daily_load.png`);
-      if (!response.ok) throw new Error('Failed to fetch plot');
-      const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-      localStorage.setItem('plotImageUrl', imageUrl);
-    } catch (error) {
-      console.error('Error fetching plot:', error);
-      toast.error('Failed to fetch analysis plot');
-    }
-  };
-
   const handleAnalyze = async () => {
     if (!uploadedFilePath) {
       toast.error("Please upload a load profile file first");
@@ -211,8 +195,6 @@ const Index = () => {
       }
 
       await new Promise(resolve => setTimeout(resolve, 30000));
-      await fetchPlot();
-
       setShowAnalysisDialog(true);
       toast.success("Analysis completed successfully");
       navigate('/results');
