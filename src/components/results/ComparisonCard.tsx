@@ -62,38 +62,20 @@ const ComparisonCard = () => {
             setComparisonLoadPlot(url);
           }
         }
-
-        // Return true if both plots are fetched
-        return !!(peakLoadData && comparisonData);
       } catch (error) {
         console.error("Error fetching plots:", error);
-        return false;
       }
     };
 
     // Initial check
-    let intervalId: number;
-    
-    const startPolling = async () => {
-      const bothPlotsFetched = await checkAndFetchPlots();
-      
-      if (!bothPlotsFetched) {
-        // Only set up polling if plots haven't been fetched yet
-        intervalId = setInterval(async () => {
-          const success = await checkAndFetchPlots();
-          if (success) {
-            console.log("Both plots fetched successfully, stopping polling");
-            clearInterval(intervalId);
-          }
-        }, 5000); // Check every 5 seconds
-      }
-    };
+    checkAndFetchPlots();
 
-    startPolling();
+    // Set up polling interval to check for new files
+    const interval = setInterval(checkAndFetchPlots, 5000); // Check every 5 seconds
 
     // Cleanup interval and object URLs on component unmount
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      clearInterval(interval);
       if (comparisonLoadPlot) URL.revokeObjectURL(comparisonLoadPlot);
       if (newPeakLoadPlot) URL.revokeObjectURL(newPeakLoadPlot);
     };
