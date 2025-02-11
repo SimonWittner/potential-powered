@@ -80,7 +80,7 @@ const BatteryDesignCard = () => {
     // Start the initial check after a delay to allow for data processing
     const timer = setTimeout(() => {
       startPolling();
-    }, 15000); // 15 seconds delay
+    }, 5000); // 15 seconds delay
 
     // Cleanup
     return () => {
