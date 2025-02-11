@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -162,6 +163,9 @@ const Index = () => {
         toast.error("You must be logged in to perform analysis");
         return;
       }
+
+      // Store the CSV filename in localStorage for use in results page
+      localStorage.setItem('analysisFileName', uploadedFilePath);
 
       const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
