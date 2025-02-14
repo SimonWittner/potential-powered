@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -20,6 +19,13 @@ const Index = () => {
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
   const [uploadedFilePath, setUploadedFilePath] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  useEffect(() => {
+    const existingAnalysis = localStorage.getItem('analysisFileName');
+    if (existingAnalysis) {
+      navigate('/results');
+    }
+  }, [navigate]);
 
   const handleAddressChange = async (value: string) => {
     setAddress(value);
