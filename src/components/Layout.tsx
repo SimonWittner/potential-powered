@@ -77,11 +77,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleLogoClick = () => {
-    localStorage.removeItem('analysisFileName');
-    localStorage.removeItem('electricityPrice');
-    localStorage.removeItem('gridPowerCharges');
-    localStorage.removeItem('pvPeak');
-    localStorage.removeItem('loadsKwIsNet');
+    const isOnResults = window.location.pathname === '/results';
+    if (isOnResults) {
+      // Only clear analysis data if navigating away from results
+      localStorage.removeItem('analysisFileName');
+      localStorage.removeItem('electricityPrice');
+      localStorage.removeItem('gridPowerCharges');
+      localStorage.removeItem('pvPeak');
+      localStorage.removeItem('loadsKwIsNet');
+    }
     navigate('/');
   };
 
