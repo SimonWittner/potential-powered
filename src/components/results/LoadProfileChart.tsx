@@ -73,7 +73,7 @@ const LoadProfileChart = () => {
     queryKey: ['load-profile-plots', fileId],
     queryFn: fetchPlots,
     staleTime: Infinity, // Keep the data fresh forever
-    cacheTime: Infinity, // Never delete from cache
+    gcTime: Infinity, // Never delete from cache (previously cacheTime)
     enabled: !!fileId,
   });
 

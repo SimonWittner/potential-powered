@@ -36,7 +36,7 @@ const CostsCard = () => {
     queryKey: ['costs-data', fileId],
     queryFn: fetchCostsData,
     staleTime: Infinity, // Keep the data fresh forever
-    cacheTime: Infinity, // Never delete from cache
+    gcTime: Infinity, // Never delete from cache (previously cacheTime)
     enabled: !!fileId,
   });
 

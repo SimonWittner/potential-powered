@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -56,7 +56,7 @@ const ComparisonCard = () => {
     queryKey: ['comparison-plots', fileId],
     queryFn: fetchPlots,
     staleTime: Infinity, // Keep the data fresh forever
-    cacheTime: Infinity, // Never delete from cache
+    gcTime: Infinity, // Never delete from cache (previously cacheTime)
     enabled: !!fileId,
   });
 
