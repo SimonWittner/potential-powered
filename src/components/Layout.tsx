@@ -19,12 +19,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       if (event === 'SIGNED_OUT') {
         navigate('/auth');
       } else if (event === 'SIGNED_IN') {
-        // Clear any stored analysis when user signs in
-        localStorage.removeItem('analysisFileName');
-        localStorage.removeItem('electricityPrice');
-        localStorage.removeItem('gridPowerCharges');
-        localStorage.removeItem('pvPeak');
-        localStorage.removeItem('loadsKwIsNet');
         navigate('/');
       }
     });
