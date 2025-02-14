@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,9 +13,18 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
 import { toast } from "sonner"
 import html2pdf from 'html2pdf.js'
+import { useEffect } from "react"
 
 const Results = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const analysisFileName = localStorage.getItem('analysisFileName');
+    if (!analysisFileName) {
+      toast.error("No analysis found. Please start a new analysis.");
+      navigate('/');
+    }
+  }, [navigate]);
 
   const { data: analysis, isLoading, error } = useQuery({
     queryKey: ['analysis'],

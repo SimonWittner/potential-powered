@@ -18,7 +18,7 @@ const Index = () => {
   const [address, setAddress] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
-  const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
+  const [uploadedFilePath, setUploadedFilePath] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleAddressChange = async (value: string) => {
@@ -43,7 +43,9 @@ const Index = () => {
       console.log('Checking server availability...');
       const response = await fetch(`${API_URL}/health`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
       console.log('Server response:', response.ok);
       return response.ok;
@@ -54,14 +56,15 @@ const Index = () => {
   };
 
   const downloadFileLocally = async (
-    filePath: string, 
+    filePath: string,
     electricityPrice?: number,
     gridPowerCharges?: number,
     pvPeak?: number,
     loadsKwIsNet?: boolean
   ) => {
     try {
-      const { data: fileData, error: downloadError } = await supabase.storage
+      const { data: fileData, error: downloadError } = await supabase
+        .storage
         .from('load_profiles')
         .download(filePath);
 
@@ -72,16 +75,18 @@ const Index = () => {
       const companyData = {
         companyName,
         address,
-        ...(electricityPrice !== undefined && { electricityPrice }),
-        ...(gridPowerCharges !== undefined && { gridPowerCharges }),
-        ...(pvPeak !== undefined && { pv_peak: pvPeak }),
-        ...(loadsKwIsNet !== undefined && { loads_kw_is_net: loadsKwIsNet })
+        ...electricityPrice !== undefined && { electricityPrice },
+        ...gridPowerCharges !== undefined && { gridPowerCharges },
+        ...pvPeak !== undefined && { pv_peak: pvPeak },
+        ...loadsKwIsNet !== undefined && { loads_kw_is_net: loadsKwIsNet }
       };
 
       const response = await fetch(`${API_URL}/process-file`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
           fileName: filePath,
           fileContent: await fileData.text(),
           companyData
@@ -100,20 +105,21 @@ const Index = () => {
   };
 
   const handleFileUpload = async (
-    filePath: string, 
+    filePath: string,
     electricityPrice?: number,
     gridPowerCharges?: number,
     pvPeak?: number,
     loadsKwIsNet?: boolean
   ) => {
     setUploadedFilePath(filePath);
-    
+    localStorage.setItem('analysisFileName', filePath);
+
     if (electricityPrice !== undefined) {
       localStorage.setItem('electricityPrice', electricityPrice.toString());
     } else {
       localStorage.removeItem('electricityPrice');
     }
-    
+
     if (gridPowerCharges !== undefined) {
       localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
     } else {
@@ -140,16 +146,13 @@ const Index = () => {
     }
 
     setIsAnalyzing(true);
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         toast.error("You must be logged in to perform analysis");
         return;
       }
-
-      // Store the CSV filename in localStorage for use in results page
-      localStorage.setItem('analysisFileName', uploadedFilePath);
 
       const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
@@ -159,13 +162,13 @@ const Index = () => {
         const gridPowerCharges = localStorage.getItem('gridPowerCharges');
         const pvPeak = localStorage.getItem('pvPeak');
         const loadsKwIsNet = localStorage.getItem('loadsKwIsNet');
-        
+
         useLocalProcessing = await downloadFileLocally(
           uploadedFilePath,
           electricityPrice ? parseFloat(electricityPrice) : undefined,
           gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
           pvPeak ? parseFloat(pvPeak) : undefined,
-          loadsKwIsNet ? (loadsKwIsNet === 'true') : undefined
+          loadsKwIsNet ? loadsKwIsNet === 'true' : undefined
         );
       }
 
@@ -184,17 +187,16 @@ const Index = () => {
       }
 
       if (!useLocalProcessing) {
-        const { error: processError } = await supabase.functions
-          .invoke('analyze-load-profile', {
-            body: { analysisId: analysis.id }
-          });
+        const { error: processError } = await supabase.functions.invoke('analyze-load-profile', {
+          body: { analysisId: analysis.id }
+        });
 
         if (processError) {
           throw processError;
         }
       }
 
-      await new Promise(resolve => setTimeout(resolve, 30000));
+      await new Promise((resolve) => setTimeout(resolve, 30000));
       setShowAnalysisDialog(true);
       toast.success("Analysis completed successfully");
       navigate('/results');
@@ -220,7 +222,7 @@ const Index = () => {
 
         <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in mb-12">
           <div className="space-y-8">
-            <CompanyInfoForm 
+            <CompanyInfoForm
               address={address}
               onAddressChange={handleAddressChange}
               companyName={companyName}
@@ -236,8 +238,8 @@ const Index = () => {
               onFileUpload={handleFileUpload}
             />
 
-            <Button 
-              className="w-full" 
+            <Button
+              className="w-full"
               onClick={handleAnalyze}
               disabled={isAnalyzing}
             >
@@ -246,8 +248,8 @@ const Index = () => {
           </div>
         </Card>
 
-        <AnalysisDialog 
-          open={showAnalysisDialog} 
+        <AnalysisDialog
+          open={showAnalysisDialog}
           onOpenChange={setShowAnalysisDialog}
         />
       </div>
