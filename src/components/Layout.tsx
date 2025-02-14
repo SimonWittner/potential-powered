@@ -17,20 +17,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event, session);
       if (event === 'SIGNED_OUT') {
-        // Clear stored analysis data on logout
-        localStorage.removeItem('analysisFileName');
-        localStorage.removeItem('electricityPrice');
-        localStorage.removeItem('gridPowerCharges');
-        localStorage.removeItem('pvPeak');
-        localStorage.removeItem('loadsKwIsNet');
         navigate('/auth');
       } else if (event === 'SIGNED_IN') {
-        // Clear stored analysis data on login
-        localStorage.removeItem('analysisFileName');
-        localStorage.removeItem('electricityPrice');
-        localStorage.removeItem('gridPowerCharges');
-        localStorage.removeItem('pvPeak');
-        localStorage.removeItem('loadsKwIsNet');
         navigate('/');
       }
     });
@@ -77,15 +65,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleLogoClick = () => {
-    const isOnResults = window.location.pathname === '/results';
-    if (isOnResults) {
-      // Only clear analysis data if navigating away from results
-      localStorage.removeItem('analysisFileName');
-      localStorage.removeItem('electricityPrice');
-      localStorage.removeItem('gridPowerCharges');
-      localStorage.removeItem('pvPeak');
-      localStorage.removeItem('loadsKwIsNet');
-    }
+    localStorage.removeItem('analysisFileName');
+    localStorage.removeItem('electricityPrice');
+    localStorage.removeItem('gridPowerCharges');
+    localStorage.removeItem('pvPeak');
+    localStorage.removeItem('loadsKwIsNet');
     navigate('/');
   };
 
