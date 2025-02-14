@@ -12,16 +12,27 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
 import { toast } from "sonner"
 import html2pdf from 'html2pdf.js'
-import { queryKeys, fetchLatestAnalysis } from "@/lib/queries"
 
 const Results = () => {
   const navigate = useNavigate();
 
   const { data: analysis, isLoading, error } = useQuery({
-    queryKey: [queryKeys.analysisFile],
-    queryFn: fetchLatestAnalysis,
-    staleTime: Infinity,
-    gcTime: Infinity,
+    queryKey: ['analysis'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('load_profile_analyses')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
   });
 
   const handleExport = async () => {
@@ -66,15 +77,10 @@ const Results = () => {
     </div>;
   }
 
-  if (error || !analysis?.fileName) {
-    return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
-        <div className="text-white">No analysis results found</div>
-        <Button variant="outline" onClick={() => navigate('/')}>
-          Start New Analysis
-        </Button>
-      </div>
-    );
+  if (error) {
+    return <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="text-white">Error loading analysis results</div>
+    </div>;
   }
 
   return (

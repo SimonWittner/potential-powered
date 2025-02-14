@@ -2,57 +2,93 @@
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
 
 const BatteryDesignCard = () => {
-  const analysisFileName = localStorage.getItem('analysisFileName');
-  const fileId = analysisFileName?.replace(/\.[^/.]+$/, "");
+  const [batteryData, setBatteryData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
-  const fetchBatteryData = async () => {
-    if (!fileId) throw new Error("No analysis file name found");
-
-    const fileName = `data_${fileId}.json`;
-    const { data: fileExists } = await supabase
-      .storage
-      .from('analysis_results')
-      .list('', { search: fileName });
-
-    if (fileExists && fileExists.length > 0) {
-      const { data } = await supabase
-        .storage
-        .from('analysis_results')
-        .download(fileName);
-      
-      if (data) {
-        const jsonData = await data.text();
-        return JSON.parse(jsonData);
-      }
-    }
-    return null;
-  };
-
-  const { data: batteryData, isLoading } = useQuery({
-    queryKey: ['battery-data', fileId],
-    queryFn: fetchBatteryData,
-    staleTime: Infinity, // Keep the data fresh forever
-    gcTime: Infinity, // Never delete from cache (previously cacheTime)
-    enabled: !!fileId,
-  });
-
-  // Progress bar animation
   useEffect(() => {
-    if (!isLoading) return;
+    const analysisFileName = localStorage.getItem('analysisFileName');
+    if (!analysisFileName) {
+      console.error("No analysis file name found");
+      return;
+    }
 
+    // Remove file extension from analysisFileName if it exists
+    const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
+
+    // Progress bar animation
     const interval = setInterval(() => {
       setProgress((prev) => {
-        const nextProgress = prev + (100 / 15);
+        const nextProgress = prev + (100 / 15); // Increment progress every second
         return nextProgress >= 100 ? 100 : nextProgress;
       });
-    }, 1000);
+    }, 1000); // Update progress every second
 
-    return () => clearInterval(interval);
-  }, [isLoading]);
+    const checkAndFetchData = async () => {
+      try {
+        // Check if data file exists
+        const fileName = `data_${fileId}.json`;
+        const { data: fileExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: fileName
+          });
+
+        if (fileExists && fileExists.length > 0) {
+          const { data } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(fileName);
+          
+          if (data) {
+            const jsonData = await data.text();
+            const parsedData = JSON.parse(jsonData);
+            console.log("Battery design data received:", parsedData);
+            setBatteryData(parsedData);
+            setIsLoading(false);
+            setProgress(100);
+            return true;
+          }
+        }
+        return false;
+      } catch (error) {
+        console.error("Error fetching battery design data:", error);
+        return false;
+      }
+    };
+
+    let dataCheckInterval: NodeJS.Timeout;
+    
+    const startPolling = async () => {
+      const dataFetched = await checkAndFetchData();
+      
+      if (!dataFetched) {
+        // Only set up polling if data hasn't been fetched yet
+        dataCheckInterval = setInterval(async () => {
+          const success = await checkAndFetchData();
+          if (success) {
+            console.log("Battery design data fetched successfully, stopping polling");
+            clearInterval(dataCheckInterval);
+          }
+        }, 5000); // Check every 5 seconds
+      }
+    };
+
+    // Start the initial check after a delay to allow for data processing
+    const timer = setTimeout(() => {
+      startPolling();
+    }, 5000); // 15 seconds delay
+
+    // Cleanup
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+      if (dataCheckInterval) clearInterval(dataCheckInterval);
+    };
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const Metrics = {
     batterySize: batteryData?.battery_size_kwh || 0,
