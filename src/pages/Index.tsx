@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,8 @@ import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "@/config/api";
+import { useQueryClient } from "react-query";
+import { queryKeys, fetchLatestAnalysis } from "@/lib/queries";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Index = () => {
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
   const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleAddressChange = async (value: string) => {
     setAddress(value);
@@ -148,9 +150,6 @@ const Index = () => {
         return;
       }
 
-      // Store the CSV filename in localStorage for use in results page
-      localStorage.setItem('analysisFileName', uploadedFilePath);
-
       const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
 
@@ -182,6 +181,11 @@ const Index = () => {
       if (insertError || !analysis) {
         throw insertError || new Error('Failed to create analysis');
       }
+
+      queryClient.setQueryData([queryKeys.analysisFile], {
+        fileName: uploadedFilePath,
+        status: 'pending'
+      });
 
       if (!useLocalProcessing) {
         const { error: processError } = await supabase.functions
