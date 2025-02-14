@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "@/config/api";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query"; // Fixed import
 import { queryKeys, fetchLatestAnalysis } from "@/lib/queries";
 
 const Index = () => {
