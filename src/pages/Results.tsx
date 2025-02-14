@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +24,15 @@ const Results = () => {
       navigate('/');
     }
   }, [navigate]);
+
+  const handleBack = () => {
+    localStorage.removeItem('analysisFileName');
+    localStorage.removeItem('electricityPrice');
+    localStorage.removeItem('gridPowerCharges');
+    localStorage.removeItem('pvPeak');
+    localStorage.removeItem('loadsKwIsNet');
+    navigate('/');
+  };
 
   const { data: analysis, isLoading, error } = useQuery({
     queryKey: ['analysis'],
@@ -100,7 +108,7 @@ const Results = () => {
           <Button
             variant="ghost"
             className="mb-4 text-white hover:text-white/80"
-            onClick={() => navigate(-1)}
+            onClick={handleBack}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
