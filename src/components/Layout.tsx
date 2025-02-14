@@ -10,52 +10,43 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let isSubscribed = true;
-
     // Check auth state when component mounts
-    const initializeAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Session error:", error);
-          if (isSubscribed) {
-            navigate('/auth');
-          }
-          return;
-        }
-
-        if (!session && isSubscribed) {
-          navigate('/auth');
-        }
-      } catch (error) {
-        console.error("Auth error:", error);
-        if (isSubscribed) {
-          navigate('/auth');
-        }
-      }
-    };
-
-    initializeAuth();
+    checkUser();
 
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event, session);
-      
-      if (!isSubscribed) return;
-
-      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+      if (event === 'SIGNED_OUT') {
         navigate('/auth');
-      } else if (event === 'SIGNED_IN' && session) {
+      } else if (event === 'SIGNED_IN') {
         navigate('/');
       }
     });
 
     return () => {
-      isSubscribed = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
+
+  const checkUser = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      console.log("Checking session:", session);
+      
+      if (error) {
+        console.error("Session error:", error);
+        throw error;
+      }
+
+      if (!session) {
+        navigate('/auth');
+      }
+    } catch (error) {
+      console.error("Auth error:", error);
+      toast.error("Authentication error. Please sign in again.");
+      navigate('/auth');
+    }
+  };
 
   const handleSignOut = async () => {
     try {
