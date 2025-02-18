@@ -140,7 +140,8 @@ const BatteryDesignCard = () => {
                     <p>
                       <strong>Recommended Battery</strong>
                       <br />
-                      This is the perfect optimized battery. It is not necessarily existing on the market.
+                      This is the perfect optimized battery. It is not necessarily existing in the market.
+                      <br />
                       <br />
                       <strong>Additional Self-consumption</strong>
                       <br />
