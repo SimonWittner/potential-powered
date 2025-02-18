@@ -74,7 +74,9 @@ const ConsumptionForm = ({
       // Only pass values if they are not empty strings
       const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
       const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
-      const parsedPvPeak = pvSize ? parseFloat(pvSize) : undefined;
+      
+      // Always pass pvSize if hasExistingPV is "yes" and pvSize exists
+      const parsedPvPeak = (hasExistingPV === "yes" && pvSize) ? parseFloat(pvSize) : undefined;
       
       // Pass loads_kw_is_net as false when user selects "no" for net metering
       const loadsKwIsNet = includesPVGeneration === "no" ? false : undefined;
