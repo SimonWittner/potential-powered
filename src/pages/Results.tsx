@@ -138,14 +138,29 @@ const Results = () => {
             </Card>
 
             <Tabs defaultValue="revenue-stacking" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="revenue-stacking">Revenue Stacking</TabsTrigger>
-                <TabsTrigger value="peak-shaving">Peak Shaving</TabsTrigger>
-                <TabsTrigger value="self-consumption">Self-Consumption</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 p-0 bg-transparent">
+                <TabsTrigger 
+                  value="revenue-stacking" 
+                  className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm"
+                >
+                  Revenue Stacking
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="peak-shaving"
+                  className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm"
+                >
+                  Peak Shaving
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="self-consumption"
+                  className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm"
+                >
+                  Self-Consumption
+                </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="revenue-stacking" className="mt-6">
-                <Card className="p-8 bg-white/95 backdrop-blur-sm">
+              <TabsContent value="revenue-stacking" className="mt-0">
+                <Card className="rounded-tl-none p-8 bg-white/95 backdrop-blur-sm">
                   <div className="grid grid-cols-1 gap-8">
                     <BatteryDesignCard />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -157,16 +172,16 @@ const Results = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="peak-shaving" className="mt-6">
-                <Card className="p-6 bg-white/95 backdrop-blur-sm">
+              <TabsContent value="peak-shaving" className="mt-0">
+                <Card className="rounded-tl-none p-6 bg-white/95 backdrop-blur-sm">
                   <div className="text-center py-12">
                     <h3 className="text-xl font-medium text-gray-600">Work in progress</h3>
                   </div>
                 </Card>
               </TabsContent>
 
-              <TabsContent value="self-consumption" className="mt-6">
-                <Card className="p-6 bg-white/95 backdrop-blur-sm">
+              <TabsContent value="self-consumption" className="mt-0">
+                <Card className="rounded-tl-none p-6 bg-white/95 backdrop-blur-sm">
                   <div className="text-center py-12">
                     <h3 className="text-xl font-medium text-gray-600">Work in progress</h3>
                   </div>
