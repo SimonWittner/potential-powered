@@ -129,9 +129,8 @@ const BatteryDesignCard = () => {
           </div>
         ) : (
           <>
-            <div className="bg-gray-100 p-3 rounded-lg">
-              <div className="flex items-center gap-2">
-                <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
+            <div className="bg-gray-100 p-3 rounded-lg relative">
+              <div className="absolute top-3 right-3">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
@@ -143,6 +142,7 @@ const BatteryDesignCard = () => {
                   </Tooltip>
                 </TooltipProvider>
               </div>
+              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
               <p>Additional Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
               <p>Estimated Full Cycles per Year: {Metrics.fullCycles}</p>
             </div>
