@@ -1,12 +1,23 @@
 
 import { Card } from "@/components/ui/card"
 import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const ESGReportingCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [batteryData, setBatteryData] = useState<any>(null);
 
   useEffect(() => {
+    const analysisFileName = localStorage.getItem('analysisFileName');
+    if (!analysisFileName) {
+      console.error("No analysis file name found");
+      return;
+    }
+
+    // Remove file extension from analysisFileName if it exists
+    const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
+
     console.log("Starting 15-second delay before fetching ESG data...");
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -15,10 +26,44 @@ const ESGReportingCard = () => {
       });
     }, 1000); // Update progress every second
 
-    const timer = setTimeout(() => {
+    const checkAndFetchData = async () => {
+      try {
+        // Check if data file exists
+        const fileName = `data_${fileId}.json`;
+        const { data: fileExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: fileName
+          });
+
+        if (fileExists && fileExists.length > 0) {
+          const { data } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(fileName);
+          
+          if (data) {
+            const jsonData = await data.text();
+            const parsedData = JSON.parse(jsonData);
+            console.log("ESG data received:", parsedData);
+            setBatteryData(parsedData);
+            setShouldFetch(true);
+            setProgress(100);
+            return true;
+          }
+        }
+        return false;
+      } catch (error) {
+        console.error("Error fetching ESG data:", error);
+        return false;
+      }
+    };
+
+    // Start the initial check after a delay to allow for data processing
+    const timer = setTimeout(async () => {
       console.log("Delay complete, initiating ESG data fetch");
-      setShouldFetch(true);
-      setProgress(100);
+      await checkAndFetchData();
       clearInterval(interval);
     }, 15000); // 15 seconds
 
@@ -30,8 +75,8 @@ const ESGReportingCard = () => {
 
   const esgMetrics = {
     environmental: {
-      co2Reduction: (Math.random() * 5000 + 3000).toFixed(2),
-      treeEquivalent: Math.floor(Math.random() * 200 + 100),
+      co2Reduction: batteryData?.annual_co2_savings || 0,
+      treeEquivalent: batteryData?.trees_saved || 0,
     }
   };
 
