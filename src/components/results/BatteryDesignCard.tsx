@@ -2,6 +2,13 @@
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const BatteryDesignCard = () => {
   const [batteryData, setBatteryData] = useState<any>(null);
@@ -123,7 +130,19 @@ const BatteryDesignCard = () => {
         ) : (
           <>
             <div className="bg-gray-100 p-3 rounded-lg">
-              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
+              <div className="flex items-center gap-2">
+                <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>This is still a WIP.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p>Additional Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
               <p>Estimated Full Cycles per Year: {Metrics.fullCycles}</p>
             </div>
