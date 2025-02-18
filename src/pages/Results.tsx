@@ -141,19 +141,19 @@ const Results = () => {
               <TabsList className="grid w-full grid-cols-3 p-0 bg-transparent">
                 <TabsTrigger 
                   value="revenue-stacking" 
-                  className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm"
+                  className="text-lg font-medium rounded-b-none text-white data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm data-[state=active]:text-black"
                 >
                   Revenue Stacking
                 </TabsTrigger>
                 <TabsTrigger 
                   value="peak-shaving"
-                  className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm"
+                  className="text-lg font-medium rounded-b-none text-white data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm data-[state=active]:text-black"
                 >
                   Peak Shaving
                 </TabsTrigger>
                 <TabsTrigger 
                   value="self-consumption"
-                  className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm"
+                  className="text-lg font-medium rounded-b-none text-white data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm data-[state=active]:text-black"
                 >
                   Self-Consumption
                 </TabsTrigger>
