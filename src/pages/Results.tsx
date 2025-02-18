@@ -13,7 +13,8 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
 import { toast } from "sonner"
 import html2pdf from 'html2pdf.js'
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const Results = () => {
   const navigate = useNavigate();
@@ -136,13 +137,40 @@ const Results = () => {
               </div>
             </Card>
 
-            <BatteryDesignCard />
+            <Tabs defaultValue="revenue-stacking" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="revenue-stacking">Revenue Stacking</TabsTrigger>
+                <TabsTrigger value="peak-shaving">Peak Shaving</TabsTrigger>
+                <TabsTrigger value="self-consumption">Self-Consumption</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="revenue-stacking" className="mt-6">
+                <div className="grid grid-cols-1 gap-8">
+                  <BatteryDesignCard />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <ComparisonCard />
+                    <CostsCard />
+                    <ESGReportingCard />
+                  </div>
+                </div>
+              </TabsContent>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <ComparisonCard />
-              <CostsCard />
-              <ESGReportingCard />
-            </div>
+              <TabsContent value="peak-shaving" className="mt-6">
+                <Card className="p-6 bg-white/95 backdrop-blur-sm">
+                  <div className="text-center py-12">
+                    <h3 className="text-xl font-medium text-gray-600">Work in progress</h3>
+                  </div>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="self-consumption" className="mt-6">
+                <Card className="p-6 bg-white/95 backdrop-blur-sm">
+                  <div className="text-center py-12">
+                    <h3 className="text-xl font-medium text-gray-600">Work in progress</h3>
+                  </div>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
 
