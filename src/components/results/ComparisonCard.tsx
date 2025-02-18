@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 const ComparisonCard = () => {
   const [comparisonLoadPlot, setComparisonLoadPlot] = useState<string | null>(null);
   const [newPeakLoadPlot, setNewPeakLoadPlot] = useState<string | null>(null);
+  const [yearlyPeakLoadPlot, setYearlyPeakLoadPlot] = useState<string | null>(null);
 
   useEffect(() => {
     const analysisFileName = localStorage.getItem('analysisFileName');
@@ -62,6 +63,28 @@ const ComparisonCard = () => {
             setComparisonLoadPlot(url);
           }
         }
+
+        // Check if yearly peak load plot exists
+        const yearlyPeakName = `yearly_peak_load_${fileId}.png`;
+        const { data: yearlyPeakExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: yearlyPeakName
+          });
+
+        if (yearlyPeakExists && yearlyPeakExists.length > 0) {
+          const { data: yearlyPeakData } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(yearlyPeakName);
+          
+          if (yearlyPeakData) {
+            const url = URL.createObjectURL(yearlyPeakData);
+            console.log("Successfully fetched and created URL for yearly peak load plot:", url);
+            setYearlyPeakLoadPlot(url);
+          }
+        }
       } catch (error) {
         console.error("Error fetching plots:", error);
       }
@@ -78,6 +101,7 @@ const ComparisonCard = () => {
       clearInterval(interval);
       if (comparisonLoadPlot) URL.revokeObjectURL(comparisonLoadPlot);
       if (newPeakLoadPlot) URL.revokeObjectURL(newPeakLoadPlot);
+      if (yearlyPeakLoadPlot) URL.revokeObjectURL(yearlyPeakLoadPlot);
     };
   }, []); // Empty dependency array means this runs once when component mounts
 
@@ -118,10 +142,26 @@ const ComparisonCard = () => {
             </div>
           )}
         </div>
+
+        <div className="w-full overflow-hidden bg-white rounded-lg p-6">
+          <h3 className="text-lg font-medium mb-4">Yearly Peak Loads</h3>
+          {yearlyPeakLoadPlot ? (
+            <div className="w-full h-[500px]">
+              <img 
+                src={yearlyPeakLoadPlot} 
+                alt="Yearly Peak Loads" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+          ) : (
+            <div className="w-full h-[500px] flex items-center justify-center">
+              <p className="text-gray-500">Loading yearly peak loads plot...</p>
+            </div>
+          )}
+        </div>
       </div>
     </Card>
   );
 };
 
 export default ComparisonCard;
-
