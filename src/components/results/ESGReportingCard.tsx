@@ -65,7 +65,7 @@ const ESGReportingCard = () => {
       console.log("Delay complete, initiating ESG data fetch");
       await checkAndFetchData();
       clearInterval(interval);
-    }, 15000); // 15 seconds
+    }, 8000); // 15 seconds
 
     return () => {
       clearTimeout(timer);
@@ -102,11 +102,11 @@ const ESGReportingCard = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-neutral-600">CO₂ Reduction</span>
-                <span className="font-medium text-neutral-800">{esgMetrics.environmental.co2Reduction} kg/year</span>
+                <span className="font-medium text-neutral-800">{esgMetrics.environmental.co2Reduction.toFixed(2)} kg/year</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-neutral-600">Equivalent Trees Planted</span>
-                <span className="font-medium text-neutral-800">{esgMetrics.environmental.treeEquivalent} trees</span>
+                <span className="font-medium text-neutral-800">{esgMetrics.environmental.treeEquivalent.toFixed(2)} trees</span>
               </div>
             </div>
           </div>
