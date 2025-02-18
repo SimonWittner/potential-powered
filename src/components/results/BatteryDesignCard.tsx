@@ -100,7 +100,7 @@ const BatteryDesignCard = () => {
   const Metrics = {
     batterySize: batteryData?.battery_size_kwh || 0,
     additionalSelfConsumption: batteryData?.additional_own_consumption || 0,
-    fullCycles: 17,
+    fullCycles: batteryData?.full_cycles || 0,
     maxProfitability: {
       size: batteryData?.battery_size_kwh || 0,
       roi: (Math.random() * 5 + 8).toFixed(2),
