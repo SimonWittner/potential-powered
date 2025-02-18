@@ -136,13 +136,13 @@ const Results = () => {
               </div>
             </Card>
 
+            <BatteryDesignCard />
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <ComparisonCard />
               <CostsCard />
               <ESGReportingCard />
             </div>
-
-            <BatteryDesignCard />
           </div>
         </div>
 
