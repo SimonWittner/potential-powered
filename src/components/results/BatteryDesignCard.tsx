@@ -137,7 +137,15 @@ const BatteryDesignCard = () => {
                       <Info className="h-4 w-4 text-gray-500 hover:text-gray-700" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>This is still a WIP.</p>
+                    <p>
+                      <strong>Recommended Battery</strong>
+                      <br />
+                      This is the perfect optimized battery. It is not necessarily existing on the market.
+                      <br />
+                      <strong>Additional Self-consumption</strong>
+                      <br />
+                      Additional self-consumption that this battery can provide. Value might be 0 or negative in case of no PV system (battery allowed to charge from grid).
+                    </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
