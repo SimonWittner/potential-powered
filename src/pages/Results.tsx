@@ -138,7 +138,7 @@ const Results = () => {
                 <TabsTrigger value="peak-shaving" className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm text-xl">
                   Peak Shaving
                 </TabsTrigger>
-                <TabsTrigger value="self-consumption" className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm">
+                <TabsTrigger value="self-consumption" className="rounded-b-none data-[state=active]:bg-white/95 data-[state=active]:backdrop-blur-sm text-xl">
                   Self-Consumption
                 </TabsTrigger>
               </TabsList>
