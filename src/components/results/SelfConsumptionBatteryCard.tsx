@@ -35,8 +35,8 @@ const SelfConsumptionBatteryCard = () => {
 
     const checkAndFetchData = async () => {
       try {
-        // Check if data file exists
-        const fileName = `data_${fileId}.json`;
+        // Check if data file exists - using evo_data prefix
+        const fileName = `evo_data_${fileId}.json`;
         const { data: fileExists } = await supabase
           .storage
           .from('analysis_results')
@@ -53,7 +53,7 @@ const SelfConsumptionBatteryCard = () => {
           if (data) {
             const jsonData = await data.text();
             const parsedData = JSON.parse(jsonData);
-            console.log("Battery design data received:", parsedData);
+            console.log("Self-consumption battery design data received:", parsedData);
             setBatteryData(parsedData);
             setIsLoading(false);
             setProgress(100);
@@ -62,7 +62,7 @@ const SelfConsumptionBatteryCard = () => {
         }
         return false;
       } catch (error) {
-        console.error("Error fetching battery design data:", error);
+        console.error("Error fetching self-consumption battery design data:", error);
         return false;
       }
     };
@@ -77,7 +77,7 @@ const SelfConsumptionBatteryCard = () => {
         dataCheckInterval = setInterval(async () => {
           const success = await checkAndFetchData();
           if (success) {
-            console.log("Battery design data fetched successfully, stopping polling");
+            console.log("Self-consumption battery design data fetched successfully, stopping polling");
             clearInterval(dataCheckInterval);
           }
         }, 5000); // Check every 5 seconds
