@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card"
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,11 +7,8 @@ const CostsCard = () => {
   const [batteryData, setBatteryData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-    if (hasFetched) return; // Skip if we've already fetched data
-
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
@@ -51,7 +49,6 @@ const CostsCard = () => {
             console.log("Costs data received:", parsedData);
             setBatteryData(parsedData);
             setIsLoading(false);
-            setHasFetched(true);
             setProgress(100);
             return true;
           }
@@ -91,7 +88,7 @@ const CostsCard = () => {
       clearInterval(interval);
       if (dataCheckInterval) clearInterval(dataCheckInterval);
     };
-  }, [hasFetched]); // Only depend on hasFetched state
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const costs = {
     initialInvestment: {

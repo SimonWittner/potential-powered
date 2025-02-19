@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card"
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,11 +7,8 @@ const ESGReportingCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [progress, setProgress] = useState(0);
   const [batteryData, setBatteryData] = useState<any>(null);
-  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-    if (hasFetched) return; // Skip if we've already fetched data
-
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
@@ -51,7 +49,6 @@ const ESGReportingCard = () => {
             console.log("ESG data received:", parsedData);
             setBatteryData(parsedData);
             setShouldFetch(true);
-            setHasFetched(true);
             setProgress(100);
             return true;
           }
@@ -68,13 +65,13 @@ const ESGReportingCard = () => {
       console.log("Delay complete, initiating ESG data fetch");
       await checkAndFetchData();
       clearInterval(interval);
-    }, 8000); // 8 seconds
+    }, 8000); // 15 seconds
 
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
     };
-  }, [hasFetched]); // Only depend on hasFetched state
+  }, []);
 
   const esgMetrics = {
     environmental: {

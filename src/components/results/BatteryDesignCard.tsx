@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,11 +14,8 @@ const BatteryDesignCard = () => {
   const [batteryData, setBatteryData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-    if (hasFetched) return; // Skip if we've already fetched data
-
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
@@ -58,7 +56,6 @@ const BatteryDesignCard = () => {
             console.log("Battery design data received:", parsedData);
             setBatteryData(parsedData);
             setIsLoading(false);
-            setHasFetched(true);
             setProgress(100);
             return true;
           }
@@ -90,7 +87,7 @@ const BatteryDesignCard = () => {
     // Start the initial check after a delay to allow for data processing
     const timer = setTimeout(() => {
       startPolling();
-    }, 5000);
+    }, 5000); // 15 seconds delay
 
     // Cleanup
     return () => {
@@ -98,7 +95,7 @@ const BatteryDesignCard = () => {
       clearInterval(interval);
       if (dataCheckInterval) clearInterval(dataCheckInterval);
     };
-  }, [hasFetched]); // Only depend on hasFetched state
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const Metrics = {
     batterySize: batteryData?.battery_size_kwh || 0,
