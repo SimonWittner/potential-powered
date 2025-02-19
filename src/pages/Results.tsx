@@ -181,9 +181,12 @@ const Results = () => {
               </TabsContent>
 
               <TabsContent value="self-consumption" className="mt-0">
-                <Card className="rounded-tl-none p-6 bg-white/95 backdrop-blur-sm">
-                  <div className="text-center py-12">
-                    <h3 className="text-xl font-medium text-gray-600">Work in progress</h3>
+                <Card className="rounded-tl-none p-8 bg-white/95 backdrop-blur-sm">
+                  <div className="grid grid-cols-1 gap-8">
+                    <BatteryDesignCard />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <CostsCard />
+                    </div>
                   </div>
                 </Card>
               </TabsContent>
