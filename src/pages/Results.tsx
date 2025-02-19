@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +7,7 @@ import BatteryDesignCard from "@/components/results/BatteryDesignCard"
 import ComparisonCard from "@/components/results/ComparisonCard"
 import CostsCard from "@/components/results/CostsCard"
 import ESGReportingCard from "@/components/results/ESGReportingCard"
+import SelfConsumptionBatteryCard from "@/components/results/SelfConsumptionBatteryCard"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
@@ -183,7 +183,7 @@ const Results = () => {
               <TabsContent value="self-consumption" className="mt-0">
                 <Card className="rounded-tl-none p-8 bg-white/95 backdrop-blur-sm">
                   <div className="grid grid-cols-1 gap-8">
-                    <BatteryDesignCard />
+                    <SelfConsumptionBatteryCard />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <CostsCard />
                     </div>
