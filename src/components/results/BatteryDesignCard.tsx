@@ -151,7 +151,7 @@ const BatteryDesignCard = () => {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw || 0} kW</span></p>
+              <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh.toFixed(0) || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw.toFixed(0) || 0} kW</span></p>
               <p>Additional Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
               <p>Estimated Full Cycles per Year: {Metrics.fullCycles.toFixed(1)}</p>
             </div>
@@ -160,7 +160,7 @@ const BatteryDesignCard = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <h4 className="font-medium">Max. Profitability</h4>
-                  <p>Size: {batteryData?.battery_size_kwh || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw || 0} kW</p>
+                  <p>Size: {batteryData?.battery_size_kwh.toFixed(0) || 0} kWh <span className="mx-2">|</span> {batteryData?.battery_size_kw.toFixed(0) || 0} kW</p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg">
                   <h4 className="font-medium">Max. Self-Consumption</h4>
