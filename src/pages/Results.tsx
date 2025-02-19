@@ -145,7 +145,7 @@ const Results = () => {
               </TabsList>
               
               <TabsContent value="revenue-stacking" className="mt-0">
-                <Card className="rounded-tl-none p-8 bg-white/95 backdrop-blur-sm">
+                <Card className="rounded-tl-none rounded-tr-none p-8 bg-white/95 backdrop-blur-sm">
                   <div className="grid grid-cols-1 gap-8">
                     <BatteryDesignCard />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
