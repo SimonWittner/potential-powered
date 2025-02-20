@@ -9,6 +9,7 @@ import CostsCard from "@/components/results/CostsCard";
 import ESGReportingCard from "@/components/results/ESGReportingCard";
 import SelfConsumptionBatteryCard from "@/components/results/SelfConsumptionBatteryCard";
 import SelfConsumptionComparisonCard from "@/components/results/SelfConsumptionComparisonCard";
+import SelfConsumptionCostCard from "@/components/results/SelfConsumptionCostCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download } from "lucide-react";
@@ -173,7 +174,7 @@ const Results = () => {
                     <SelfConsumptionBatteryCard />
                     <SelfConsumptionComparisonCard />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <CostsCard />
+                      <SelfConsumptionCostCard />
                     </div>
                   </div>
                 </Card>
