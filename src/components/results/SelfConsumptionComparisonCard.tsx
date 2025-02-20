@@ -69,7 +69,7 @@ const SelfConsumptionComparisonCard = () => {
         <h3 className="text-lg font-medium mb-4">Investment Costs</h3>
         {isLoading ? (
           <div className="w-full h-[500px] flex items-center justify-center">
-            <p className="text-gray-500">Loading comparison plot...</p>
+            <p className="text-gray-500">Loading investment costs heatmap plot...</p>
           </div>
         ) : (
           <div className="w-full h-[500px]">
