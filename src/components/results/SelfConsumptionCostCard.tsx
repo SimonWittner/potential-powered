@@ -29,7 +29,7 @@ const SelfConsumptionCostCard = () => {
     const checkAndFetchData = async () => {
       try {
         // Check if data file exists
-        const fileName = `data_${fileId}.json`;
+        const fileName = `evo_data_${fileId}.json`;
         const { data: fileExists } = await supabase
           .storage
           .from('analysis_results')
@@ -92,13 +92,12 @@ const SelfConsumptionCostCard = () => {
 
   const costs = {
     initialInvestment: {
-      total: batteryData?.initial_capital_cost || 0,
-      battery: batteryData?.initial_capital_cost_storage || 0,
+      battery: batteryData?.evo_initial_capital_cost_storage || 0,
     },
     savings: {
-      paybackTime: batteryData?.simple_payback_years || 0,
-      yearlyWorkingSavings: batteryData?.yearly_working_savings_manual || 0,
-      yearlySavings: batteryData?.yearly_savings_manual || 0,
+      paybackTime: batteryData?.evo_simple_payback_period || 0,
+      yearlyWorkingSavings: batteryData?.evo_yearly_working_savings_manual || 0,
+      yearlySavings: batteryData?.evo_yearly_working_savings_manual || 0,
     }
   };
 
