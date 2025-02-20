@@ -8,6 +8,7 @@ import ComparisonCard from "@/components/results/ComparisonCard";
 import CostsCard from "@/components/results/CostsCard";
 import ESGReportingCard from "@/components/results/ESGReportingCard";
 import SelfConsumptionBatteryCard from "@/components/results/SelfConsumptionBatteryCard";
+import SelfConsumptionComparisonCard from "@/components/results/SelfConsumptionComparisonCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download } from "lucide-react";
@@ -15,6 +16,7 @@ import { toast } from "sonner";
 import html2pdf from 'html2pdf.js';
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 const Results = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -169,6 +171,7 @@ const Results = () => {
                 <Card className="rounded-tl-none rounded-tr-none p-8 bg-white/95 backdrop-blur-sm">
                   <div className="grid grid-cols-1 gap-8">
                     <SelfConsumptionBatteryCard />
+                    <SelfConsumptionComparisonCard />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <CostsCard />
                     </div>
@@ -188,4 +191,5 @@ const Results = () => {
       </div>
     </div>;
 };
+
 export default Results;
