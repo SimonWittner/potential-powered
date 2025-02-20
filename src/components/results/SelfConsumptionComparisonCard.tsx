@@ -66,7 +66,6 @@ const SelfConsumptionComparisonCard = () => {
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Comparison</h2>
       <div className="w-full overflow-hidden bg-white rounded-lg">
-        <h3 className="text-lg font-medium text-gray-700 mb-4 px-4">Investment Costs</h3>
         {isLoading ? (
           <div className="w-full h-[500px] flex items-center justify-center">
             <p className="text-gray-500">Loading comparison plot...</p>
