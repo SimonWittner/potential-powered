@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 const SelfConsumptionComparisonCard = () => {
+  const [evocomparisonLoadPlot, setEvoComparisonLoadPlot] = useState<string | null>(null);  
   const [heatmapImage, setHeatmapImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,6 +20,29 @@ const SelfConsumptionComparisonCard = () => {
 
     const checkAndFetchPlot = async () => {
       try {
+        // Check if evocomparison plot exists
+        const evocomparisonName = `evo_profile_${fileId}.png`;
+        const { data: evocomparisonExists } = await supabase
+          .storage
+          .from('analysis_results')
+          .list('', {
+            search: evocomparisonName
+          });
+
+        if (evocomparisonExists && evocomparisonExists.length > 0) {
+          const { data: evocomparisonData } = await supabase
+            .storage
+            .from('analysis_results')
+            .download(evocomparisonName);
+          
+          if (evocomparisonData) {
+            const url = URL.createObjectURL(evocomparisonData);
+            console.log("Successfully fetched and created URL for peak load plot:", url);
+            setEvoComparisonLoadPlot(url);
+          }
+        }
+
+
         // Check if heatmap exists
         const heatmapName = `evo_heatmap_${fileId}.png`;
         const { data: heatmapExists } = await supabase
@@ -58,6 +82,7 @@ const SelfConsumptionComparisonCard = () => {
     // Cleanup interval and object URL on component unmount
     return () => {
       clearInterval(interval);
+      if (evocomparisonLoadPlot) URL.revokeObjectURL(evocomparisonLoadPlot);
       if (heatmapImage) URL.revokeObjectURL(heatmapImage);
     };
   }, []); // Empty dependency array means this runs once when component mounts
@@ -65,6 +90,26 @@ const SelfConsumptionComparisonCard = () => {
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Comparison</h2>
+
+      {/* Load Profile Comparison */}
+      <div className="w-full overflow-hidden bg-white rounded-lg p-6">
+        <h3 className="text-lg font-medium mb-4">Load Profile Comparison</h3>
+        {evocomparisonLoadPlot ? (
+          <div className="w-full h-[500px]">
+            <img 
+              src={evocomparisonLoadPlot} 
+              alt="Load Profile Comparison" 
+              className="w-full h-full object-contain"
+            />
+          </div>
+        ) : (
+          <div className="w-full h-[500px] flex items-center justify-center">
+            <p className="text-gray-500">Loading comparison plot...</p>
+          </div>
+        )}
+      </div>
+
+      {/* Investment Costs */}
       <div className="w-full overflow-hidden bg-white rounded-lg p-6">
         <h3 className="text-lg font-medium mb-4">Investment Costs</h3>
         {isLoading ? (
@@ -73,12 +118,16 @@ const SelfConsumptionComparisonCard = () => {
           </div>
         ) : (
           <div className="w-full h-[500px]">
-            {heatmapImage && (
+            {heatmapImage ? (
               <img 
                 src={heatmapImage} 
                 alt="Self-Consumption Heatmap" 
                 className="w-full h-full object-contain"
               />
+            ) : (
+              <p className="text-gray-500 flex items-center justify-center h-full">
+                No heatmap available
+              </p>
             )}
           </div>
         )}
