@@ -114,7 +114,7 @@ const PVProductionChart = () => {
               <Tooltip />
               <Line 
                 type="monotone" 
-                dataKey="production" 
+                dataKey="Production [kW]" 
                 stroke="#2563eb" 
                 strokeWidth={2}
               />
@@ -146,7 +146,7 @@ const PVProductionChart = () => {
               <Tooltip />
               <Line 
                 type="monotone" 
-                dataKey="production" 
+                dataKey="Production [kW]" 
                 stroke="#2563eb" 
                 strokeWidth={2}
               />
