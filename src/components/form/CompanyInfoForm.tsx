@@ -12,12 +12,9 @@ interface CompanyInfoFormProps {
 }
 
 interface AddressSuggestion {
-  properties: {
-    label: string;
-    city: string;
-    postcode: string;
-    street: string;
-  };
+  display_name: string;
+  lat: string;
+  lon: string;
 }
 
 const CompanyInfoForm = ({ 
@@ -34,9 +31,17 @@ const CompanyInfoForm = ({
     
     if (value.length > 2) {
       try {
-        const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(value)}&limit=5`);
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}&limit=5`,
+          {
+            headers: {
+              'Accept': 'application/json',
+              'User-Agent': 'LovableEnergyApp/1.0' // Required by Nominatim's usage policy
+            }
+          }
+        );
         const data = await response.json();
-        setSuggestions(data.features || []);
+        setSuggestions(data || []);
         setShowSuggestions(true);
       } catch (error) {
         console.error('Error fetching address suggestions:', error);
@@ -49,7 +54,7 @@ const CompanyInfoForm = ({
   };
 
   const handleSelectAddress = (suggestion: AddressSuggestion) => {
-    onAddressChange(suggestion.properties.label);
+    onAddressChange(suggestion.display_name);
     setShowSuggestions(false);
   };
 
@@ -83,7 +88,7 @@ const CompanyInfoForm = ({
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   onClick={() => handleSelectAddress(suggestion)}
                 >
-                  {suggestion.properties.label}
+                  {suggestion.display_name}
                 </li>
               ))}
             </ul>
