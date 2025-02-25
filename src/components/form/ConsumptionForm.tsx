@@ -161,11 +161,11 @@ const ConsumptionForm = ({
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="yes" id="generation-yes" />
-                  <Label htmlFor="generation-yes">Net Load (after PV production)</Label>
+                  <Label htmlFor="generation-yes">After PV production</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="no" id="generation-no" />
-                  <Label htmlFor="generation-no">Gross Load (before PV production)</Label>
+                  <Label htmlFor="generation-no">Before PV production</Label>
                 </div>
               </RadioGroup>
             </div>
