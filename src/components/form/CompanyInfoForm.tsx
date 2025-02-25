@@ -32,11 +32,11 @@ const CompanyInfoForm = ({
     if (value.length > 2) {
       try {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}&limit=5`,
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value)}&countrycodes=de&limit=5`,
           {
             headers: {
               'Accept': 'application/json',
-              'User-Agent': 'LovableEnergyApp/1.0' // Required by Nominatim's usage policy
+              'User-Agent': 'LovableEnergyApp/1.0'
             }
           }
         );
