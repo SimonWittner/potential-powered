@@ -99,7 +99,7 @@ const SelfConsumptionBatteryCard = () => {
 
   const Metrics = {
     batterySize: batteryData?.evo_battery_size_kwh || 0,
-    additionalSelfConsumption: batteryData?.additional_own_consumption || 0,
+    additionalSelfConsumption: batteryData?.evo_increase_self_consumption_opt || 0,
     fullCycles: batteryData?.full_cycles || 0,
   };
 
@@ -143,8 +143,8 @@ const SelfConsumptionBatteryCard = () => {
               </TooltipProvider>
             </div>
             <p>Recommended Battery: <span className="font-bold">{batteryData?.evo_battery_size_kwh.toFixed(0) || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.evo_battery_size_kw.toFixed(0) || 0} kW</span></p>
-            <p>Additional Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
-            <p>Estimated Full Cycles per Year: {Metrics.fullCycles.toFixed(1)}</p>
+            <p>Increase Self-consumption: +{batteryData?.evo_increase_self_consumption_opt.toFixed(2) || 0}%</p>
+            <p>Estimated Full Cycles per Year: {batteryData?.evo_battery_cycles.toFixed(0) || 0}</p>
           </div>
         )}
       </div>
