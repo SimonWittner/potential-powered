@@ -154,18 +154,18 @@ const ConsumptionForm = ({
               />
             </div>
             <div className="space-y-2">
-              <Label>Load profile after PV generation (net metering with existing PV)?</Label>
+              <Label>Load profile after PV generation?</Label>
               <RadioGroup
                 onValueChange={(value) => setIncludesPVGeneration(value)}
                 className="flex space-x-4"
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="yes" id="generation-yes" />
-                  <Label htmlFor="generation-yes">Yes</Label>
+                  <Label htmlFor="generation-yes">Net Load (after PV production)</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="no" id="generation-no" />
-                  <Label htmlFor="generation-no">No</Label>
+                  <Label htmlFor="generation-no">Gross Load (before PV production)</Label>
                 </div>
               </RadioGroup>
             </div>
