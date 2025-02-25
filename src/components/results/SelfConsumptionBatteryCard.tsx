@@ -134,7 +134,7 @@ const SelfConsumptionBatteryCard = () => {
                       This is the perfect optimized battery. It is not necessarily existing in the market.
                       <br />
                       <br />
-                      <strong>Additional Self-consumption</strong>
+                      <strong>Increase Self-consumption</strong>
                       <br />
                       Additional self-consumption that this battery can provide. Value might be 0 or negative in case of no PV system (battery allowed to charge from grid).
                     </p>

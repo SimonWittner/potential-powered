@@ -143,7 +143,7 @@ const BatteryDesignCard = () => {
                       This is the perfect optimized battery. It is not necessarily existing in the market.
                       <br />
                       <br />
-                      <strong>Additional Self-consumption</strong>
+                      <strong>Increase Self-consumption</strong>
                       <br />
                       Additional self-consumption that this battery can provide. Value might be 0 or negative in case of no PV system (battery allowed to charge from grid).
                     </p>
@@ -152,7 +152,7 @@ const BatteryDesignCard = () => {
                 </TooltipProvider>
               </div>
               <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh.toFixed(0) || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw.toFixed(0) || 0} kW</span></p>
-              <p>Additional Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
+              <p>Increase Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
               <p>Estimated Full Cycles per Year: {Metrics.fullCycles.toFixed(0)}</p>
             </div>
             <div className="mt-6">
