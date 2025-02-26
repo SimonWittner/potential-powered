@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { useState } from "react"
 import { Upload, Info } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -29,6 +30,7 @@ const ConsumptionForm = ({
   const [hasExistingPV, setHasExistingPV] = useState<string>("");
   const [pvSize, setPvSize] = useState<string>("");
   const [includesPVGeneration, setIncludesPVGeneration] = useState<string>("");
+  const [previewData, setPreviewData] = useState<{ value: number }[]>([]);
 
   const validateCSVContent = async (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -40,6 +42,9 @@ const ConsumptionForm = ({
           toast.error("File must contain a single column with 8760 values in kW");
           resolve(false);
         } else {
+          // Create preview data
+          const values = rows.map(row => ({ value: parseFloat(row) }));
+          setPreviewData(values);
           resolve(true);
         }
       };
@@ -71,14 +76,9 @@ const ConsumptionForm = ({
         throw uploadError;
       }
 
-      // Only pass values if they are not empty strings
       const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
       const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
-      
-      // Always pass pvSize if hasExistingPV is "yes" and pvSize exists
       const parsedPvPeak = (hasExistingPV === "yes" && pvSize) ? parseFloat(pvSize) : undefined;
-      
-      // Pass loads_kw_is_net as false when user selects "no" for net metering
       const loadsKwIsNet = includesPVGeneration === "no" ? false : undefined;
 
       onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges, parsedPvPeak, loadsKwIsNet);
@@ -161,11 +161,11 @@ const ConsumptionForm = ({
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="yes" id="generation-yes" />
-                  <Label htmlFor="generation-yes">After PV production</Label>
+                  <Label htmlFor="generation-yes">Net Load (after PV production)</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="no" id="generation-no" />
-                  <Label htmlFor="generation-no">Before PV production</Label>
+                  <Label htmlFor="generation-no">Gross Load (before PV production)</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -267,6 +267,36 @@ const ConsumptionForm = ({
             )}
           </label>
         </div>
+
+        {previewData.length > 0 && (
+          <div className="mt-4 p-4 bg-white rounded-lg shadow">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Load Profile Preview</h3>
+            <div className="h-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={previewData}>
+                  <XAxis 
+                    tickFormatter={(value) => `${Math.round(value/365)}d`}
+                    label={{ value: 'Time', position: 'insideBottom', offset: -5 }}
+                  />
+                  <YAxis 
+                    label={{ value: 'Power (kW)', angle: -90, position: 'insideLeft', offset: 10 }}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [`${value.toFixed(2)} kW`, 'Power']}
+                    labelFormatter={(label) => `Hour ${label}`}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#2563eb" 
+                    dot={false}
+                    strokeWidth={1}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
