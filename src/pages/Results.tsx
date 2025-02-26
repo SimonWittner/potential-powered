@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Results = () => {
   const navigate = useNavigate();
-  const [interactivePlotUrl, setInteractivePlotUrl] = useState<string | null>(null);
+  const [interactivePlotHtml, setInteractivePlotHtml] = useState<string | null>(null);
 
   useEffect(() => {
     const analysisFileName = localStorage.getItem('analysisFileName');
@@ -34,14 +34,17 @@ const Results = () => {
     const fetchInteractivePlot = async () => {
       try {
         const fileId = analysisFileName?.replace(/\.[^/.]+$/, "");
-        const plotName = `plot_test.html`;
-        
-        const { data } = await supabase.storage
+        const { data, error } = await supabase.storage
           .from('analysis_results')
-          .createSignedUrl(plotName, 3600); // 1 hour expiry
+          .download('plot_test.html');
 
-        if (data?.signedUrl) {
-          setInteractivePlotUrl(data.signedUrl);
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          const html = await data.text();
+          setInteractivePlotHtml(html);
         }
       } catch (error) {
         console.error('Error fetching interactive plot:', error);
@@ -205,16 +208,13 @@ const Results = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <SelfConsumptionCostCard />
                     </div>
-                    {interactivePlotUrl && (
+                    {interactivePlotHtml && (
                       <Card className="p-6">
                         <h2 className="text-2xl font-semibold mb-4">Interactive Analysis</h2>
-                        <div className="w-full h-[600px] overflow-hidden">
-                          <iframe
-                            src={interactivePlotUrl}
-                            className="w-full h-full border-0"
-                            title="Interactive Analysis Plot"
-                          />
-                        </div>
+                        <div 
+                          className="w-full h-[600px] overflow-hidden"
+                          dangerouslySetInnerHTML={{ __html: interactivePlotHtml }}
+                        />
                       </Card>
                     )}
                   </div>
