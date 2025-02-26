@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,13 +21,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Results = () => {
   const navigate = useNavigate();
+  const [interactivePlotUrl, setInteractivePlotUrl] = useState<string | null>(null);
+
   useEffect(() => {
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       toast.error("No analysis found. Please start a new analysis.");
       navigate('/');
     }
+
+    // Fetch the interactive plot
+    const fetchInteractivePlot = async () => {
+      try {
+        const fileId = analysisFileName?.replace(/\.[^/.]+$/, "");
+        const plotName = `plot_test.html`;
+        
+        const { data } = await supabase.storage
+          .from('analysis_results')
+          .createSignedUrl(plotName, 3600); // 1 hour expiry
+
+        if (data?.signedUrl) {
+          setInteractivePlotUrl(data.signedUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching interactive plot:', error);
+      }
+    };
+
+    fetchInteractivePlot();
   }, [navigate]);
+
   const handleBack = () => {
     localStorage.removeItem('analysisFileName');
     localStorage.removeItem('electricityPrice');
@@ -35,6 +59,7 @@ const Results = () => {
     localStorage.removeItem('loadsKwIsNet');
     navigate('/');
   };
+
   const {
     data: analysis,
     isLoading,
@@ -58,6 +83,7 @@ const Results = () => {
       return data;
     }
   });
+
   const handleExport = async () => {
     try {
       console.log("Starting PDF export...");
@@ -95,16 +121,19 @@ const Results = () => {
       toast.error("Failed to generate PDF");
     }
   };
+
   if (isLoading) {
     return <div className="min-h-screen bg-black flex items-center justify-center">
       <div className="text-white">Loading analysis results...</div>
     </div>;
   }
+
   if (error) {
     return <div className="min-h-screen bg-black flex items-center justify-center">
       <div className="text-white">Error loading analysis results</div>
     </div>;
   }
+
   return <div className="pt-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex items-center">
@@ -176,6 +205,18 @@ const Results = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <SelfConsumptionCostCard />
                     </div>
+                    {interactivePlotUrl && (
+                      <Card className="p-6">
+                        <h2 className="text-2xl font-semibold mb-4">Interactive Analysis</h2>
+                        <div className="w-full h-[600px] overflow-hidden">
+                          <iframe
+                            src={interactivePlotUrl}
+                            className="w-full h-full border-0"
+                            title="Interactive Analysis Plot"
+                          />
+                        </div>
+                      </Card>
+                    )}
                   </div>
                 </Card>
               </TabsContent>
