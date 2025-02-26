@@ -275,8 +275,8 @@ const ConsumptionForm = ({
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={previewData}>
                   <XAxis 
-                    tickFormatter={(value) => `${Math.round(value/24)}d`}
                     label={{ value: 'Time', position: 'insideBottom', offset: -5 }}
+                    tick={false}
                   />
                   <YAxis 
                     label={{ value: 'Power (kW)', angle: -90, position: 'insideLeft', offset: 10 }}
