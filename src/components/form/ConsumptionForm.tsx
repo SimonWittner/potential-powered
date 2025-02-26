@@ -1,13 +1,13 @@
-
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import { useState } from "react"
-import { Upload, Info } from "lucide-react"
+import { Upload, Info, ZoomOut } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceArea } from 'recharts';
+import { Button } from "@/components/ui/button"
 
 interface ConsumptionFormProps {
   showElectricityPrice: boolean;
@@ -31,6 +31,12 @@ const ConsumptionForm = ({
   const [pvSize, setPvSize] = useState<string>("");
   const [includesPVGeneration, setIncludesPVGeneration] = useState<string>("");
   const [previewData, setPreviewData] = useState<{ value: number }[]>([]);
+  const [left, setLeft] = useState<number | null>(null);
+  const [right, setRight] = useState<number | null>(null);
+  const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
+  const [refAreaRight, setRefAreaRight] = useState<number | null>(null);
+  const [chartBottom, setChartBottom] = useState<number | undefined>(undefined);
+  const [chartTop, setChartTop] = useState<number | undefined>(undefined);
 
   const validateCSVContent = async (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -42,7 +48,6 @@ const ConsumptionForm = ({
           toast.error("File must contain a single column with 8760 values in kW");
           resolve(false);
         } else {
-          // Create preview data
           const values = rows.map(row => ({ value: parseFloat(row) }));
           setPreviewData(values);
           resolve(true);
@@ -118,6 +123,49 @@ const ConsumptionForm = ({
       await handleFile(file);
     }
     e.target.value = '';
+  };
+
+  const getAxisYDomain = (from: number, to: number) => {
+    const data = previewData.slice(from, to);
+    let [bottom, top] = [data[0]?.value ?? 0, data[0]?.value ?? 0];
+    
+    data.forEach((d) => {
+      if (d.value > top) top = d.value;
+      if (d.value < bottom) bottom = d.value;
+    });
+
+    return [bottom - (top - bottom) * 0.1, top + (top - bottom) * 0.1];
+  };
+
+  const zoom = () => {
+    if (refAreaLeft === null || refAreaRight === null) return;
+
+    let left = Math.min(refAreaLeft, refAreaRight);
+    let right = Math.max(refAreaLeft, refAreaRight);
+
+    if (right - left < 10) {
+      setRefAreaLeft(null);
+      setRefAreaRight(null);
+      return;
+    }
+
+    const [bottom, top] = getAxisYDomain(left, right);
+
+    setChartBottom(bottom);
+    setChartTop(top);
+    setLeft(left);
+    setRight(right);
+    setRefAreaLeft(null);
+    setRefAreaRight(null);
+  };
+
+  const zoomOut = () => {
+    setLeft(null);
+    setRight(null);
+    setRefAreaLeft(null);
+    setRefAreaRight(null);
+    setChartBottom(undefined);
+    setChartTop(undefined);
   };
 
   return (
@@ -231,6 +279,7 @@ const ConsumptionForm = ({
             </HoverCardContent>
           </HoverCard>
         </div>
+        
         <div
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
             dragActive 
@@ -270,15 +319,38 @@ const ConsumptionForm = ({
 
         {previewData.length > 0 && (
           <div className="mt-4 p-4 bg-white rounded-lg shadow">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Load Profile Preview</h3>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-sm font-medium text-gray-700">Load Profile Preview</h3>
+              {(left !== null || right !== null) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={zoomOut}
+                  className="flex items-center gap-1"
+                >
+                  <ZoomOut className="h-4 w-4" />
+                  Reset Zoom
+                </Button>
+              )}
+            </div>
             <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={previewData}>
+                <LineChart
+                  data={previewData}
+                  onMouseDown={(e) => e && setRefAreaLeft(e.activeLabel as number)}
+                  onMouseMove={(e) => refAreaLeft && e && setRefAreaRight(e.activeLabel as number)}
+                  onMouseUp={zoom}
+                >
                   <XAxis 
+                    allowDataOverflow
+                    domain={left !== null ? [left, right as number] : ['dataMin', 'dataMax']}
+                    type="number"
                     label={{ value: 'Time', position: 'insideBottom', offset: -5 }}
                     tick={false}
                   />
                   <YAxis 
+                    allowDataOverflow
+                    domain={chartBottom !== undefined ? [chartBottom, chartTop as number] : ['auto', 'auto']}
                     label={{ value: 'Power (kW)', angle: -90, position: 'insideLeft', offset: 10 }}
                   />
                   <Tooltip 
@@ -292,9 +364,19 @@ const ConsumptionForm = ({
                     dot={false}
                     strokeWidth={1}
                   />
+                  {refAreaLeft && refAreaRight && (
+                    <ReferenceArea
+                      x1={refAreaLeft}
+                      x2={refAreaRight}
+                      strokeOpacity={0.3}
+                      fill="#2563eb"
+                      fillOpacity={0.1}
+                    />
+                  )}
                 </LineChart>
               </ResponsiveContainer>
             </div>
+            <p className="text-xs text-gray-500 mt-2">Click and drag on the chart to zoom into a specific time range</p>
           </div>
         )}
       </div>
