@@ -162,8 +162,8 @@ const Results = () => {
 
               <TabsContent value="peak-shaving" className="mt-0">
                 <Card className="rounded-tl-none rounded-tr-none p-8 bg-white/95 backdrop-blur-sm">
-                  <div className="text-center py-12">
-                    <h3 className="text-xl font-medium text-gray-600">Work in progress</h3>
+                  <div className="grid grid-cols-1 gap-8">
+                    <SelfConsumptionBatteryCard />
                   </div>
                 </Card>
               </TabsContent>
