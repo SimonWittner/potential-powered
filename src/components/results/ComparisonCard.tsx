@@ -94,7 +94,7 @@ const ComparisonCard = () => {
     checkAndFetchPlots();
 
     // Set up polling interval to check for new files
-    const interval = setInterval(checkAndFetchPlots, 5000); // Check every 5 seconds
+    const interval = setInterval(checkAndFetchPlots, 1000); // Check every 5 seconds
 
     // Cleanup interval and object URLs on component unmount
     return () => {

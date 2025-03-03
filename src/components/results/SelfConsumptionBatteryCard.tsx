@@ -80,7 +80,7 @@ const SelfConsumptionBatteryCard = () => {
             console.log("Self-consumption battery design data fetched successfully, stopping polling");
             clearInterval(dataCheckInterval);
           }
-        }, 5000); // Check every 5 seconds
+        }, 1000); // Check every 5 seconds
       }
     };
 

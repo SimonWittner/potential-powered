@@ -80,7 +80,7 @@ const BatteryDesignCard = () => {
             console.log("Battery design data fetched successfully, stopping polling");
             clearInterval(dataCheckInterval);
           }
-        }, 5000); // Check every 5 seconds
+        }, 1000); // Check every 5 seconds
       }
     };
 
