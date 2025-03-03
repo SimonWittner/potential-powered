@@ -8,6 +8,7 @@ import ComparisonCard from "@/components/results/ComparisonCard";
 import CostsCard from "@/components/results/CostsCard";
 import ESGReportingCard from "@/components/results/ESGReportingCard";
 import SelfConsumptionBatteryCard from "@/components/results/SelfConsumptionBatteryCard";
+import PeakShavingBatteryCard from "@/components/results/PeakShavingBatteryCard";
 import SelfConsumptionComparisonCard from "@/components/results/SelfConsumptionComparisonCard";
 import SelfConsumptionCostCard from "@/components/results/SelfConsumptionCostCard";
 import { Card } from "@/components/ui/card";
@@ -163,7 +164,7 @@ const Results = () => {
               <TabsContent value="peak-shaving" className="mt-0">
                 <Card className="rounded-tl-none rounded-tr-none p-8 bg-white/95 backdrop-blur-sm">
                   <div className="grid grid-cols-1 gap-8">
-                    <SelfConsumptionBatteryCard />
+                    <PeakShavingBatteryCard />
                   </div>
                 </Card>
               </TabsContent>
