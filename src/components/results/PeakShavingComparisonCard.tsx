@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const PeakShavingComparisonCard = () => {
   const [evocomparisonLoadPlot, setEvoComparisonLoadPlot] = useState<string | null>(null);  
-  const [heatmapImage, setHeatmapImage] = useState<string | null>(null);
+  const [yearlyPeakLoadsPlot, setYearlyPeakLoadsPlot] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,32 +42,32 @@ const PeakShavingComparisonCard = () => {
           }
         }
 
-        // Check if heatmap exists
-        const heatmapName = `ps_heatmap_${fileId}.png`;
-        const { data: heatmapExists } = await supabase
+        // Check if yearly peak loads plot exists
+        const yearlyPeakLoadsName = `ps_yearly_peak_load_${fileId}.png`;
+        const { data: yearlyPeakLoadsExists } = await supabase
           .storage
           .from('analysis_results')
           .list('', {
-            search: heatmapName
+            search: yearlyPeakLoadsName
           });
 
-        if (heatmapExists && heatmapExists.length > 0) {
-          const { data: heatmapData } = await supabase
+        if (yearlyPeakLoadsExists && yearlyPeakLoadsExists.length > 0) {
+          const { data: yearlyPeakLoadsData } = await supabase
             .storage
             .from('analysis_results')
-            .download(heatmapName);
+            .download(yearlyPeakLoadsName);
           
-          if (heatmapData) {
-            const url = URL.createObjectURL(heatmapData);
-            console.log("Successfully fetched and created URL for peak shaving heatmap:", url);
-            setHeatmapImage(url);
+          if (yearlyPeakLoadsData) {
+            const url = URL.createObjectURL(yearlyPeakLoadsData);
+            console.log("Successfully fetched and created URL for yearly peak loads plot:", url);
+            setYearlyPeakLoadsPlot(url);
             setIsLoading(false);
             return true;
           }
         }
         return false;
       } catch (error) {
-        console.error("Error fetching peak shaving heatmap:", error);
+        console.error("Error fetching peak shaving plots:", error);
         return false;
       }
     };
@@ -82,7 +82,7 @@ const PeakShavingComparisonCard = () => {
     return () => {
       clearInterval(interval);
       if (evocomparisonLoadPlot) URL.revokeObjectURL(evocomparisonLoadPlot);
-      if (heatmapImage) URL.revokeObjectURL(heatmapImage);
+      if (yearlyPeakLoadsPlot) URL.revokeObjectURL(yearlyPeakLoadsPlot);
     };
   }, []); // Empty dependency array means this runs once when component mounts
 
@@ -108,24 +108,24 @@ const PeakShavingComparisonCard = () => {
         )}
       </div>
 
-      {/* Investment Costs */}
+      {/* Yearly Peak Loads */}
       <div className="w-full overflow-hidden bg-white rounded-lg p-6">
-        <h3 className="text-lg font-medium mb-4">Investment Costs</h3>
+        <h3 className="text-lg font-medium mb-4">Yearly Peak Loads</h3>
         {isLoading ? (
           <div className="w-full h-[500px] flex items-center justify-center">
-            <p className="text-gray-500">Loading investment costs heatmap plot...</p>
+            <p className="text-gray-500">Loading yearly peak loads plot...</p>
           </div>
         ) : (
           <div className="w-full h-[500px]">
-            {heatmapImage ? (
+            {yearlyPeakLoadsPlot ? (
               <img 
-                src={heatmapImage} 
-                alt="Peak Shaving Heatmap" 
+                src={yearlyPeakLoadsPlot} 
+                alt="Yearly Peak Loads" 
                 className="w-full h-full object-contain"
               />
             ) : (
               <p className="text-gray-500 flex items-center justify-center h-full">
-                No heatmap available
+                No yearly peak loads plot available
               </p>
             )}
           </div>
