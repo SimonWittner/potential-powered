@@ -137,7 +137,7 @@ const PeakShavingBatteryCard = () => {
               </TooltipProvider>
             </div>
             <p>Recommended Battery: <span className="font-bold">{batteryData?.ps_battery_size_kwh?.toFixed(0) || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.ps_battery_size_kw?.toFixed(0) || 0} kW</span></p>
-            <p>Peak Reduction: {batteryData?.ps_peak_reduction?.toFixed(2) || 0} kW</p>
+            <p>Peak Reduction: {batteryData?.ps_peak_reduction?.toFixed(1) || 0} kW</p>
             <p>Estimated Full Cycles per Year: {batteryData?.ps_battery_cycles?.toFixed(0) || 0}</p>
           </div>
         )}
