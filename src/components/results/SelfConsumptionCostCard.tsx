@@ -137,10 +137,6 @@ const SelfConsumptionCostCard = () => {
                   <span className="font-medium text-green-600">{costs.savings.paybackTime.toFixed(2)} years</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>Yearly Electricity Price Savings</span>
-                  <span className="font-medium text-green-600">{costs.savings.yearlyWorkingSavings.toFixed(2)} €/year</span>
-                </div>
-                <div className="flex justify-between items-center">
                   <span>Total Yearly Savings</span>
                   <span className="font-medium text-green-600">{costs.savings.yearlySavings.toFixed(2)} €/year</span>
                 </div>

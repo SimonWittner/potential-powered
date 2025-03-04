@@ -96,8 +96,8 @@ const PeakShavingCostCard = () => {
     },
     savings: {
       paybackTime: batteryData?.ps_simple_payback_period || 0,
-      yearlyWorkingSavings: batteryData?.ps_yearly_working_savings_manual || 0,
-      yearlySavings: batteryData?.ps_yearly_working_savings_manual || 0,
+      yearlyDemandSavings: batteryData?.ps_yearly_savings_manual || 0,
+      yearlySavings: batteryData?.ps_yearly_savings_manual || 0,
     }
   };
 
@@ -135,10 +135,6 @@ const PeakShavingCostCard = () => {
                 <div className="flex justify-between items-center">
                   <span>Simple Payback Time</span>
                   <span className="font-medium text-green-600">{costs.savings.paybackTime.toFixed(2)} years</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Yearly Electricity Price Savings</span>
-                  <span className="font-medium text-green-600">{costs.savings.yearlyWorkingSavings.toFixed(2)} €/year</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Total Yearly Savings</span>
