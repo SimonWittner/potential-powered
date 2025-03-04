@@ -12,6 +12,7 @@ import PeakShavingBatteryCard from "@/components/results/PeakShavingBatteryCard"
 import SelfConsumptionComparisonCard from "@/components/results/SelfConsumptionComparisonCard";
 import PeakShavingComparisonCard from "@/components/results/PeakShavingComparisonCard";
 import SelfConsumptionCostCard from "@/components/results/SelfConsumptionCostCard";
+import PeakShavingCostCard from "@/components/results/PeakShavingCostCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download } from "lucide-react";
@@ -167,6 +168,9 @@ const Results = () => {
                   <div className="grid grid-cols-1 gap-8">
                     <PeakShavingBatteryCard />
                     <PeakShavingComparisonCard />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <PeakShavingCostCard />
+                    </div>
                   </div>
                 </Card>
               </TabsContent>
