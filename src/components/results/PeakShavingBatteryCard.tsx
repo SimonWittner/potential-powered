@@ -35,7 +35,7 @@ const PeakShavingBatteryCard = () => {
 
     const checkAndFetchData = async () => {
       try {
-        // Check if data file exists - using ps_data prefix for peak shaving
+        // Check if data file exists- using ps_data prefix for peak shaving
         const fileName = `ps_data_${fileId}.json`;
         const { data: fileExists } = await supabase
           .storage
