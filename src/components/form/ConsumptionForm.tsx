@@ -58,7 +58,7 @@ const ConsumptionForm = ({
     if (file.type !== "text/csv") {
       toast.error("Please upload a CSV file");
       return;
-    }
+    } 
 
     const isValid = await validateCSVContent(file);
     if (!isValid) return;
