@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +18,14 @@ const BatteryDesignCard = () => {
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
+      return;
+    }
+
+    // Check if this tab has already been loaded
+    const revenueStackingLoaded = localStorage.getItem('revenueStackingLoaded');
+    if (revenueStackingLoaded === 'true' && batteryData) {
+      setIsLoading(false);
+      setProgress(100);
       return;
     }
 
@@ -57,6 +64,8 @@ const BatteryDesignCard = () => {
             setBatteryData(parsedData);
             setIsLoading(false);
             setProgress(100);
+            // Mark this tab as loaded
+            localStorage.setItem('revenueStackingLoaded', 'true');
             return true;
           }
         }
@@ -80,14 +89,14 @@ const BatteryDesignCard = () => {
             console.log("Battery design data fetched successfully, stopping polling");
             clearInterval(dataCheckInterval);
           }
-        }, 1000); // Check every 5 seconds
+        }, 1000); // Check every second
       }
     };
 
     // Start the initial check after a delay to allow for data processing
     const timer = setTimeout(() => {
       startPolling();
-    }, 5000); // 15 seconds delay
+    }, 5000); // 5 seconds delay
 
     // Cleanup
     return () => {
@@ -152,8 +161,8 @@ const BatteryDesignCard = () => {
                 </TooltipProvider>
               </div>
               <p>Recommended Battery: <span className="font-bold">{batteryData?.battery_size_kwh.toFixed(0) || 0} kWh </span> <span className="mx-2">|</span> <span className="font-bold">{batteryData?.battery_size_kw.toFixed(0) || 0} kW</span></p>
-              <p>Increase Self-consumption: +{Metrics.additionalSelfConsumption.toFixed(2)}%</p>
-              <p>Estimated Full Cycles per Year: {Metrics.fullCycles.toFixed(0)}</p>
+              <p>Increase Self-consumption: +{batteryData?.additional_own_consumption.toFixed(2) || 0}%</p>
+              <p>Estimated Full Cycles per Year: {batteryData?.full_cycles.toFixed(0) || 0}</p>
             </div>
             <div className="mt-6">
               <h3 className="text-lg font-medium mb-2">Scenario Comparison</h3>
@@ -169,7 +178,7 @@ const BatteryDesignCard = () => {
                     <span className="mx-2">|</span> 
                     {batteryData ? (batteryData.battery_size_kw * 1.073).toFixed(0) : "0.00"} kW
                   </p>
-                  <p>Increase Self-Consumption: +{(Metrics.additionalSelfConsumption * 1.135).toFixed(2)}%</p>
+                  <p>Increase Self-Consumption: +{batteryData ? (batteryData.additional_own_consumption * 1.135).toFixed(2) : "0.00"}%</p>
                 </div>
               </div>
             </div>

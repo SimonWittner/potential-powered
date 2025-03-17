@@ -22,6 +22,14 @@ const SelfConsumptionBatteryCard = () => {
       return;
     }
 
+    // Check if this tab has already been loaded
+    const selfConsumptionLoaded = localStorage.getItem('selfConsumptionLoaded');
+    if (selfConsumptionLoaded === 'true' && batteryData) {
+      setIsLoading(false);
+      setProgress(100);
+      return;
+    }
+
     // Remove file extension from analysisFileName if it exists
     const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
 
@@ -57,6 +65,8 @@ const SelfConsumptionBatteryCard = () => {
             setBatteryData(parsedData);
             setIsLoading(false);
             setProgress(100);
+            // Mark this tab as loaded
+            localStorage.setItem('selfConsumptionLoaded', 'true');
             return true;
           }
         }
@@ -80,7 +90,7 @@ const SelfConsumptionBatteryCard = () => {
             console.log("Self-consumption battery design data fetched successfully, stopping polling");
             clearInterval(dataCheckInterval);
           }
-        }, 1000); // Check every 5 seconds
+        }, 1000); // Check every second
       }
     };
 
