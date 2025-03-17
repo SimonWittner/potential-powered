@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -78,7 +77,16 @@ const ConsumptionForm = ({
 
       const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
       const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
-      const parsedPvPeak = (hasExistingPV === "yes" && pvSize) ? parseFloat(pvSize) : undefined;
+      const parsedPvPeak = (hasExistingPV === "yes" && pvSize) 
+        ? Number(pvSize.replace(',', '.'))
+        : undefined;
+
+      // Validate the result
+      if (parsedPvPeak !== undefined && isNaN(parsedPvPeak)) {
+        toast.error("Invalid PV size value");
+        return;
+      }
+
       const loadsKwIsNet = includesPVGeneration === "no" ? false : undefined;
 
       onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges, parsedPvPeak, loadsKwIsNet);
