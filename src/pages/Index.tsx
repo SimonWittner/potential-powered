@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,11 +22,43 @@ const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
+    // Clear all cached data when this component is mounted, except for analysisFileName
     const existingAnalysis = localStorage.getItem('analysisFileName');
+    
+    // Check if a completed analysis exists
     if (existingAnalysis) {
       navigate('/results');
+    } else {
+      // Clear all cached data that could be stored from previous analyses
+      clearAllCachedData();
     }
   }, [navigate]);
+
+  // Function to clear all cached data from localStorage
+  const clearAllCachedData = () => {
+    // List of all the keys that store cached data
+    const cacheKeys = [
+      'esgReportingData',
+      'peakShavingCostData',
+      'selfConsumptionCostData',
+      'peakShavingBatteryData',
+      'selfConsumptionBatteryData',
+      'revenueCostsData',
+      'revenueStackingBatteryData',
+      'peakShavingProgress',
+      'selfConsumptionProgress',
+      'revenueStackingProgress',
+      'peakShavingLoaded',
+      'selfConsumptionLoaded',
+      'revenueStackingLoaded',
+      'resultsLoadingComplete'
+    ];
+    
+    // Remove each cached item
+    cacheKeys.forEach(key => localStorage.removeItem(key));
+    
+    console.log('All cached data cleared');
+  };
 
   const handleAddressChange = async (value: string) => {
     setAddress(value);
