@@ -1,7 +1,7 @@
-
 import { Card } from "@/components/ui/card"
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Progress } from "@/components/ui/progress";
 
 const PeakShavingCostCard = () => {
   const [batteryData, setBatteryData] = useState<any>(null);
@@ -123,12 +123,7 @@ const PeakShavingCostCard = () => {
       <div className="space-y-6">
         {isLoading ? (
           <div className="w-full">
-            <div className="relative w-full h-4 bg-gray-200 rounded">
-              <div
-                className="absolute top-0 left-0 h-full bg-blue-500 rounded"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
+            <Progress value={progress} className="h-4" />
             <p className="mt-2 text-gray-500">
               Loading costs data... {Math.floor(progress)}%
             </p>

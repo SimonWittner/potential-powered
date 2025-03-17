@@ -1,7 +1,7 @@
-
 import { Card } from "@/components/ui/card"
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Progress } from "@/components/ui/progress";
 
 const ESGReportingCard = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
@@ -108,12 +108,7 @@ const ESGReportingCard = () => {
       <div className="space-y-6">
         {!shouldFetch ? (
           <div className="w-full">
-            <div className="relative w-full h-4 bg-gray-200 rounded">
-              <div
-                className="absolute top-0 left-0 h-full bg-blue-500 rounded"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
+            <Progress value={progress} className="h-4" />
             <p className="mt-2 text-gray-500">
               Loading ESG data... {Math.floor(progress)}%
             </p>
