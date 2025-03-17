@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Info } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
   TooltipContent,
@@ -24,10 +25,14 @@ const SelfConsumptionBatteryCard = () => {
 
     // Check if this tab has already been loaded
     const selfConsumptionLoaded = localStorage.getItem('selfConsumptionLoaded');
+    const storedProgress = localStorage.getItem('selfConsumptionProgress');
+    
     if (selfConsumptionLoaded === 'true' && batteryData) {
       setIsLoading(false);
       setProgress(100);
       return;
+    } else if (storedProgress) {
+      setProgress(Number(storedProgress));
     }
 
     // Remove file extension from analysisFileName if it exists
@@ -37,7 +42,9 @@ const SelfConsumptionBatteryCard = () => {
     const interval = setInterval(() => {
       setProgress((prev) => {
         const nextProgress = prev + (100 / 15); // Increment progress every second
-        return nextProgress >= 100 ? 100 : nextProgress;
+        const cappedProgress = nextProgress >= 100 ? 100 : nextProgress;
+        localStorage.setItem('selfConsumptionProgress', cappedProgress.toString());
+        return cappedProgress;
       });
     }, 1000); // Update progress every second
 
@@ -65,6 +72,7 @@ const SelfConsumptionBatteryCard = () => {
             setBatteryData(parsedData);
             setIsLoading(false);
             setProgress(100);
+            localStorage.setItem('selfConsumptionProgress', '100');
             // Mark this tab as loaded
             localStorage.setItem('selfConsumptionLoaded', 'true');
             return true;
@@ -107,24 +115,13 @@ const SelfConsumptionBatteryCard = () => {
     };
   }, []);
 
-  const Metrics = {
-    batterySize: batteryData?.evo_battery_size_kwh || 0,
-    additionalSelfConsumption: batteryData?.evo_increase_self_consumption_opt || 0,
-    fullCycles: batteryData?.full_cycles || 0,
-  };
-
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-semibold mb-4">Battery Design</h2>
       <div className="space-y-4">
         {isLoading ? (
           <div className="w-full">
-            <div className="relative w-full h-4 bg-gray-200 rounded">
-              <div
-                className="absolute top-0 left-0 h-full bg-blue-500 rounded"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
+            <Progress value={progress} className="h-4" />
             <p className="mt-2 text-gray-500">
               Loading battery design data... {Math.floor(progress)}%
             </p>
