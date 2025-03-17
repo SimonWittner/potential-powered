@@ -9,6 +9,15 @@ const ESGReportingCard = () => {
   const [batteryData, setBatteryData] = useState<any>(null);
 
   useEffect(() => {
+    // Check if data was already loaded
+    const cachedData = localStorage.getItem('esgReportingData');
+    if (cachedData) {
+      setBatteryData(JSON.parse(cachedData));
+      setShouldFetch(true);
+      setProgress(100);
+      return;
+    }
+
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
@@ -18,7 +27,7 @@ const ESGReportingCard = () => {
     // Remove file extension from analysisFileName if it exists
     const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
 
-    console.log("Starting 15-second delay before fetching ESG data...");
+    console.log("Starting fetch for ESG data...");
     const interval = setInterval(() => {
       setProgress((prev) => {
         const nextProgress = prev + (100 / 15); // Increment progress every second
@@ -48,6 +57,10 @@ const ESGReportingCard = () => {
             const parsedData = JSON.parse(jsonData);
             console.log("ESG data received:", parsedData);
             setBatteryData(parsedData);
+            
+            // Cache the data to prevent future loading
+            localStorage.setItem('esgReportingData', jsonData);
+            
             setShouldFetch(true);
             setProgress(100);
             return true;
@@ -60,16 +73,22 @@ const ESGReportingCard = () => {
       }
     };
 
-    // Start the initial check after a delay to allow for data processing
-    const timer = setTimeout(async () => {
-      console.log("Delay complete, initiating ESG data fetch");
-      await checkAndFetchData();
-      clearInterval(interval);
-    }, 8000); // 15 seconds
+    // Initial check
+    checkAndFetchData();
 
+    // Set up polling interval to check for new data
+    const dataCheckInterval = setInterval(async () => {
+      const success = await checkAndFetchData();
+      if (success) {
+        console.log("ESG data fetched successfully, stopping polling");
+        clearInterval(dataCheckInterval);
+      }
+    }, 5000); // Check every 5 seconds
+
+    // Cleanup
     return () => {
-      clearTimeout(timer);
       clearInterval(interval);
+      clearInterval(dataCheckInterval);
     };
   }, []);
 

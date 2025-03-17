@@ -17,6 +17,15 @@ const SelfConsumptionBatteryCard = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Check if data was already loaded
+    const cachedData = localStorage.getItem('selfConsumptionBatteryData');
+    if (cachedData) {
+      setBatteryData(JSON.parse(cachedData));
+      setIsLoading(false);
+      setProgress(100);
+      return;
+    }
+
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
@@ -70,6 +79,10 @@ const SelfConsumptionBatteryCard = () => {
             const parsedData = JSON.parse(jsonData);
             console.log("Self-consumption battery design data received:", parsedData);
             setBatteryData(parsedData);
+            
+            // Cache the data to prevent future loading
+            localStorage.setItem('selfConsumptionBatteryData', jsonData);
+            
             setIsLoading(false);
             setProgress(100);
             localStorage.setItem('selfConsumptionProgress', '100');

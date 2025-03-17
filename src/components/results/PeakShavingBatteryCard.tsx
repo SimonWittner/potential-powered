@@ -17,6 +17,15 @@ const PeakShavingBatteryCard = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Check if data was already loaded
+    const cachedData = localStorage.getItem('peakShavingBatteryData');
+    if (cachedData) {
+      setBatteryData(JSON.parse(cachedData));
+      setIsLoading(false);
+      setProgress(100);
+      return;
+    }
+
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
@@ -70,6 +79,10 @@ const PeakShavingBatteryCard = () => {
             const parsedData = JSON.parse(jsonData);
             console.log("Peak shaving battery design data received:", parsedData);
             setBatteryData(parsedData);
+            
+            // Cache the data to prevent future loading
+            localStorage.setItem('peakShavingBatteryData', jsonData);
+            
             setIsLoading(false);
             setProgress(100);
             localStorage.setItem('peakShavingProgress', '100');
