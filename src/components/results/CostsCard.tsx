@@ -9,6 +9,18 @@ const CostsCard = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Reset progress at start
+    setProgress(0);
+    
+    // Check if data was already loaded
+    const cachedData = localStorage.getItem('revenueCostsData');
+    if (cachedData) {
+      setBatteryData(JSON.parse(cachedData));
+      setIsLoading(false);
+      setProgress(100);
+      return;
+    }
+
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       console.error("No analysis file name found");
@@ -48,6 +60,10 @@ const CostsCard = () => {
             const parsedData = JSON.parse(jsonData);
             console.log("Costs data received:", parsedData);
             setBatteryData(parsedData);
+            
+            // Cache the data to prevent future loading
+            localStorage.setItem('revenueCostsData', jsonData);
+            
             setIsLoading(false);
             setProgress(100);
             return true;
@@ -73,14 +89,14 @@ const CostsCard = () => {
             console.log("Costs data fetched successfully, stopping polling");
             clearInterval(dataCheckInterval);
           }
-        }, 1000); // Check every 5 seconds
+        }, 1000); // Check every second
       }
     };
 
     // Start the initial check after a delay to allow for data processing
     const timer = setTimeout(() => {
       startPolling();
-    }, 15000); // 15 seconds delay
+    }, 5000); // 5 seconds delay
 
     // Cleanup
     return () => {

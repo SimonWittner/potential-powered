@@ -1,3 +1,4 @@
+
 import { Progress } from "@/components/ui/progress"
 import { useEffect, useState } from "react"
 
@@ -5,6 +6,9 @@ const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Reset progress at the start
+    setProgress(0);
+    
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {

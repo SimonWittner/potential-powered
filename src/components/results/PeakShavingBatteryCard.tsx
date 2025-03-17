@@ -17,6 +17,9 @@ const PeakShavingBatteryCard = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Reset progress initially
+    setProgress(0);
+    
     // Check if data was already loaded
     const cachedData = localStorage.getItem('peakShavingBatteryData');
     if (cachedData) {
@@ -32,18 +35,9 @@ const PeakShavingBatteryCard = () => {
       return;
     }
 
-    // Check if this tab has already been loaded
-    const peakShavingLoaded = localStorage.getItem('peakShavingLoaded');
-    const storedProgress = localStorage.getItem('peakShavingProgress');
+    // Remove stored progress to get fresh loading bar
+    localStorage.removeItem('peakShavingProgress');
     
-    if (peakShavingLoaded === 'true' && batteryData) {
-      setIsLoading(false);
-      setProgress(100);
-      return;
-    } else if (storedProgress) {
-      setProgress(Number(storedProgress));
-    }
-
     // Remove file extension from analysisFileName if it exists
     const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
 

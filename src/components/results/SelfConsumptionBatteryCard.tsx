@@ -17,6 +17,9 @@ const SelfConsumptionBatteryCard = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Reset progress initially
+    setProgress(0);
+    
     // Check if data was already loaded
     const cachedData = localStorage.getItem('selfConsumptionBatteryData');
     if (cachedData) {
@@ -32,18 +35,9 @@ const SelfConsumptionBatteryCard = () => {
       return;
     }
 
-    // Check if this tab has already been loaded
-    const selfConsumptionLoaded = localStorage.getItem('selfConsumptionLoaded');
-    const storedProgress = localStorage.getItem('selfConsumptionProgress');
+    // Remove stored progress to get fresh loading bar
+    localStorage.removeItem('selfConsumptionProgress');
     
-    if (selfConsumptionLoaded === 'true' && batteryData) {
-      setIsLoading(false);
-      setProgress(100);
-      return;
-    } else if (storedProgress) {
-      setProgress(Number(storedProgress));
-    }
-
     // Remove file extension from analysisFileName if it exists
     const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
 

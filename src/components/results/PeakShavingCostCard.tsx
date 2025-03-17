@@ -9,6 +9,9 @@ const PeakShavingCostCard = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Reset progress at start
+    setProgress(0);
+    
     // Check if data was already loaded
     const cachedData = localStorage.getItem('peakShavingCostData');
     if (cachedData) {

@@ -17,6 +17,9 @@ const BatteryDesignCard = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Reset progress initially
+    setProgress(0);
+    
     // Check if data was already loaded
     const cachedData = localStorage.getItem('revenueStackingBatteryData');
     if (cachedData) {
@@ -32,18 +35,9 @@ const BatteryDesignCard = () => {
       return;
     }
 
-    // Check if this tab has already been loaded
-    const revenueStackingLoaded = localStorage.getItem('revenueStackingLoaded');
-    const storedProgress = localStorage.getItem('revenueStackingProgress');
+    // Remove stored progress to get fresh loading bar
+    localStorage.removeItem('revenueStackingProgress');
     
-    if (revenueStackingLoaded === 'true' && batteryData) {
-      setIsLoading(false);
-      setProgress(100);
-      return;
-    } else if (storedProgress) {
-      setProgress(Number(storedProgress));
-    }
-
     // Remove file extension from analysisFileName if it exists
     const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
 

@@ -6,7 +6,10 @@ const ResultsLoading = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Set a fixed value for loaded progress if already loaded before
+    // Reset progress if showing loading screen again
+    setProgress(0);
+    
+    // Only animate if not already loaded
     const loadedValue = localStorage.getItem('resultsLoadingComplete');
     if (loadedValue === 'true') {
       setProgress(100);

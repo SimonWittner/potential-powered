@@ -9,6 +9,9 @@ const ESGReportingCard = () => {
   const [batteryData, setBatteryData] = useState<any>(null);
 
   useEffect(() => {
+    // Reset progress at start
+    setProgress(0);
+    
     // Check if data was already loaded
     const cachedData = localStorage.getItem('esgReportingData');
     if (cachedData) {
