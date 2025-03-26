@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -113,31 +112,41 @@ const Layout = ({
     console.log('All cached data cleared');
   };
   
-  return <div className="min-h-screen bg-[#1A0F0F]">
-      <header className="fixed top-0 right-0 left-0 z-50 bg-black">
-        <div className="flex items-center justify-between px-4 py-2">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
-              <Home className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
-              <BookOpen className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80">
-              <LogOut className="h-5 w-5" />
-            </Button>
-            <button onClick={handleLogoClick}>
-              <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
-            </button>
-          </div>
+  return (
+    <div className="min-h-screen bg-[#1A0F0F] flex">
+      {/* Vertical sidebar */}
+      <aside className="fixed left-0 top-0 bottom-0 w-16 bg-black flex flex-col items-center py-4 z-50">
+        <div className="flex flex-col items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
+            <Home className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
+            <BookOpen className="h-5 w-5" />
+          </Button>
         </div>
-      </header>
-      <main>
-        {children}
-      </main>
-    </div>;
+        <div className="mt-auto">
+          <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80">
+            <LogOut className="h-5 w-5" />
+          </Button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <div className="flex flex-col flex-1 ml-16">
+        {/* Logo in top right */}
+        <div className="fixed top-0 right-0 p-4 z-50">
+          <button onClick={handleLogoClick}>
+            <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
+          </button>
+        </div>
+
+        {/* Main content with padding to accommodate the logo */}
+        <main className="flex-1 pt-16">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default Layout;
