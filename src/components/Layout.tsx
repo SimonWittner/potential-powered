@@ -137,9 +137,9 @@ const Layout = ({
         {userEmail && (
           <div className="flex items-center gap-2 pr-6">
             <span className="text-sm font-medium text-gray-700">{userEmail}</span>
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-8 w-8 bg-gray-200">
               <AvatarFallback>
-                <User className="h-4 w-4" />
+                <User className="h-4 w-4 text-gray-700" />
               </AvatarFallback>
             </Avatar>
           </div>
