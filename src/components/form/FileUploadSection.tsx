@@ -50,7 +50,7 @@ const FileUploadSection = ({
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Label>Load Profile Upload</Label>
-        <HoverCard>
+        <HoverCard delayDuration={100}>
           <HoverCardTrigger asChild>
             <button className="inline-flex items-center justify-center rounded-full w-4 h-4 hover:bg-gray-100">
               <Info className="h-3 w-3 text-gray-500" />
