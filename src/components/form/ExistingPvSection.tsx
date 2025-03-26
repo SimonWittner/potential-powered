@@ -45,7 +45,7 @@ const ExistingPvSection = ({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Do you have an existing PV?</Label>
+        <Label>PV existing or planned?</Label>
         <RadioGroup
           onValueChange={handleHasExistingPvChange}
           className="flex space-x-4"
