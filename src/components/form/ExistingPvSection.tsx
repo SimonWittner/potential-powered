@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Info } from "lucide-react";
 
 interface ExistingPvSectionProps {
   onPvSizeChange: (value: string) => void;
@@ -45,7 +47,17 @@ const ExistingPvSection = ({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>PV existing or planned?</Label>
+        <div className="flex items-center space-x-2">
+          <Label>PV existing or planned?</Label>
+          <HoverCard openDelay={0}>
+            <HoverCardTrigger asChild>
+              <Info className="h-4 w-4 text-gray-500 cursor-help" />
+            </HoverCardTrigger>
+            <HoverCardContent className="text-sm">
+              Add you PV input here.
+            </HoverCardContent>
+          </HoverCard>
+        </div>
         <RadioGroup
           onValueChange={handleHasExistingPvChange}
           className="flex space-x-4"
