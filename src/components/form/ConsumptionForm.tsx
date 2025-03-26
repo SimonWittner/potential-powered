@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
@@ -120,7 +119,7 @@ const ConsumptionForm = ({
 
   return (
     <div className="grid grid-cols-2 gap-8">
-      <div className="space-y-4">
+      <div className="space-y-8">
         <ExistingPvSection 
           onPvSizeChange={handlePvSizeChange}
           onHasExistingPvChange={handleHasExistingPvChange}
