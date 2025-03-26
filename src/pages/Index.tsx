@@ -262,16 +262,6 @@ const Index = () => {
     <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-[#F1F1F1]">
       <div className="max-w-7xl mx-auto">
         <div className="space-y-8 animate-fade-in">
-          <div className="flex justify-end mb-4">
-            <Button
-              className="w-2/3"
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
-            >
-              {isAnalyzing ? "Analyzing..." : "Analyse"}
-            </Button>
-          </div>
-          
           <Card className="rounded-xl shadow-md overflow-hidden bg-white">
             <CardContent className="p-8">
               <div className="space-y-8">
@@ -296,11 +286,19 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <AnalysisDialog
-            open={showAnalysisDialog}
-            onOpenChange={setShowAnalysisDialog}
-          />
+          <Button
+            className="w-full"
+            onClick={handleAnalyze}
+            disabled={isAnalyzing}
+          >
+            {isAnalyzing ? "Analyzing..." : "Analyse"}
+          </Button>
         </div>
+
+        <AnalysisDialog
+          open={showAnalysisDialog}
+          onOpenChange={setShowAnalysisDialog}
+        />
       </div>
     </div>
   );
