@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -259,37 +258,35 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-black">
+    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-white/95">
       <div className="max-w-7xl mx-auto">
-        <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in mb-12">
-          <div className="space-y-8">
-            <CompanyInfoForm
-              address={address}
-              onAddressChange={handleAddressChange}
-              companyName={companyName}
-              onCompanyNameChange={handleCompanyNameChange}
-            />
+        <div className="space-y-8 animate-fade-in">
+          <CompanyInfoForm
+            address={address}
+            onAddressChange={handleAddressChange}
+            companyName={companyName}
+            onCompanyNameChange={handleCompanyNameChange}
+          />
 
-            <ConsumptionForm
-              showElectricityPrice={showElectricityPrice}
-              showLoadProfileUpload={showLoadProfileUpload}
-              showYearlyConsumption={showYearlyConsumption}
-              onElectricityPriceChange={handleElectricityPriceChange}
-              onLoadProfileChange={handleLoadProfileChange}
-              onFileUpload={handleFileUpload}
-              onExistingPVChange={handleExistingPVChange}
-              onPVSizeChange={handlePVSizeChange}
-            />
+          <ConsumptionForm
+            showElectricityPrice={showElectricityPrice}
+            showLoadProfileUpload={showLoadProfileUpload}
+            showYearlyConsumption={showYearlyConsumption}
+            onElectricityPriceChange={handleElectricityPriceChange}
+            onLoadProfileChange={handleLoadProfileChange}
+            onFileUpload={handleFileUpload}
+            onExistingPVChange={handleExistingPVChange}
+            onPVSizeChange={handlePVSizeChange}
+          />
 
-            <Button
-              className="w-full"
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
-            >
-              {isAnalyzing ? "Analyzing..." : "Analyse"}
-            </Button>
-          </div>
-        </Card>
+          <Button
+            className="w-full"
+            onClick={handleAnalyze}
+            disabled={isAnalyzing}
+          >
+            {isAnalyzing ? "Analyzing..." : "Analyse"}
+          </Button>
+        </div>
 
         <AnalysisDialog
           open={showAnalysisDialog}
