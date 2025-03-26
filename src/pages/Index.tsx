@@ -8,6 +8,7 @@ import CompanyInfoForm from "@/components/form/CompanyInfoForm";
 import ConsumptionForm from "@/components/form/ConsumptionForm";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "@/config/api";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -259,26 +260,34 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-white">
+    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-[#F1F1F1]">
       <div className="max-w-7xl mx-auto">
         <div className="space-y-8 animate-fade-in">
-          <CompanyInfoForm
-            address={address}
-            onAddressChange={handleAddressChange}
-            companyName={companyName}
-            onCompanyNameChange={handleCompanyNameChange}
-          />
+          <Card className="rounded-xl shadow-md overflow-hidden">
+            <CardContent className="p-6">
+              <CompanyInfoForm
+                address={address}
+                onAddressChange={handleAddressChange}
+                companyName={companyName}
+                onCompanyNameChange={handleCompanyNameChange}
+              />
+            </CardContent>
+          </Card>
 
-          <ConsumptionForm
-            showElectricityPrice={showElectricityPrice}
-            showLoadProfileUpload={showLoadProfileUpload}
-            showYearlyConsumption={showYearlyConsumption}
-            onElectricityPriceChange={handleElectricityPriceChange}
-            onLoadProfileChange={handleLoadProfileChange}
-            onFileUpload={handleFileUpload}
-            onExistingPVChange={handleExistingPVChange}
-            onPVSizeChange={handlePVSizeChange}
-          />
+          <Card className="rounded-xl shadow-md overflow-hidden">
+            <CardContent className="p-6">
+              <ConsumptionForm
+                showElectricityPrice={showElectricityPrice}
+                showLoadProfileUpload={showLoadProfileUpload}
+                showYearlyConsumption={showYearlyConsumption}
+                onElectricityPriceChange={handleElectricityPriceChange}
+                onLoadProfileChange={handleLoadProfileChange}
+                onFileUpload={handleFileUpload}
+                onExistingPVChange={handleExistingPVChange}
+                onPVSizeChange={handlePVSizeChange}
+              />
+            </CardContent>
+          </Card>
 
           <Button
             className="w-full"
