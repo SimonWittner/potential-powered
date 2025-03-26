@@ -1,11 +1,11 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut, Home, BookOpen, MessageCircleQuestion } from "lucide-react";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import ContactDialog from "@/components/ContactDialog";
 
 const Layout = ({
   children
@@ -13,6 +13,7 @@ const Layout = ({
   children: React.ReactNode;
 }) => {
   const navigate = useNavigate();
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
   
   useEffect(() => {
     // Check auth state when component mounts
@@ -151,6 +152,7 @@ const Layout = ({
           <Button 
             variant="ghost" 
             size="icon" 
+            onClick={() => setContactDialogOpen(true)}
             className="text-black hover:bg-gray-300 hover:text-black"
           >
             <MessageCircleQuestion className="h-5 w-5" />
@@ -165,6 +167,12 @@ const Layout = ({
           </Button>
         </div>
       </aside>
+
+      {/* Contact Dialog */}
+      <ContactDialog 
+        open={contactDialogOpen} 
+        onOpenChange={setContactDialogOpen} 
+      />
 
       {/* Main content */}
       <div className="flex flex-col flex-1 ml-16">
