@@ -261,15 +261,6 @@ const Index = () => {
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-black">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Potential Analysis
-          </h1>
-          <p className="text-lg text-gray-300">
-            Analyse your battery potential in less than 5 minutes.
-          </p>
-        </div>
-
         <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in mb-12">
           <div className="space-y-8">
             <CompanyInfoForm
