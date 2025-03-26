@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -112,7 +113,7 @@ const Layout = ({
     console.log('All cached data cleared');
   };
   
-  return <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-[#1A0F0F]">
       <header className="fixed top-0 right-0 left-0 z-50 bg-black">
         <div className="flex items-center justify-between px-4 py-2">
           <div className="flex items-center gap-2">
