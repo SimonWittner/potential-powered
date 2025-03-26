@@ -3,8 +3,6 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Info } from "lucide-react";
 
 interface ElectricityPriceSectionProps {
   showElectricityPrice: boolean;
@@ -46,17 +44,7 @@ const ElectricityPriceSection = ({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <div className="flex items-center space-x-2">
-          <Label>Electricity price known?</Label>
-          <HoverCard openDelay={0}>
-            <HoverCardTrigger asChild>
-              <Info className="h-4 w-4 text-gray-500 cursor-help" />
-            </HoverCardTrigger>
-            <HoverCardContent className="text-sm">
-              Indicate whether you know the electricity price for your location.
-            </HoverCardContent>
-          </HoverCard>
-        </div>
+        <Label>Electricity price known?</Label>
         <RadioGroup
           onValueChange={onKnowsElectricityPriceChange}
           className="flex space-x-4"
@@ -75,17 +63,7 @@ const ElectricityPriceSection = ({
       {showElectricityPrice && (
         <div className="animate-fade-in space-y-4">
           <div>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="electricityPrice">Electricity Price</Label>
-              <HoverCard openDelay={0}>
-                <HoverCardTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                </HoverCardTrigger>
-                <HoverCardContent className="text-sm">
-                  Enter your electricity price in euros per kilowatt-hour (€/kWh).
-                </HoverCardContent>
-              </HoverCard>
-            </div>
+            <Label htmlFor="electricityPrice">Electricity Price</Label>
             <Input
               id="electricityPrice"
               type="number"
@@ -99,17 +77,7 @@ const ElectricityPriceSection = ({
             />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
-              <HoverCard openDelay={0}>
-                <HoverCardTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                </HoverCardTrigger>
-                <HoverCardContent className="text-sm">
-                  Enter the monthly grid power charges in euros per kilowatt (€/kW/month).
-                </HoverCardContent>
-              </HoverCard>
-            </div>
+            <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
             <Input
               id="gridPowerCharges"
               type="number"

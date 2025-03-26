@@ -54,7 +54,7 @@ const ExistingPvSection = ({
               <Info className="h-4 w-4 text-gray-500 cursor-help" />
             </HoverCardTrigger>
             <HoverCardContent className="text-sm">
-              Indicate whether you have an existing solar PV system or are planning to install one.
+              Add you PV input here.
             </HoverCardContent>
           </HoverCard>
         </div>
@@ -76,17 +76,7 @@ const ExistingPvSection = ({
       {hasExistingPV === "yes" && (
         <div className="animate-fade-in space-y-4">
           <div>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="pvSize">PV Size</Label>
-              <HoverCard openDelay={0}>
-                <HoverCardTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                </HoverCardTrigger>
-                <HoverCardContent className="text-sm">
-                  Enter the size of your PV system in kilowatt peak (kWp).
-                </HoverCardContent>
-              </HoverCard>
-            </div>
+            <Label htmlFor="pvSize">PV Size</Label>
             <Input
               id="pvSize"
               type="number"
@@ -100,17 +90,7 @@ const ExistingPvSection = ({
             />
           </div>
           <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Label>Load profile after PV generation?</Label>
-              <HoverCard openDelay={0}>
-                <HoverCardTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                </HoverCardTrigger>
-                <HoverCardContent className="text-sm">
-                  Specify if your load profile data already accounts for PV production (net load) or if it shows total consumption before PV production (gross load).
-                </HoverCardContent>
-              </HoverCard>
-            </div>
+            <Label>Load profile after PV generation?</Label>
             <RadioGroup
               onValueChange={handleIncludesPvGenerationChange}
               className="flex space-x-4"
