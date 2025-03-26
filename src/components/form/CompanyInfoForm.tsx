@@ -1,7 +1,5 @@
-
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import AddressAutocomplete from "./AddressAutocomplete";
 
 interface CompanyInfoFormProps {
   address: string;
@@ -28,10 +26,15 @@ const CompanyInfoForm = ({
         />
       </div>
 
-      <AddressAutocomplete 
-        value={address} 
-        onChange={onAddressChange} 
-      />
+      <div className="space-y-2">
+        <Label htmlFor="address">Address</Label>
+        <Input
+          id="address"
+          placeholder="Enter your address"
+          value={address}
+          onChange={(e) => onAddressChange(e.target.value)}
+        />
+      </div>
     </div>
   );
 };
