@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -259,7 +258,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-[#D3E4FD]">
+    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-white/95">
       <div className="max-w-7xl mx-auto">
         <div className="space-y-8 animate-fade-in">
           <CompanyInfoForm
