@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -263,29 +262,27 @@ const Index = () => {
     <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-[#F1F1F1]">
       <div className="max-w-7xl mx-auto">
         <div className="space-y-8 animate-fade-in">
-          <Card className="rounded-xl shadow-md overflow-hidden">
-            <CardContent className="p-6">
-              <CompanyInfoForm
-                address={address}
-                onAddressChange={handleAddressChange}
-                companyName={companyName}
-                onCompanyNameChange={handleCompanyNameChange}
-              />
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-xl shadow-md overflow-hidden">
-            <CardContent className="p-6">
-              <ConsumptionForm
-                showElectricityPrice={showElectricityPrice}
-                showLoadProfileUpload={showLoadProfileUpload}
-                showYearlyConsumption={showYearlyConsumption}
-                onElectricityPriceChange={handleElectricityPriceChange}
-                onLoadProfileChange={handleLoadProfileChange}
-                onFileUpload={handleFileUpload}
-                onExistingPVChange={handleExistingPVChange}
-                onPVSizeChange={handlePVSizeChange}
-              />
+          <Card className="rounded-xl shadow-md overflow-hidden bg-white">
+            <CardContent className="p-8">
+              <div className="space-y-8">
+                <CompanyInfoForm
+                  address={address}
+                  onAddressChange={handleAddressChange}
+                  companyName={companyName}
+                  onCompanyNameChange={handleCompanyNameChange}
+                />
+                
+                <ConsumptionForm
+                  showElectricityPrice={showElectricityPrice}
+                  showLoadProfileUpload={showLoadProfileUpload}
+                  showYearlyConsumption={showYearlyConsumption}
+                  onElectricityPriceChange={handleElectricityPriceChange}
+                  onLoadProfileChange={handleLoadProfileChange}
+                  onFileUpload={handleFileUpload}
+                  onExistingPVChange={handleExistingPVChange}
+                  onPVSizeChange={handlePVSizeChange}
+                />
+              </div>
             </CardContent>
           </Card>
 
