@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -155,10 +156,17 @@ const ConsumptionForm = ({
               <Input
                 id="pvSize"
                 type="number"
+                min="0"
+                step="0.1"
                 placeholder="Enter size in kWp"
-                className="mt-1"
+                className="mt-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 value={pvSize}
-                onChange={(e) => setPvSize(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (e.target.value === "" || (value >= 0)) {
+                    setPvSize(e.target.value);
+                  }
+                }}
               />
             </div>
             <div className="space-y-2">
