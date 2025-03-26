@@ -14,6 +14,10 @@ const Results = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
+    // Check for analysis file
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
       toast.error("No analysis found. Please start a new analysis.");
