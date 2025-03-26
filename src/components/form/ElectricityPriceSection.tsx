@@ -75,17 +75,7 @@ const ElectricityPriceSection = ({
       {showElectricityPrice && (
         <div className="animate-fade-in space-y-4">
           <div>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="electricityPrice">Electricity Price</Label>
-              <HoverCard openDelay={0}>
-                <HoverCardTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                </HoverCardTrigger>
-                <HoverCardContent className="text-sm">
-                  Enter your electricity price in €/kWh.
-                </HoverCardContent>
-              </HoverCard>
-            </div>
+            <Label htmlFor="electricityPrice">Electricity Price</Label>
             <Input
               id="electricityPrice"
               type="number"
@@ -99,17 +89,7 @@ const ElectricityPriceSection = ({
             />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
-              <HoverCard openDelay={0}>
-                <HoverCardTrigger asChild>
-                  <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                </HoverCardTrigger>
-                <HoverCardContent className="text-sm">
-                  Enter your grid power charges in €/kW/month.
-                </HoverCardContent>
-              </HoverCard>
-            </div>
+            <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
             <Input
               id="gridPowerCharges"
               type="number"
