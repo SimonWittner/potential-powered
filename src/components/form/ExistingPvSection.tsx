@@ -32,7 +32,7 @@ const ExistingPvSection = ({
     }
   };
 
-  // Prevent wheel events from changing the input value
+  // Prevent wheel events from changing the input value - fix added for vanishing input values (mac)
   const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
     e.currentTarget.blur();
   };
