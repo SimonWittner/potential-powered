@@ -52,8 +52,8 @@ const ElectricityPriceSection = ({
             <HoverCardTrigger asChild>
               <Info className="h-4 w-4 text-gray-500 cursor-help" />
             </HoverCardTrigger>
-            <HoverCardContent className="text-sm">
-              Indicate if you know your electricity price.
+            <HoverCardContent className="text-sm p-4 bg-white shadow-lg rounded-md border border-gray-200 w-96">
+              <p className="text-gray-600">If unknown, missing price data is approximated based on company size and region.</p>
             </HoverCardContent>
           </HoverCard>
         </div>
