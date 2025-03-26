@@ -116,7 +116,7 @@ const Layout = ({
   return (
     <div className="min-h-screen bg-[#1A0F0F] flex">
       {/* Horizontal header - increased z-index to be in front of sidebar */}
-      <div className="fixed top-0 left-0 right-0 h-16 bg-black z-50 flex items-center">
+      <div className="fixed top-0 left-0 right-0 h-16 bg-[#F1F1F1] z-50 flex items-center">
         {/* Logo in top left of header - reduced padding to move it closer to the edge */}
         <div className="pl-4">
           <button onClick={handleLogoClick}>
@@ -126,17 +126,17 @@ const Layout = ({
       </div>
       
       {/* Vertical sidebar - reduced z-index to be behind header */}
-      <aside className="fixed left-0 top-0 bottom-0 w-16 bg-black flex flex-col items-center py-4 z-40">
+      <aside className="fixed left-0 top-0 bottom-0 w-16 bg-[#F1F1F1] flex flex-col items-center py-4 z-40">
         <div className="flex flex-col items-center gap-4 mt-20">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-black hover:text-black/80">
             <Home className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-black hover:text-black/80">
             <BookOpen className="h-5 w-5" />
           </Button>
         </div>
         <div className="mt-auto">
-          <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80">
+          <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-black hover:text-black/80">
             <LogOut className="h-5 w-5" />
           </Button>
         </div>
