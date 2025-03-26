@@ -21,13 +21,24 @@ const ElectricityPriceSection = ({
   const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
 
   const handleElectricityPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setElectricityPrice(e.target.value);
-    onElectricityPriceChange(e.target.value);
+    const value = parseFloat(e.target.value);
+    if (e.target.value === "" || (value >= 0)) {
+      setElectricityPrice(e.target.value);
+      onElectricityPriceChange(e.target.value);
+    }
   };
 
   const handleGridPowerChargesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGridPowerCharges(e.target.value);
-    onGridPowerChargesChange(e.target.value);
+    const value = parseFloat(e.target.value);
+    if (e.target.value === "" || (value >= 0)) {
+      setGridPowerCharges(e.target.value);
+      onGridPowerChargesChange(e.target.value);
+    }
+  };
+
+  // Prevent wheel events from changing the input value
+  const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    e.currentTarget.blur();
   };
 
   return (
@@ -56,10 +67,13 @@ const ElectricityPriceSection = ({
             <Input
               id="electricityPrice"
               type="number"
+              min="0"
+              step="0.01"
               placeholder="Enter price in €/kWh"
-              className="mt-1"
+              className="mt-1 no-spinner"
               value={electricityPrice}
               onChange={handleElectricityPriceChange}
+              onWheel={handleWheel}
             />
           </div>
           <div>
@@ -67,10 +81,13 @@ const ElectricityPriceSection = ({
             <Input
               id="gridPowerCharges"
               type="number"
+              min="0"
+              step="0.01"
               placeholder="Enter price in €/kW/month"
-              className="mt-1"
+              className="mt-1 no-spinner"
               value={gridPowerCharges}
               onChange={handleGridPowerChargesChange}
+              onWheel={handleWheel}
             />
           </div>
         </div>
