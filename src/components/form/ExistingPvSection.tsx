@@ -53,8 +53,9 @@ const ExistingPvSection = ({
             <HoverCardTrigger asChild>
               <Info className="h-4 w-4 text-gray-500 cursor-help" />
             </HoverCardTrigger>
-            <HoverCardContent className="text-sm">
-              Add you PV input here.
+            <HoverCardContent className="text-sm p-4 bg-white shadow-lg rounded-md border border-gray-200">
+              <p className="font-semibold">PV existing</p>
+              <p className="text-gray-600">Add your PV input here.</p>
             </HoverCardContent>
           </HoverCard>
         </div>
