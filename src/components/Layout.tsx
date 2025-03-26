@@ -1,11 +1,13 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Home, BookOpen, MessageCircleQuestion } from "lucide-react";
+import { LogOut, Home, BookOpen, MessageCircleQuestion, User } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import ContactDialog from "@/components/ContactDialog";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Layout = ({
   children
@@ -14,6 +16,7 @@ const Layout = ({
 }) => {
   const navigate = useNavigate();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   
   useEffect(() => {
     // Check auth state when component mounts
@@ -28,8 +31,10 @@ const Layout = ({
       console.log("Auth state changed:", event, session);
       if (event === 'SIGNED_OUT') {
         navigate('/auth');
+        setUserEmail(null);
       } else if (event === 'SIGNED_IN') {
         navigate('/');
+        setUserEmail(session?.user?.email || null);
       }
     });
     return () => {
@@ -52,6 +57,8 @@ const Layout = ({
       }
       if (!session) {
         navigate('/auth');
+      } else {
+        setUserEmail(session.user?.email || null);
       }
     } catch (error) {
       console.error("Auth error:", error);
@@ -118,13 +125,25 @@ const Layout = ({
   return (
     <div className="min-h-screen bg-[#1A0F0F] flex">
       {/* Horizontal header - increased z-index to be in front of sidebar */}
-      <div className="fixed top-0 left-0 right-0 h-16 bg-[#F1F1F1] z-50 flex items-center">
+      <div className="fixed top-0 left-0 right-0 h-16 bg-[#F1F1F1] z-50 flex items-center justify-between">
         {/* Logo in top left of header - reduced padding to move it closer to the edge */}
         <div className="pl-4">
           <button onClick={handleLogoClick}>
             <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
           </button>
         </div>
+        
+        {/* User info on the right side of header */}
+        {userEmail && (
+          <div className="flex items-center gap-2 pr-6">
+            <span className="text-sm font-medium text-gray-700">{userEmail}</span>
+            <Avatar className="h-8 w-8 bg-gray-200">
+              <AvatarFallback>
+                <User className="h-4 w-4 text-gray-700" />
+              </AvatarFallback>
+            </Avatar>
+          </div>
+        )}
       </div>
       
       {/* Vertical sidebar - reduced z-index to be behind header */}
