@@ -139,7 +139,7 @@ const Layout = ({
             <span className="text-sm font-medium text-gray-700">{userEmail}</span>
             <Avatar className="h-8 w-8">
               <AvatarFallback>
-                <User className="h-4 w-4 text-gray-700" />
+                <User className="h-4 w-4" />
               </AvatarFallback>
             </Avatar>
           </div>
