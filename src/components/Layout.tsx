@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -133,6 +134,9 @@ const Layout = ({
 
       {/* Main content */}
       <div className="flex flex-col flex-1 ml-16">
+        {/* Horizontal header */}
+        <div className="fixed top-0 left-16 right-0 h-16 bg-black z-40"></div>
+        
         {/* Logo in top right */}
         <div className="fixed top-0 right-0 p-4 z-50">
           <button onClick={handleLogoClick}>
@@ -140,7 +144,7 @@ const Layout = ({
           </button>
         </div>
 
-        {/* Main content with padding to accommodate the logo */}
+        {/* Main content with padding to accommodate the logo and header */}
         <main className="flex-1 pt-16">
           {children}
         </main>
