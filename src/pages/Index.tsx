@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,23 +19,20 @@ const Index = () => {
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
   const [uploadedFilePath, setUploadedFilePath] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [hasExistingPV, setHasExistingPV] = useState("");
+  const [pvSize, setPvSize] = useState("");
 
   useEffect(() => {
-    // Clear all cached data when this component is mounted, except for analysisFileName
     const existingAnalysis = localStorage.getItem('analysisFileName');
     
-    // Check if a completed analysis exists
     if (existingAnalysis) {
       navigate('/results');
     } else {
-      // Clear all cached data that could be stored from previous analyses
       clearAllCachedData();
     }
   }, [navigate]);
 
-  // Function to clear all cached data from localStorage
   const clearAllCachedData = () => {
-    // List of all the keys that store cached data
     const cacheKeys = [
       'esgReportingData',
       'peakShavingCostData',
@@ -54,7 +50,6 @@ const Index = () => {
       'resultsLoadingComplete'
     ];
     
-    // Remove each cached item
     cacheKeys.forEach(key => localStorage.removeItem(key));
     
     console.log('All cached data cleared');
@@ -75,6 +70,14 @@ const Index = () => {
   const handleLoadProfileChange = (value: string) => {
     setShowLoadProfileUpload(value === "yes");
     setShowYearlyConsumption(value === "no");
+  };
+
+  const handleExistingPVChange = (value: string) => {
+    setHasExistingPV(value);
+  };
+
+  const handlePVSizeChange = (value: string) => {
+    setPvSize(value);
   };
 
   const checkLocalServer = async () => {
@@ -184,6 +187,14 @@ const Index = () => {
       return;
     }
 
+    if (hasExistingPV === "yes") {
+      const pvSizeValue = parseFloat(pvSize);
+      if (!pvSize || isNaN(pvSizeValue) || pvSizeValue <= 0) {
+        toast.error("Please enter a valid PV size greater than 0");
+        return;
+      }
+    }
+
     setIsAnalyzing(true);
 
     try {
@@ -275,6 +286,8 @@ const Index = () => {
               onElectricityPriceChange={handleElectricityPriceChange}
               onLoadProfileChange={handleLoadProfileChange}
               onFileUpload={handleFileUpload}
+              onExistingPVChange={handleExistingPVChange}
+              onPVSizeChange={handlePVSizeChange}
             />
 
             <Button
