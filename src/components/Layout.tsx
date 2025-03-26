@@ -117,8 +117,8 @@ const Layout = ({
     <div className="min-h-screen bg-[#1A0F0F] flex">
       {/* Horizontal header - increased z-index to be in front of sidebar */}
       <div className="fixed top-0 left-0 right-0 h-16 bg-black z-50 flex items-center">
-        {/* Logo in top left of header - added more left padding */}
-        <div className="pl-20">
+        {/* Logo in top left of header - reduced padding to move it closer to the edge */}
+        <div className="pl-4">
           <button onClick={handleLogoClick}>
             <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
           </button>
