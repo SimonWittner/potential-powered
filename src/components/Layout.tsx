@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { LogOut, Home, BookOpen, MessageCircleQuestion } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { Separator } from "@/components/ui/separator";
 
 const Layout = ({
   children
@@ -146,6 +147,7 @@ const Layout = ({
           </Button>
         </div>
         <div className="mt-auto flex flex-col items-center gap-4 mb-4">
+          <Separator className="w-8 bg-gray-300 my-2" />
           <Button 
             variant="ghost" 
             size="icon" 
