@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut } from "lucide-react";
+import { LogOut, Home } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
@@ -115,13 +115,18 @@ const Layout = ({
   
   return <div className="min-h-screen bg-[#1A0F0F]">
       <header className="fixed top-0 right-0 left-0 z-50 bg-black">
-        <div className="flex items-center justify-end gap-4 px-4 py-2">
-          <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80">
-            <LogOut className="h-5 w-5" />
+        <div className="flex items-center justify-between px-4 py-2">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
+            <Home className="h-5 w-5" />
           </Button>
-          <button onClick={handleLogoClick}>
-            <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
-          </button>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80">
+              <LogOut className="h-5 w-5" />
+            </Button>
+            <button onClick={handleLogoClick}>
+              <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
+            </button>
+          </div>
         </div>
       </header>
       <main>
