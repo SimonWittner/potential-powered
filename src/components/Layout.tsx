@@ -117,7 +117,7 @@ const Layout = ({
     <div className="min-h-screen bg-[#1A0F0F] flex">
       {/* Vertical sidebar */}
       <aside className="fixed left-0 top-0 bottom-0 w-16 bg-black flex flex-col items-center py-4 z-50">
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-4 mt-20">
           <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
             <Home className="h-5 w-5" />
           </Button>
@@ -135,16 +135,16 @@ const Layout = ({
       {/* Main content */}
       <div className="flex flex-col flex-1 ml-16">
         {/* Horizontal header */}
-        <div className="fixed top-0 left-16 right-0 h-16 bg-black z-40"></div>
-        
-        {/* Logo in top right */}
-        <div className="fixed top-0 right-0 p-4 z-50">
-          <button onClick={handleLogoClick}>
-            <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
-          </button>
+        <div className="fixed top-0 left-16 right-0 h-16 bg-black z-40 flex items-center">
+          {/* Logo in top left of header */}
+          <div className="p-2">
+            <button onClick={handleLogoClick}>
+              <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
+            </button>
+          </div>
         </div>
 
-        {/* Main content with padding to accommodate the logo and header */}
+        {/* Main content with padding to accommodate the header */}
         <main className="flex-1 pt-16">
           {children}
         </main>
