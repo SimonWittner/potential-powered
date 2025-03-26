@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Home } from "lucide-react";
+import { LogOut, Home, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
@@ -116,9 +116,14 @@ const Layout = ({
   return <div className="min-h-screen bg-[#1A0F0F]">
       <header className="fixed top-0 right-0 left-0 z-50 bg-black">
         <div className="flex items-center justify-between px-4 py-2">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
-            <Home className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
+              <Home className="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="text-white hover:text-white/80">
+              <BookOpen className="h-5 w-5" />
+            </Button>
+          </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80">
               <LogOut className="h-5 w-5" />
