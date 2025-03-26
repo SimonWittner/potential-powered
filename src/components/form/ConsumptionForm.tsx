@@ -13,12 +13,16 @@ interface ConsumptionFormProps {
   onElectricityPriceChange: (value: string) => void;
   onLoadProfileChange: (value: string) => void;
   onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number, pvPeak?: number, loadsKwIsNet?: boolean) => void;
+  onExistingPVChange?: (value: string) => void;
+  onPVSizeChange?: (value: string) => void;
 }
 
 const ConsumptionForm = ({
   showElectricityPrice,
   onElectricityPriceChange,
   onFileUpload,
+  onExistingPVChange,
+  onPVSizeChange,
 }: ConsumptionFormProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [electricityPrice, setElectricityPrice] = useState<string>("");
@@ -100,12 +104,26 @@ const ConsumptionForm = ({
     await handleFile(file);
   };
 
+  const handleHasExistingPvChange = (value: string) => {
+    setHasExistingPV(value);
+    if (onExistingPVChange) {
+      onExistingPVChange(value);
+    }
+  };
+
+  const handlePvSizeChange = (value: string) => {
+    setPvSize(value);
+    if (onPVSizeChange) {
+      onPVSizeChange(value);
+    }
+  };
+
   return (
     <div className="grid grid-cols-2 gap-8">
       <div className="space-y-4">
         <ExistingPvSection 
-          onPvSizeChange={setPvSize}
-          onHasExistingPvChange={setHasExistingPV}
+          onPvSizeChange={handlePvSizeChange}
+          onHasExistingPvChange={handleHasExistingPvChange}
           onIncludesPvGenerationChange={setIncludesPVGeneration}
         />
 
