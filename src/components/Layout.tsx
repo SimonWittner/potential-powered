@@ -131,7 +131,7 @@ const Layout = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            onClick={() => navigate('/')} 
+            onClick={handleLogoClick} 
             className="text-black hover:bg-gray-300 hover:text-black"
           >
             <Home className="h-5 w-5" />
