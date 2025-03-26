@@ -114,13 +114,15 @@ const Layout = ({
   };
   
   return <div className="min-h-screen bg-[#1A0F0F]">
-      <header className="p-4 fixed top-0 right-0 z-50 flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80 bg-black rounded-sm">
-          <LogOut className="h-5 w-5 bg-black rounded-md" />
-        </Button>
-        <button onClick={handleLogoClick}>
-          <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto rounded-sm" />
-        </button>
+      <header className="p-4 fixed top-0 right-0 z-50">
+        <div className="flex items-center gap-4 bg-black rounded-sm px-3 py-2">
+          <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-white hover:text-white/80">
+            <LogOut className="h-5 w-5" />
+          </Button>
+          <button onClick={handleLogoClick}>
+            <img src="/lovable-uploads/01a4e2f8-dfea-4c95-8dee-fe6cbabd21d4.png" alt="Lumera Logo" className="h-12 w-auto" />
+          </button>
+        </div>
       </header>
       <main>
         {children}
