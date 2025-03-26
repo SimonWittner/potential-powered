@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
@@ -30,7 +31,7 @@ const Auth = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1A0F0F] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#F1F1F1] px-4">
       <div className="w-full max-w-md space-y-4">
         {errorMessage && (
           <Alert variant="destructive">
