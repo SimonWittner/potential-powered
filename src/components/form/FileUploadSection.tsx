@@ -53,8 +53,8 @@ const FileUploadSection = ({
           <HoverCardTrigger asChild>
             <Info className="h-4 w-4 text-gray-500 cursor-help" />
           </HoverCardTrigger>
-          <HoverCardContent className="text-sm">
-            The load profile is needed for the most accurate analysis results.
+          <HoverCardContent className="text-sm p-4 bg-white shadow-lg rounded-md border border-gray-200">
+            <p className="text-gray-600">The load profile is needed for the most accurate analysis results.</p>
           </HoverCardContent>
         </HoverCard>
       </div>
