@@ -53,9 +53,9 @@ const ExistingPvSection = ({
             <HoverCardTrigger asChild>
               <Info className="h-4 w-4 text-gray-500 cursor-help" />
             </HoverCardTrigger>
-            <HoverCardContent className="text-sm p-4 bg-white shadow-lg rounded-md border border-gray-200">
+            <HoverCardContent className="text-sm p-4 bg-white shadow-lg rounded-md border border-gray-200 w-80">
               <p className="font-semibold">PV existing</p>
-              <p className="text-gray-600">Add your existing PV size in kWp. Select if your load profile is after (Net Load) or before (Gross Load) PV production.</p>
+              <p className="text-gray-600">Add your existing PV size in kWp. Select if your load profile is measured (Net Load) or before (Gross Load) PV production.</p>
 
               <p className="font-semibold mt-2">PV planned</p>
               <p className="text-gray-600">Add your planned PV size in kWp. Select Gross Load.</p>
