@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -258,7 +259,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12">
+    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-black">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl font-bold text-white mb-4">
@@ -269,7 +270,7 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="p-6 space-y-8 animate-fade-in mb-12">
+        <Card className="p-6 space-y-8 shadow-lg bg-white/95 backdrop-blur-sm animate-fade-in mb-12">
           <div className="space-y-8">
             <CompanyInfoForm
               address={address}
@@ -297,7 +298,7 @@ const Index = () => {
               {isAnalyzing ? "Analyzing..." : "Analyse"}
             </Button>
           </div>
-        </div>
+        </Card>
 
         <AnalysisDialog
           open={showAnalysisDialog}
@@ -309,4 +310,3 @@ const Index = () => {
 };
 
 export default Index;
-
