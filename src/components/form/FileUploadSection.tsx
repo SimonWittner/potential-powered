@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -48,16 +47,14 @@ const FileUploadSection = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center space-x-2">
         <Label>Load Profile Upload</Label>
         <HoverCard openDelay={0}>
           <HoverCardTrigger asChild>
-            <button className="inline-flex items-center justify-center rounded-full w-4 h-4 hover:bg-gray-100">
-              <Info className="h-3 w-3 text-gray-500" />
-            </button>
+            <Info className="h-4 w-4 text-gray-500 cursor-help" />
           </HoverCardTrigger>
-          <HoverCardContent className="w-64">
-            <p>The load profile is needed for the most accurate analysis results.</p>
+          <HoverCardContent className="text-sm">
+            The load profile is needed for the most accurate analysis results.
           </HoverCardContent>
         </HoverCard>
       </div>
