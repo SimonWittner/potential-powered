@@ -44,7 +44,7 @@ const ElectricityPriceSection = ({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Do you know your electricity price?</Label>
+        <Label>Electricity price known?</Label>
         <RadioGroup
           onValueChange={onKnowsElectricityPriceChange}
           className="flex space-x-4"
