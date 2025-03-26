@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -259,9 +260,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 pb-12 bg-[#F1F1F1]">
+    <div className="min-h-screen pt-10 px-4 sm:px-6 lg:px-8 pb-12 bg-[#F1F1F1]">
       <div className="max-w-7xl mx-auto">
-        <div className="space-y-8 animate-fade-in">
+        <div className="space-y-6 animate-fade-in">
           <Card className="rounded-xl shadow-md overflow-hidden bg-white">
             <CardContent className="p-8">
               <div className="space-y-8">
