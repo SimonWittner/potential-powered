@@ -1,9 +1,6 @@
-
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import ResultsTabs from "@/components/results/ResultsTabs";
@@ -67,17 +64,6 @@ const Results = () => {
   return (
     <div className="pt-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex items-center">
-          <Button variant="ghost" className="mb-4 text-white hover:text-white/80" onClick={handleBack}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </div>
-
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Analysis Results</h1>
-        </div>
-
         <div id="results-content" className="space-y-8">
           <AnalysisOverview />
           <ResultsTabs />
