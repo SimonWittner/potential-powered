@@ -31,8 +31,8 @@ const ResultsLoading = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="text-white space-y-4 w-64">
+    <div className="min-h-screen bg-[#F1F1F1] flex items-center justify-center">
+      <div className="text-black space-y-4 w-64">
         <div>Loading analysis results...</div>
         <Progress value={progress} />
       </div>

@@ -6,14 +6,14 @@ import PVProductionChart from "@/components/results/PVProductionChart";
 const AnalysisOverview = () => {
   return (
     <div className="grid grid-cols-1 gap-8">
-      <Card className="p-6 bg-white/95 backdrop-blur-sm">
+      <Card className="p-6 bg-white shadow-sm">
         <h2 className="text-2xl font-semibold mb-4">Load Profile Analysis</h2>
         <div className="space-y-4">
           <LoadProfileChart />
         </div>
       </Card>
 
-      <Card className="p-6 bg-white/95 backdrop-blur-sm">
+      <Card className="p-6 bg-white shadow-sm">
         <h2 className="text-2xl font-semibold mb-4">PV Design</h2>
         <div className="space-y-4">
           <PVProductionChart />

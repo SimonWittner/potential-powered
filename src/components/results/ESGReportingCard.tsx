@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card"
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,7 +104,7 @@ const ESGReportingCard = () => {
   };
 
   return (
-    <Card className="p-6 bg-white/95 backdrop-blur-sm">
+    <Card className="p-6 bg-white shadow-sm">
       <h2 className="text-2xl font-semibold mb-4">ESG Reporting</h2>
       <div className="space-y-6">
         {!shouldFetch ? (

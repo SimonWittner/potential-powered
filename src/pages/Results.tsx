@@ -1,3 +1,4 @@
+
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,7 +63,7 @@ const Results = () => {
   }
   
   return (
-    <div className="pt-20 px-4 sm:px-6 lg:px-8">
+    <div className="pt-20 px-4 sm:px-6 lg:px-8 bg-[#F1F1F1] min-h-screen">
       <div className="max-w-7xl mx-auto space-y-8">
         <div id="results-content" className="space-y-8">
           <AnalysisOverview />

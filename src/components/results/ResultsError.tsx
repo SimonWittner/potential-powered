@@ -6,13 +6,13 @@ const ResultsError = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="text-white space-y-4 text-center">
+    <div className="min-h-screen bg-[#F1F1F1] flex items-center justify-center">
+      <div className="text-black space-y-4 text-center">
         <div className="text-xl">Error loading analysis results</div>
         <Button 
           variant="outline" 
           onClick={() => navigate('/')}
-          className="text-white border-white hover:bg-white/10"
+          className="text-black border-black hover:bg-black/10"
         >
           Return to Home
         </Button>
