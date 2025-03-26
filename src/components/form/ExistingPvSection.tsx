@@ -32,6 +32,11 @@ const ExistingPvSection = ({
     }
   };
 
+  // Prevent wheel events from changing the input value
+  const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    e.currentTarget.blur();
+  };
+
   const handleIncludesPvGenerationChange = (value: string) => {
     setIncludesPVGeneration(value);
     onIncludesPvGenerationChange(value);
@@ -66,9 +71,10 @@ const ExistingPvSection = ({
               min="0"
               step="0.1"
               placeholder="Enter size in kWp"
-              className="mt-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="mt-1 no-spinner"
               value={pvSize}
               onChange={handlePvSizeChange}
+              onWheel={handleWheel}
             />
           </div>
           <div className="space-y-2">
