@@ -1,29 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  Legend
-} from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-
-interface DailyLoadData {
-  hour: string;
-  load: number;
-}
-
 const LoadProfileChart = () => {
-  const [dailyLoadData, setDailyLoadData] = useState<DailyLoadData[]>([]);
+  const [plotImageUrl, setPlotImageUrl] = useState<string | null>(null);
   const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
   const [peakLoadPlotImageUrl, setPeakLoadPlotImageUrl] = useState<string | null>(null);
-  const [isLoadingDailyData, setIsLoadingDailyData] = useState(true);
-
   useEffect(() => {
     const analysisFileName = localStorage.getItem('analysisFileName');
     if (!analysisFileName) {
@@ -39,47 +19,22 @@ const LoadProfileChart = () => {
           hasWeekly = false,
           hasPeak = false;
 
-        // Check if daily load JSON exists
-        const dailyLoadJsonName = `daily_load_${fileId}.json`;
+        // Check if daily load plot exists
+        const dailyLoadName = `daily_load_${fileId}.png`;
         const {
           data: dailyLoadExists
         } = await supabase.storage.from('analysis_results').list('', {
-          search: dailyLoadJsonName
+          search: dailyLoadName
         });
-        
         if (dailyLoadExists && dailyLoadExists.length > 0) {
           const {
             data: dailyLoadData
-          } = await supabase.storage.from('analysis_results').download(dailyLoadJsonName);
-          
+          } = await supabase.storage.from('analysis_results').download(dailyLoadName);
           if (dailyLoadData) {
-            const json = await dailyLoadData.text();
-            const parsedData = JSON.parse(json);
-            
-            // Transform data for chart if needed
-            const formattedData = parsedData.map((value: number, index: number) => ({
-              hour: index.toString(),
-              load: value
-            }));
-            
-            console.log("Successfully fetched daily load JSON data");
-            setDailyLoadData(formattedData);
-            setIsLoadingDailyData(false);
+            const url = URL.createObjectURL(dailyLoadData);
+            console.log("Successfully fetched and created URL for daily load plot:", url);
+            setPlotImageUrl(url);
             hasDaily = true;
-          }
-        } else {
-          console.log("Daily load JSON not found, looking for PNG fallback");
-          // Fallback to PNG if JSON doesn't exist
-          const dailyLoadName = `daily_load_${fileId}.png`;
-          const {
-            data: dailyLoadPngExists
-          } = await supabase.storage.from('analysis_results').list('', {
-            search: dailyLoadName
-          });
-          
-          if (dailyLoadPngExists && dailyLoadPngExists.length > 0) {
-            console.log("Found PNG fallback for daily load");
-            setIsLoadingDailyData(false);
           }
         }
 
@@ -125,7 +80,6 @@ const LoadProfileChart = () => {
         return hasDaily && hasWeekly && hasPeak;
       } catch (error) {
         console.error("Error fetching plots:", error);
-        setIsLoadingDailyData(false);
         return false;
       }
     };
@@ -148,68 +102,18 @@ const LoadProfileChart = () => {
     // Cleanup interval and object URLs on component unmount
     return () => {
       if (intervalId) clearInterval(intervalId);
+      if (plotImageUrl) URL.revokeObjectURL(plotImageUrl);
       if (weeklyPlotImageUrl) URL.revokeObjectURL(weeklyPlotImageUrl);
       if (peakLoadPlotImageUrl) URL.revokeObjectURL(peakLoadPlotImageUrl);
     };
   }, []); // Empty dependency array means this runs once when component mounts
-
-  // Format hour labels for better display
-  const formatHour = (hour: string) => {
-    const hourNum = parseInt(hour);
-    return `${hourNum}:00`;
-  };
-
-  // Create chart config for Recharts
-  const chartConfig = {
-    load: {
-      label: "Power (kW)",
-      color: "#0ea5e9", // sky blue color
-    }
-  };
 
   return <div className="grid grid-cols-2 gap-8 rounded-sm">
       <div className="space-y-8">
         <div className="bg-white rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Average Daily Load</h3>
           <div className="h-[250px] w-full flex items-center justify-center">
-            {isLoadingDailyData ? (
-              <div className="text-gray-500">Loading daily load data...</div>
-            ) : dailyLoadData.length > 0 ? (
-              <ChartContainer config={chartConfig} className="h-full">
-                <LineChart data={dailyLoadData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="hour" 
-                    tickFormatter={formatHour} 
-                    interval={2} 
-                    tick={{ fontSize: 12 }}
-                  />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <ChartTooltip 
-                    content={({ active, payload }) => (
-                      <ChartTooltipContent
-                        active={active}
-                        payload={payload}
-                        formatter={(value) => [`${value.toFixed(2)} kW`, "Load"]}
-                        labelFormatter={(hour) => `Hour: ${formatHour(hour as string)}`}
-                      />
-                    )}
-                  />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="load" 
-                    stroke="#0ea5e9" 
-                    strokeWidth={2} 
-                    activeDot={{ r: 6 }} 
-                    dot={false}
-                    name="Power (kW)"
-                  />
-                </LineChart>
-              </ChartContainer>
-            ) : (
-              <div className="text-gray-500">No daily load data available</div>
-            )}
+            {plotImageUrl ? <img src={plotImageUrl} alt="Load Profile Analysis" className="max-h-full w-auto object-contain" /> : <div className="text-gray-500">Loading daily load data...</div>}
           </div>
         </div>
 
