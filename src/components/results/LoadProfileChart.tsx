@@ -11,7 +11,6 @@ interface DailyLoadData {
 }
 
 const LoadProfileChart = () => {
-  const [plotImageUrl, setPlotImageUrl] = useState<string | null>(null);
   const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
   const [peakLoadPlotImageUrl, setPeakLoadPlotImageUrl] = useState<string | null>(null);
   const [dailyLoadData, setDailyLoadData] = useState<DailyLoadData[] | null>(null);
@@ -31,7 +30,7 @@ const LoadProfileChart = () => {
           hasWeekly = false,
           hasPeak = false;
 
-        // Try to fetch daily load JSON data first
+        // Try to fetch daily load JSON data
         const dailyLoadJsonName = `daily_load_${fileId}.json`;
         const {
           data: dailyLoadJsonExists
@@ -53,27 +52,6 @@ const LoadProfileChart = () => {
               hasDaily = true;
             } catch (error) {
               console.error("Error parsing daily load JSON data:", error);
-            }
-          }
-        }
-        
-        // Fallback to PNG if JSON is not available
-        if (!hasDaily) {
-          const dailyLoadName = `daily_load_${fileId}.png`;
-          const {
-            data: dailyLoadExists
-          } = await supabase.storage.from('analysis_results').list('', {
-            search: dailyLoadName
-          });
-          if (dailyLoadExists && dailyLoadExists.length > 0) {
-            const {
-              data: dailyLoadData
-            } = await supabase.storage.from('analysis_results').download(dailyLoadName);
-            if (dailyLoadData) {
-              const url = URL.createObjectURL(dailyLoadData);
-              console.log("Successfully fetched and created URL for daily load plot:", url);
-              setPlotImageUrl(url);
-              hasDaily = true;
             }
           }
         }
@@ -143,7 +121,6 @@ const LoadProfileChart = () => {
     // Cleanup interval and object URLs on component unmount
     return () => {
       if (intervalId) clearInterval(intervalId);
-      if (plotImageUrl) URL.revokeObjectURL(plotImageUrl);
       if (weeklyPlotImageUrl) URL.revokeObjectURL(weeklyPlotImageUrl);
       if (peakLoadPlotImageUrl) URL.revokeObjectURL(peakLoadPlotImageUrl);
     };
@@ -152,11 +129,6 @@ const LoadProfileChart = () => {
   // Format hour for X-axis
   const formatHour = (hour: number) => {
     return `${hour}:00`;
-  };
-  
-  // Custom tooltip formatter to show load value with 2 decimal places
-  const formatLoad = (value: number) => {
-    return `${value.toFixed(1)} kW`;
   };
 
   return <div className="grid grid-cols-2 gap-8 rounded-sm">
@@ -213,8 +185,6 @@ const LoadProfileChart = () => {
                   </LineChart>
                 </ResponsiveContainer>
               </ChartContainer>
-            ) : plotImageUrl ? (
-              <img src={plotImageUrl} alt="Load Profile Analysis" className="max-h-full w-auto object-contain" />
             ) : (
               <div className="text-gray-500">Loading daily load data...</div>
             )}
