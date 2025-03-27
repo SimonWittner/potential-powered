@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Home, BookOpen, MessageCircleQuestion, User } from "lucide-react";
+import { Home, BookOpen, MessageCircleQuestion, User, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -133,15 +133,23 @@ const Layout = ({
           </button>
         </div>
         
-        {/* User info on the right side of header */}
+        {/* User info and logout button on the right side of header */}
         {userEmail && (
-          <div className="flex items-center gap-2 pr-6">
+          <div className="flex items-center gap-3 pr-6">
             <span className="text-sm font-medium text-gray-700">{userEmail}</span>
             <Avatar className="h-8 w-8 bg-gray-200">
               <AvatarFallback>
                 <User className="h-4 w-4 text-gray-700" />
               </AvatarFallback>
             </Avatar>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleSignOut} 
+              className="text-black hover:bg-gray-300 hover:text-black"
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
           </div>
         )}
       </div>
@@ -176,14 +184,7 @@ const Layout = ({
           >
             <MessageCircleQuestion className="h-5 w-5" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={handleSignOut} 
-            className="text-black hover:bg-gray-300 hover:text-black"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
+          {/* Removed the Logout button from the sidebar */}
         </div>
       </aside>
 
