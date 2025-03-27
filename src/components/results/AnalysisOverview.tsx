@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import LoadProfileChart from "@/components/results/LoadProfileChart";
 import PVProductionChart from "@/components/results/PVProductionChart";
@@ -6,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const AnalysisOverview = () => {
   const [yearlyConsumption, setYearlyConsumption] = useState<number | null>(null);
+  const [loadPeak, setLoadPeak] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
@@ -32,6 +34,9 @@ const AnalysisOverview = () => {
         const inputData = JSON.parse(await data.text());
         if (inputData && inputData.yearly_consumption) {
           setYearlyConsumption(inputData.yearly_consumption);
+        }
+        if (inputData && inputData.load_peak) {
+          setLoadPeak(inputData.load_peak);
         }
       } catch (error) {
         console.error("Error processing input data:", error);
@@ -61,7 +66,15 @@ const AnalysisOverview = () => {
               <span className="text-xs">Load/Year</span>
             </div>
             <div className="bg-[#d8c6c2] p-3 text-black text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
-              <span className="font-bold text-lg">50 <span className="text-sm">kW</span></span>
+              <span className="font-bold text-lg">
+                {isLoading ? (
+                  <span className="animate-pulse">...</span>
+                ) : (
+                  <>
+                    {loadPeak} <span className="text-sm">kW</span>
+                  </>
+                )}
+              </span>
               <span className="text-xs">Maximum Load</span>
             </div>
           </div>
