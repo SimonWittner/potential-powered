@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ReferenceLine, Legend } from "recharts";
@@ -261,7 +260,7 @@ const LoadProfileChart = () => {
                 config={{
                   load: {
                     label: "Load",
-                    color: "#22c55e" // green-500
+                    color: "#3b82f6" // Changed to blue-500 to match other plots
                   }
                 }}
                 className="w-full h-full"
@@ -276,6 +275,7 @@ const LoadProfileChart = () => {
                       dataKey="day" 
                       tickFormatter={formatDay}
                       label={{ value: 'Day of Week', position: 'insideBottom', offset: -10 }}
+                      tick={false} // Remove the x-axis ticks
                     />
                     <YAxis 
                       label={{ value: 'Load [kW]', angle: -90, position: 'insideLeft', offset: 7 }}
@@ -287,7 +287,7 @@ const LoadProfileChart = () => {
                           return (
                             <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
                               <p className="text-sm font-medium">{formatDay(data.day || 0)}</p>
-                              <p className="text-sm text-green-600">{`Load: ${data.load.toFixed(2)} kW`}</p>
+                              <p className="text-sm text-blue-600">{`Load: ${data.load.toFixed(2)} kW`}</p>
                             </div>
                           );
                         }
@@ -297,15 +297,15 @@ const LoadProfileChart = () => {
                     <Area
                       type="monotone"
                       dataKey="load"
-                      stroke="#22c55e"
-                      fill="#22c55e"
+                      stroke="#3b82f6"
+                      fill="#3b82f6"
                       fillOpacity={0.3}
                     />
                     <Line 
                       type="monotone" 
                       dataKey="load" 
                       name="Load"
-                      stroke="#22c55e" 
+                      stroke="#3b82f6" 
                       strokeWidth={2}
                       dot={{ r: 1 }} 
                       activeDot={{ r: 5 }} 
@@ -373,14 +373,6 @@ const LoadProfileChart = () => {
                           );
                         }
                         return null;
-                      }}
-                    />
-                    <Legend 
-                      align="right" 
-                      verticalAlign="top"
-                      wrapperStyle={{ 
-                        paddingBottom: '10px',
-                        paddingRight: '50px'
                       }}
                     />
                     <Line 
