@@ -1,4 +1,3 @@
-
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useEffect, useState } from "react";
 
@@ -18,10 +17,9 @@ const generateMonthlyData = (pvSize: number) => {
     { month: "Dec", baseProduction: 1156 }
   ];
 
-  // Scale the production values based on PV size
   return baseValues.map(item => ({
     month: item.month,
-    production: (item.baseProduction * pvSize) / 100 // Assuming base values are for 100kWp
+    production: (item.baseProduction * pvSize) / 100
   }));
 };
 
@@ -53,10 +51,9 @@ const generateDailyData = (pvSize: number) => {
     { hour: "23:00", baseProduction: 0 }
   ];
 
-  // Scale the production values based on PV size
   return baseValues.map(item => ({
     hour: item.hour,
-    production: (item.baseProduction * pvSize) / 100 // Assuming base values are for 100kWp
+    production: (item.baseProduction * pvSize) / 100
   }));
 };
 
@@ -64,7 +61,6 @@ const PVProductionChart = () => {
   const [pvSize, setPvSize] = useState<number>(0);
 
   useEffect(() => {
-    // Add console.log to debug localStorage values
     console.log('Reading from localStorage:', {
       pvPeak: localStorage.getItem('pvPeak'),
       hasExistingPV: localStorage.getItem('hasExistingPV')
@@ -80,13 +76,13 @@ const PVProductionChart = () => {
       console.log('Setting PV size to 0');
       setPvSize(0);
     }
-  }, []); // Empty dependency array means this runs once when component mounts
+  }, []);
 
   const monthlyData = generateMonthlyData(pvSize);
   const dailyData = generateDailyData(pvSize);
 
   return (
-    <div className="space-y-6">
+    <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex space-x-6">
         <div className="flex-1">
           <h3 className="text-lg font-medium mb-4">Average PV Generation Daily</h3>
