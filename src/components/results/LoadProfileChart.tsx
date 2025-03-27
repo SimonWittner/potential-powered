@@ -290,7 +290,10 @@ const LoadProfileChart = () => {
                     <Legend 
                       align="right" 
                       verticalAlign="top"
-                      wrapperStyle={{ paddingBottom: '10px' }}
+                      wrapperStyle={{ 
+                        paddingBottom: '10px',
+                        paddingRight: '50px'
+                      }}
                     />
                     <Line 
                       type="monotone" 
@@ -306,7 +309,7 @@ const LoadProfileChart = () => {
                         y={getMaxLoad(peakLoadData)}
                         stroke="red"
                         strokeDasharray="3 3"
-                        name={`sPeak Load: ${getMaxLoad(peakLoadData).toFixed(2)} kW`}
+                        name={`Peak Load: ${getMaxLoad(peakLoadData).toFixed(2)} kW`}
                         legendType="line"
                       />
                     )}
