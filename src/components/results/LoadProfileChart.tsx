@@ -274,8 +274,8 @@ const LoadProfileChart = () => {
                     <XAxis 
                       dataKey="day" 
                       tickFormatter={formatDay}
-                      label={{ value: 'Day of Week', position: 'insideBottom', offset: -10 }}
-                      tick={false} // Remove the x-axis ticks
+                      label={{ value: 'Day of Week', position: 'insideBottom', offset: -5 }}
+                      tick={false}
                     />
                     <YAxis 
                       label={{ value: 'Load [kW]', angle: -90, position: 'insideLeft', offset: 7 }}
