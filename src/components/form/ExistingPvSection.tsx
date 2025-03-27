@@ -10,38 +10,26 @@ interface ExistingPvSectionProps {
   onPvSizeChange: (value: string) => void;
   onHasExistingPvChange: (value: string) => void;
   onIncludesPvGenerationChange: (value: string) => void;
+  hasExistingPV: string;
+  pvSize: string;
+  includesPVGeneration: string;
 }
 
 const ExistingPvSection = ({ 
   onPvSizeChange,
   onHasExistingPvChange,
-  onIncludesPvGenerationChange
+  onIncludesPvGenerationChange,
+  hasExistingPV,
+  pvSize,
+  includesPVGeneration
 }: ExistingPvSectionProps) => {
-  const [hasExistingPV, setHasExistingPV] = useState<string>("");
-  const [pvSize, setPvSize] = useState<string>("");
-  const [includesPVGeneration, setIncludesPVGeneration] = useState<string>("");
-
-  const handleHasExistingPvChange = (value: string) => {
-    setHasExistingPV(value);
-    onHasExistingPvChange(value);
-  };
-
-  const handlePvSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    if (e.target.value === "" || (value >= 0)) {
-      setPvSize(e.target.value);
-      onPvSizeChange(e.target.value);
-    }
-  };
-
-  // Prevent wheel events from changing the input value - fix added for vanishing input values (mac)
+  // Prevent wheel events from changing the input value
   const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
     e.currentTarget.blur();
   };
 
-  const handleIncludesPvGenerationChange = (value: string) => {
-    setIncludesPVGeneration(value);
-    onIncludesPvGenerationChange(value);
+  const handlePvSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onPvSizeChange(e.target.value);
   };
 
   return (
@@ -63,7 +51,8 @@ const ExistingPvSection = ({
           </HoverCard>
         </div>
         <RadioGroup
-          onValueChange={handleHasExistingPvChange}
+          value={hasExistingPV}
+          onValueChange={onHasExistingPvChange}
           className="flex space-x-4"
         >
           <div className="flex items-center space-x-2">
@@ -83,11 +72,10 @@ const ExistingPvSection = ({
             <Label htmlFor="pvSize">PV Size</Label>
             <Input
               id="pvSize"
-              type="number"
-              min="0"
-              step="0.1"
+              type="text"
+              inputMode="decimal"
               placeholder="Enter size in kWp"
-              className="mt-1 no-spinner"
+              className="mt-1"
               value={pvSize}
               onChange={handlePvSizeChange}
               onWheel={handleWheel}
@@ -96,7 +84,8 @@ const ExistingPvSection = ({
           <div className="space-y-2">
             <Label>Load profile after PV generation?</Label>
             <RadioGroup
-              onValueChange={handleIncludesPvGenerationChange}
+              value={includesPVGeneration}
+              onValueChange={onIncludesPvGenerationChange}
               className="flex space-x-4"
             >
               <div className="flex items-center space-x-2">

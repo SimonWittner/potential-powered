@@ -20,8 +20,13 @@ const Index = () => {
   const [showAnalysisDialog, setShowAnalysisDialog] = useState(false);
   const [uploadedFilePath, setUploadedFilePath] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  
+  // Form data state
   const [hasExistingPV, setHasExistingPV] = useState("");
   const [pvSize, setPvSize] = useState("");
+  const [includesPVGeneration, setIncludesPVGeneration] = useState("");
+  const [electricityPrice, setElectricityPrice] = useState("");
+  const [gridPowerCharges, setGridPowerCharges] = useState("");
 
   useEffect(() => {
     const existingAnalysis = localStorage.getItem('analysisFileName');
@@ -75,10 +80,29 @@ const Index = () => {
 
   const handleExistingPVChange = (value: string) => {
     setHasExistingPV(value);
+    console.log("Has existing PV changed to:", value);
   };
 
   const handlePVSizeChange = (value: string) => {
     setPvSize(value);
+    console.log("PV size changed to:", value);
+  };
+  
+  const handleIncludesPVGenerationChange = (value: string) => {
+    setIncludesPVGeneration(value);
+    console.log("Includes PV generation changed to:", value);
+  };
+  
+  const handleElectricityPriceDataChange = (price: string, charges: string) => {
+    setElectricityPrice(price);
+    setGridPowerCharges(charges);
+    console.log("Price data changed to:", price, charges);
+  };
+
+  const handleFileUpload = (filePath: string) => {
+    setUploadedFilePath(filePath);
+    localStorage.setItem('analysisFileName', filePath);
+    console.log("File uploaded, path:", filePath);
   };
 
   const checkLocalServer = async () => {
@@ -115,6 +139,13 @@ const Index = () => {
         throw downloadError;
       }
 
+      console.log("Sending data to backend:", {
+        electricityPrice,
+        gridPowerCharges,
+        pvPeak,
+        loadsKwIsNet
+      });
+
       const companyData = {
         companyName,
         address,
@@ -147,41 +178,6 @@ const Index = () => {
     }
   };
 
-  const handleFileUpload = async (
-    filePath: string,
-    electricityPrice?: number,
-    gridPowerCharges?: number,
-    pvPeak?: number,
-    loadsKwIsNet?: boolean
-  ) => {
-    setUploadedFilePath(filePath);
-    localStorage.setItem('analysisFileName', filePath);
-
-    if (electricityPrice !== undefined) {
-      localStorage.setItem('electricityPrice', electricityPrice.toString());
-    } else {
-      localStorage.removeItem('electricityPrice');
-    }
-
-    if (gridPowerCharges !== undefined) {
-      localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
-    } else {
-      localStorage.removeItem('gridPowerCharges');
-    }
-
-    if (pvPeak !== undefined) {
-      localStorage.setItem('pvPeak', pvPeak.toString());
-    } else {
-      localStorage.removeItem('pvPeak');
-    }
-
-    if (loadsKwIsNet !== undefined) {
-      localStorage.setItem('loadsKwIsNet', loadsKwIsNet.toString());
-    } else {
-      localStorage.removeItem('loadsKwIsNet');
-    }
-  };
-
   const handleAnalyze = async () => {
     if (!uploadedFilePath) {
       toast.error("Please upload a load profile file first");
@@ -205,21 +201,57 @@ const Index = () => {
         return;
       }
 
+      // Store all input data
+      if (showElectricityPrice) {
+        localStorage.setItem('electricityPrice', electricityPrice);
+        localStorage.setItem('gridPowerCharges', gridPowerCharges);
+        console.log("Storing price data:", electricityPrice, gridPowerCharges);
+      } else {
+        localStorage.removeItem('electricityPrice');
+        localStorage.removeItem('gridPowerCharges');
+      }
+
+      if (hasExistingPV === "yes" && pvSize) {
+        const parsedPvSize = parseFloat(pvSize.replace(',', '.'));
+        if (!isNaN(parsedPvSize)) {
+          localStorage.setItem('pvPeak', parsedPvSize.toString());
+          console.log("Storing PV peak:", parsedPvSize);
+          
+          const loadsKwIsNet = includesPVGeneration === "yes";
+          localStorage.setItem('loadsKwIsNet', loadsKwIsNet.toString());
+          console.log("Storing loadsKwIsNet:", loadsKwIsNet);
+        }
+      } else {
+        localStorage.removeItem('pvPeak');
+        localStorage.removeItem('loadsKwIsNet');
+      }
+
       const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
 
       if (isLocalServerAvailable) {
-        const electricityPrice = localStorage.getItem('electricityPrice');
-        const gridPowerCharges = localStorage.getItem('gridPowerCharges');
-        const pvPeak = localStorage.getItem('pvPeak');
-        const loadsKwIsNet = localStorage.getItem('loadsKwIsNet');
+        // Convert input values to floats only when sending to backend
+        const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
+        const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
+        const parsedPvPeak = (hasExistingPV === "yes" && pvSize) ? 
+          parseFloat(pvSize.replace(',', '.')) : undefined;
+        const loadsKwIsNet = includesPVGeneration === "yes" ? true : 
+          (includesPVGeneration === "no" ? false : undefined);
+
+        console.log("Sending to backend:", {
+          file: uploadedFilePath,
+          electricityPrice: parsedElectricityPrice,
+          gridPowerCharges: parsedGridPowerCharges,
+          pvPeak: parsedPvPeak,
+          loadsKwIsNet
+        });
 
         useLocalProcessing = await downloadFileLocally(
           uploadedFilePath,
-          electricityPrice ? parseFloat(electricityPrice) : undefined,
-          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
-          pvPeak ? parseFloat(pvPeak) : undefined,
-          loadsKwIsNet ? loadsKwIsNet === 'true' : undefined
+          parsedElectricityPrice,
+          parsedGridPowerCharges,
+          parsedPvPeak,
+          loadsKwIsNet
         );
       }
 
@@ -282,6 +314,13 @@ const Index = () => {
                   onFileUpload={handleFileUpload}
                   onExistingPVChange={handleExistingPVChange}
                   onPVSizeChange={handlePVSizeChange}
+                  onElectricityPriceDataChange={handleElectricityPriceDataChange}
+                  onIncludesPVGenerationChange={handleIncludesPVGenerationChange}
+                  electricityPrice={electricityPrice}
+                  gridPowerCharges={gridPowerCharges}
+                  hasExistingPV={hasExistingPV}
+                  pvSize={pvSize}
+                  includesPVGeneration={includesPVGeneration}
                 />
               </div>
             </CardContent>

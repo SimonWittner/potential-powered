@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -11,31 +11,28 @@ interface ElectricityPriceSectionProps {
   onElectricityPriceChange: (value: string) => void;
   onGridPowerChargesChange: (value: string) => void;
   onKnowsElectricityPriceChange: (value: string) => void;
+  electricityPrice: string;
+  gridPowerCharges: string;
 }
 
 const ElectricityPriceSection = ({
   showElectricityPrice,
   onElectricityPriceChange,
   onGridPowerChargesChange,
-  onKnowsElectricityPriceChange
+  onKnowsElectricityPriceChange,
+  electricityPrice,
+  gridPowerCharges
 }: ElectricityPriceSectionProps) => {
-  const [electricityPrice, setElectricityPrice] = useState<string>("");
-  const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
-
   const handleElectricityPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    if (e.target.value === "" || (value >= 0)) {
-      setElectricityPrice(e.target.value);
-      onElectricityPriceChange(e.target.value);
-    }
+    const value = e.target.value;
+    onElectricityPriceChange(value);
+    console.log("Electricity price changed to:", value);
   };
 
   const handleGridPowerChargesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    if (e.target.value === "" || (value >= 0)) {
-      setGridPowerCharges(e.target.value);
-      onGridPowerChargesChange(e.target.value);
-    }
+    const value = e.target.value;
+    onGridPowerChargesChange(value);
+    console.log("Grid power charges changed to:", value);
   };
 
   // Prevent wheel events from changing the input value
@@ -78,11 +75,10 @@ const ElectricityPriceSection = ({
             <Label htmlFor="electricityPrice">Electricity Price</Label>
             <Input
               id="electricityPrice"
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
+              inputMode="decimal"
               placeholder="Enter price in €/kWh"
-              className="mt-1 no-spinner"
+              className="mt-1"
               value={electricityPrice}
               onChange={handleElectricityPriceChange}
               onWheel={handleWheel}
@@ -92,11 +88,10 @@ const ElectricityPriceSection = ({
             <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
             <Input
               id="gridPowerCharges"
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
+              inputMode="decimal"
               placeholder="Enter price in €/kW/month"
-              className="mt-1 no-spinner"
+              className="mt-1"
               value={gridPowerCharges}
               onChange={handleGridPowerChargesChange}
               onWheel={handleWheel}
