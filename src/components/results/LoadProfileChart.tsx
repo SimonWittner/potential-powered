@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ReferenceLine, Scatter, Cell, Legend } from "recharts";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 
 // Define the data types for load data
@@ -147,6 +147,11 @@ const LoadProfileChart = () => {
     return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
   };
 
+  // Add this function to find the maximum load value
+  const getMaxLoad = (data: PeakLoadData[]) => {
+    return Math.max(...data.map(item => item.load));
+  };
+
   return <div className="grid grid-cols-2 gap-8 rounded-sm">
       <div className="space-y-8">
         <div className="bg-white rounded-lg p-6">
@@ -234,7 +239,7 @@ const LoadProfileChart = () => {
                 config={{
                   load: {
                     label: "Load",
-                    color: "#3b82f6" // red-500
+                    color: "#3b82f6" // blue-500
                   }
                 }}
                 className="w-full h-full"
@@ -253,6 +258,14 @@ const LoadProfileChart = () => {
                     <YAxis 
                       label={{ value: 'Load [kW]', angle: -90, position: 'insideLeft', offset: 7 }}
                     />
+                    {/* Add reference line for maximum value */}
+                    {peakLoadData && (
+                      <ReferenceLine 
+                        y={getMaxLoad(peakLoadData)} 
+                        stroke="red" 
+                        strokeDasharray="3 3"
+                      />
+                    )}
                     <ChartTooltip 
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
@@ -261,13 +274,14 @@ const LoadProfileChart = () => {
                           return (
                             <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
                               <p className="text-sm font-medium">{formatDate(data.time)}</p>
-                              <p className="text-sm text-red-600">{`Load: ${data.load.toFixed(2)} kW`}</p>
+                              <p className="text-sm text-blue-600">{`Load: ${data.load.toFixed(2)} kW`}</p>
                             </div>
                           );
                         }
                         return null;
                       }}
                     />
+                    <Legend />
                     {/* Area component before Line component to ensure proper layering */}
                     <Area
                       type="monotone"
@@ -285,6 +299,21 @@ const LoadProfileChart = () => {
                       dot={{ r: 1 }} 
                       activeDot={{ r: 5 }} 
                     />
+                    {/* Add scatter plot for maximum point */}
+                    {peakLoadData && (
+                      <Scatter
+                        data={[{
+                          time: peakLoadData.find(d => d.load === getMaxLoad(peakLoadData))?.time,
+                          load: getMaxLoad(peakLoadData)
+                        }]}
+                        name="Peak Load"
+                        fill="red"
+                        shape="circle"
+                        legendType="circle"
+                      >
+                        <Cell fill="red" />
+                      </Scatter>
+                    )}
                   </LineChart>
                 </ResponsiveContainer>
               </ChartContainer>
