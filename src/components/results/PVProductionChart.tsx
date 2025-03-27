@@ -87,71 +87,69 @@ const PVProductionChart = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-sm text-black mb-2">PV System Size: {pvSize} kWp</p>
-      </div>
-      
-      <div className="space-y-2 mt-12">
-        <h3 className="text-lg font-medium mb-4">Average PV Generation Daily</h3>
-        <div className="h-[150px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={dailyData}>
-              <XAxis 
-                dataKey="hour"
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-              />
-              <YAxis 
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-                label={{ 
-                  value: 'kW', 
-                  angle: -90, 
-                  position: 'insideLeft',
-                  style: { textAnchor: 'middle', fill: '#666' }
-                }}
-              />
-              <Tooltip />
-              <Line 
-                type="monotone" 
-                dataKey="production" 
-                stroke="#2563eb" 
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      <div className="flex space-x-6">
+        <div className="flex-1">
+          <h3 className="text-lg font-medium mb-4">Average PV Generation Daily</h3>
+          <div className="h-[150px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={dailyData}>
+                <XAxis 
+                  dataKey="hour"
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                  label={{ 
+                    value: 'kW', 
+                    angle: -90, 
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle', fill: '#666' }
+                  }}
+                />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="production" 
+                  stroke="#2563eb" 
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </div>
-
-      <div className="space-y-2 mt-12">
-        <h3 className="text-lg font-medium mb-4">Average PV Generation Yearly</h3>
-        <div className="h-[150px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={monthlyData}>
-              <XAxis 
-                dataKey="month"
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-              />
-              <YAxis 
-                stroke="#666"
-                tick={{ fill: '#666', fontSize: 12 }}
-                label={{ 
-                  value: 'kW', 
-                  angle: -90, 
-                  position: 'insideLeft',
-                  style: { textAnchor: 'middle', fill: '#666' }
-                }}
-              />
-              <Tooltip />
-              <Line 
-                type="monotone" 
-                dataKey="production" 
-                stroke="#2563eb" 
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        
+        <div className="flex-1">
+          <h3 className="text-lg font-medium mb-4">Average PV Generation Yearly</h3>
+          <div className="h-[150px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={monthlyData}>
+                <XAxis 
+                  dataKey="month"
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                  label={{ 
+                    value: 'kW', 
+                    angle: -90, 
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle', fill: '#666' }
+                  }}
+                />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="production" 
+                  stroke="#2563eb" 
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>
