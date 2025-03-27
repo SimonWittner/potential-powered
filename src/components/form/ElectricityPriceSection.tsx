@@ -23,22 +23,18 @@ const ElectricityPriceSection = ({
   const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
 
   const handleElectricityPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Store the complete string value without parsing
-    const value = e.target.value;
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setElectricityPrice(value);
-      onElectricityPriceChange(value);
-      console.log("Electricity price changed to:", value);
+    const value = parseFloat(e.target.value);
+    if (e.target.value === "" || (value >= 0)) {
+      setElectricityPrice(e.target.value);
+      onElectricityPriceChange(e.target.value);
     }
   };
 
   const handleGridPowerChargesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Store the complete string value without parsing
-    const value = e.target.value;
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setGridPowerCharges(value);
-      onGridPowerChargesChange(value);
-      console.log("Grid power charges changed to:", value);
+    const value = parseFloat(e.target.value);
+    if (e.target.value === "" || (value >= 0)) {
+      setGridPowerCharges(e.target.value);
+      onGridPowerChargesChange(e.target.value);
     }
   };
 
@@ -82,8 +78,9 @@ const ElectricityPriceSection = ({
             <Label htmlFor="electricityPrice">Electricity Price</Label>
             <Input
               id="electricityPrice"
-              type="text" 
-              inputMode="decimal"
+              type="number"
+              min="0"
+              step="0.01"
               placeholder="Enter price in €/kWh"
               className="mt-1 no-spinner"
               value={electricityPrice}
@@ -95,8 +92,9 @@ const ElectricityPriceSection = ({
             <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
             <Input
               id="gridPowerCharges"
-              type="text"
-              inputMode="decimal"
+              type="number"
+              min="0"
+              step="0.01"
               placeholder="Enter price in €/kW/month"
               className="mt-1 no-spinner"
               value={gridPowerCharges}

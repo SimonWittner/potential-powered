@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import ExistingPvSection from "./ExistingPvSection"
@@ -12,15 +11,9 @@ interface ConsumptionFormProps {
   showYearlyConsumption: boolean;
   onElectricityPriceChange: (value: string) => void;
   onLoadProfileChange: (value: string) => void;
-  onFileUpload: (filePath: string) => void;
+  onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number, pvPeak?: number, loadsKwIsNet?: boolean) => void;
   onExistingPVChange?: (value: string) => void;
   onPVSizeChange?: (value: string) => void;
-  onFormDataChange: (data: {
-    electricityPrice?: number;
-    gridPowerCharges?: number;
-    pvPeak?: number;
-    loadsKwIsNet?: boolean;
-  }) => void;
 }
 
 const ConsumptionForm = ({
@@ -29,7 +22,6 @@ const ConsumptionForm = ({
   onFileUpload,
   onExistingPVChange,
   onPVSizeChange,
-  onFormDataChange,
 }: ConsumptionFormProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [electricityPrice, setElectricityPrice] = useState<string>("");
@@ -38,17 +30,6 @@ const ConsumptionForm = ({
   const [pvSize, setPvSize] = useState<string>("");
   const [includesPVGeneration, setIncludesPVGeneration] = useState<string>("");
   const [previewData, setPreviewData] = useState<{ value: number }[]>([]);
-  const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
-
-  // For debugging purposes
-  useEffect(() => {
-    console.log("Current form values:");
-    console.log("- Electricity Price:", electricityPrice);
-    console.log("- Grid Power Charges:", gridPowerCharges);
-    console.log("- Has Existing PV:", hasExistingPV);
-    console.log("- PV Size:", pvSize);
-    console.log("- Includes PV Generation:", includesPVGeneration);
-  }, [electricityPrice, gridPowerCharges, hasExistingPV, pvSize, includesPVGeneration]);
 
   const validateCSVContent = async (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -68,26 +49,6 @@ const ConsumptionForm = ({
       };
       reader.readAsText(file);
     });
-  };
-
-  const updateFormData = () => {
-    console.log("Updating form data with:");
-    console.log("- Electricity Price:", electricityPrice);
-    console.log("- Grid Power Charges:", gridPowerCharges);
-    
-    // Ensure we convert strings to numbers only at this point, 
-    // and preserve full precision by using parseFloat not parseInt
-    const formData = {
-      electricityPrice: electricityPrice ? parseFloat(electricityPrice) : undefined,
-      gridPowerCharges: gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
-      pvPeak: (hasExistingPV === "yes" && pvSize) 
-        ? parseFloat(pvSize.replace(',', '.'))
-        : undefined,
-      loadsKwIsNet: includesPVGeneration === "no" ? false : undefined
-    };
-
-    console.log("Parsed form data:", formData);
-    onFormDataChange(formData);
   };
 
   const handleFile = async (file: File) => {
@@ -114,9 +75,21 @@ const ConsumptionForm = ({
         throw uploadError;
       }
 
-      setUploadedFilePath(fileName);
-      onFileUpload(fileName);
-      updateFormData();
+      const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
+      const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
+      const parsedPvPeak = (hasExistingPV === "yes" && pvSize) 
+        ? Number(pvSize.replace(',', '.'))
+        : undefined;
+
+      // Validate the result
+      if (parsedPvPeak !== undefined && isNaN(parsedPvPeak)) {
+        toast.error("Invalid PV size value");
+        return;
+      }
+
+      const loadsKwIsNet = includesPVGeneration === "no" ? false : undefined;
+
+      onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges, parsedPvPeak, loadsKwIsNet);
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -135,7 +108,6 @@ const ConsumptionForm = ({
     if (onExistingPVChange) {
       onExistingPVChange(value);
     }
-    updateFormData();
   };
 
   const handlePvSizeChange = (value: string) => {
@@ -143,24 +115,6 @@ const ConsumptionForm = ({
     if (onPVSizeChange) {
       onPVSizeChange(value);
     }
-    updateFormData();
-  };
-
-  const handleElectricityPriceChange = (value: string) => {
-    console.log("Setting electricity price to:", value);
-    setElectricityPrice(value);
-    updateFormData();
-  };
-
-  const handleGridPowerChargesChange = (value: string) => {
-    console.log("Setting grid power charges to:", value);
-    setGridPowerCharges(value);
-    updateFormData();
-  };
-
-  const handleIncludesPvGenerationChange = (value: string) => {
-    setIncludesPVGeneration(value);
-    updateFormData();
   };
 
   return (
@@ -169,13 +123,13 @@ const ConsumptionForm = ({
         <ExistingPvSection 
           onPvSizeChange={handlePvSizeChange}
           onHasExistingPvChange={handleHasExistingPvChange}
-          onIncludesPvGenerationChange={handleIncludesPvGenerationChange}
+          onIncludesPvGenerationChange={setIncludesPVGeneration}
         />
 
         <ElectricityPriceSection
           showElectricityPrice={showElectricityPrice}
-          onElectricityPriceChange={handleElectricityPriceChange}
-          onGridPowerChargesChange={handleGridPowerChargesChange}
+          onElectricityPriceChange={setElectricityPrice}
+          onGridPowerChargesChange={setGridPowerCharges}
           onKnowsElectricityPriceChange={onElectricityPriceChange}
         />
       </div>
