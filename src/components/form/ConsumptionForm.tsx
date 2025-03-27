@@ -1,4 +1,5 @@
-import { useState } from "react"
+
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import ExistingPvSection from "./ExistingPvSection"
@@ -11,9 +12,16 @@ interface ConsumptionFormProps {
   showYearlyConsumption: boolean;
   onElectricityPriceChange: (value: string) => void;
   onLoadProfileChange: (value: string) => void;
-  onFileUpload: (filePath: string, electricityPrice?: number, gridPowerCharges?: number, pvPeak?: number, loadsKwIsNet?: boolean) => void;
-  onExistingPVChange?: (value: string) => void;
-  onPVSizeChange?: (value: string) => void;
+  onFileUpload: (filePath: string) => void;
+  onExistingPVChange: (value: string) => void;
+  onPVSizeChange: (value: string) => void;
+  onElectricityPriceDataChange: (electricityPrice: string, gridPowerCharges: string) => void;
+  onIncludesPVGenerationChange: (value: string) => void;
+  electricityPrice: string;
+  gridPowerCharges: string;
+  hasExistingPV: string;
+  pvSize: string;
+  includesPVGeneration: string;
 }
 
 const ConsumptionForm = ({
@@ -22,13 +30,15 @@ const ConsumptionForm = ({
   onFileUpload,
   onExistingPVChange,
   onPVSizeChange,
+  onElectricityPriceDataChange,
+  onIncludesPVGenerationChange,
+  electricityPrice,
+  gridPowerCharges,
+  hasExistingPV,
+  pvSize,
+  includesPVGeneration
 }: ConsumptionFormProps) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [electricityPrice, setElectricityPrice] = useState<string>("");
-  const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
-  const [hasExistingPV, setHasExistingPV] = useState<string>("");
-  const [pvSize, setPvSize] = useState<string>("");
-  const [includesPVGeneration, setIncludesPVGeneration] = useState<string>("");
   const [previewData, setPreviewData] = useState<{ value: number }[]>([]);
 
   const validateCSVContent = async (file: File): Promise<boolean> => {
@@ -75,21 +85,7 @@ const ConsumptionForm = ({
         throw uploadError;
       }
 
-      const parsedElectricityPrice = electricityPrice ? parseFloat(electricityPrice) : undefined;
-      const parsedGridPowerCharges = gridPowerCharges ? parseFloat(gridPowerCharges) : undefined;
-      const parsedPvPeak = (hasExistingPV === "yes" && pvSize) 
-        ? Number(pvSize.replace(',', '.'))
-        : undefined;
-
-      // Validate the result
-      if (parsedPvPeak !== undefined && isNaN(parsedPvPeak)) {
-        toast.error("Invalid PV size value");
-        return;
-      }
-
-      const loadsKwIsNet = includesPVGeneration === "no" ? false : undefined;
-
-      onFileUpload(fileName, parsedElectricityPrice, parsedGridPowerCharges, parsedPvPeak, loadsKwIsNet);
+      onFileUpload(fileName);
       toast.success("File uploaded successfully");
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -103,34 +99,33 @@ const ConsumptionForm = ({
     await handleFile(file);
   };
 
-  const handleHasExistingPvChange = (value: string) => {
-    setHasExistingPV(value);
-    if (onExistingPVChange) {
-      onExistingPVChange(value);
-    }
+  const handleElectricityPriceChange = (value: string) => {
+    onElectricityPriceDataChange(value, gridPowerCharges);
   };
 
-  const handlePvSizeChange = (value: string) => {
-    setPvSize(value);
-    if (onPVSizeChange) {
-      onPVSizeChange(value);
-    }
+  const handleGridPowerChargesChange = (value: string) => {
+    onElectricityPriceDataChange(electricityPrice, value);
   };
 
   return (
     <div className="grid grid-cols-2 gap-8">
       <div className="space-y-8">
         <ExistingPvSection 
-          onPvSizeChange={handlePvSizeChange}
-          onHasExistingPvChange={handleHasExistingPvChange}
-          onIncludesPvGenerationChange={setIncludesPVGeneration}
+          onPvSizeChange={onPVSizeChange}
+          onHasExistingPvChange={onExistingPVChange}
+          onIncludesPvGenerationChange={onIncludesPVGenerationChange}
+          hasExistingPV={hasExistingPV}
+          pvSize={pvSize}
+          includesPVGeneration={includesPVGeneration}
         />
 
         <ElectricityPriceSection
           showElectricityPrice={showElectricityPrice}
-          onElectricityPriceChange={setElectricityPrice}
-          onGridPowerChargesChange={setGridPowerCharges}
+          onElectricityPriceChange={handleElectricityPriceChange}
+          onGridPowerChargesChange={handleGridPowerChargesChange}
           onKnowsElectricityPriceChange={onElectricityPriceChange}
+          electricityPrice={electricityPrice}
+          gridPowerCharges={gridPowerCharges}
         />
       </div>
 
