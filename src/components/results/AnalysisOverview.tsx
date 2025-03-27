@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import LoadProfileChart from "@/components/results/LoadProfileChart";
 import PVProductionChart from "@/components/results/PVProductionChart";
@@ -72,7 +71,7 @@ const AnalysisOverview = () => {
                   <span className="animate-pulse">...</span>
                 ) : (
                   <>
-                    {loadPeak} <span className="text-sm">kW</span>
+                    {loadPeak ? loadPeak.toFixed(1) : 0} <span className="text-sm">kW</span>
                   </>
                 )}
               </span>
