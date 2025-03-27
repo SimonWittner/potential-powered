@@ -256,7 +256,7 @@ const LoadProfileChart = () => {
               className="w-full h-full"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
+                <AreaChart
                   data={peakLoadData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                 >
@@ -285,7 +285,6 @@ const LoadProfileChart = () => {
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         const data = payload[0].payload as PeakLoadData;
-                        const date = new Date(data.time);
                         return (
                           <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
                             <p className="text-sm font-medium">{formatDate(data.time)}</p>
@@ -296,14 +295,16 @@ const LoadProfileChart = () => {
                       return null;
                     }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="load" 
-                    stroke="#3b82f6" 
-                    strokeWidth={2}
-                    dot={{ r: 1 }} 
-                    activeDot={{ r: 5 }}
+                  <Area
+                    type="monotone"
+                    dataKey="load"
                     name="Load"
+                    stroke="#3b82f6"
+                    fill="#3b82f6"
+                    fillOpacity={0.2}
+                    strokeWidth={2}
+                    dot={{ r: 1 }}
+                    activeDot={{ r: 5 }}
                   />
                   {peakLoadData && (
                     <ReferenceLine 
@@ -313,7 +314,7 @@ const LoadProfileChart = () => {
                       name="Peak Load"
                     />
                   )}
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             </ChartContainer>
           ) : (
@@ -340,7 +341,7 @@ const LoadProfileChart = () => {
               className="w-full h-full"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
+                <AreaChart
                   data={weeklyLoadData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                 >
@@ -371,21 +372,15 @@ const LoadProfileChart = () => {
                   <Area
                     type="monotone"
                     dataKey="load"
+                    name="Load"
                     stroke="#3b82f6"
                     fill="#3b82f6"
-                    fillOpacity={0.1}
-                    strokeWidth={0}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="load" 
-                    name="Load"
-                    stroke="#3b82f6" 
+                    fillOpacity={0.2}
                     strokeWidth={2}
-                    dot={{ r: 1 }} 
-                    activeDot={{ r: 5 }} 
+                    dot={{ r: 1 }}
+                    activeDot={{ r: 5 }}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             </ChartContainer>
           ) : (
