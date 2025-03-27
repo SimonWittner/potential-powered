@@ -61,8 +61,9 @@ const generateDailyData = (pvSize: number) => {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-2 border border-gray-200 rounded shadow">
-        <p>PV production: {payload[0].value.toFixed(1)} kW</p>
+      <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
+        <p className="text-sm font-medium">{label}</p>
+        <p className="text-sm text-blue-600">{`PV production: ${payload[0].value.toFixed(1)} kW`}</p>
       </div>
     );
   }
