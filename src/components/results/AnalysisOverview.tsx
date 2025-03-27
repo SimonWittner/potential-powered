@@ -21,9 +21,8 @@ const AnalysisOverview = () => {
         }
         
         const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
-        // Change the bucket from 'load_profiles' to 'analysis_results'
         const { data, error } = await supabase.storage
-          .from('analysis_results')
+          .from('load_profiles')
           .download(`input_data_${fileId}.json`);
           
         if (error) {
