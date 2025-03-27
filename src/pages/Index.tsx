@@ -10,6 +10,13 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "@/config/api";
 import { Card, CardContent } from "@/components/ui/card";
 
+interface FormData {
+  electricityPrice?: number;
+  gridPowerCharges?: number;
+  pvPeak?: number;
+  loadsKwIsNet?: boolean;
+}
+
 const Index = () => {
   const navigate = useNavigate();
   const [showElectricityPrice, setShowElectricityPrice] = useState(false);
@@ -22,6 +29,7 @@ const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasExistingPV, setHasExistingPV] = useState("");
   const [pvSize, setPvSize] = useState("");
+  const [formData, setFormData] = useState<FormData>({});
 
   useEffect(() => {
     const existingAnalysis = localStorage.getItem('analysisFileName');
@@ -81,6 +89,10 @@ const Index = () => {
     setPvSize(value);
   };
 
+  const handleFormDataChange = (data: FormData) => {
+    setFormData(prevData => ({...prevData, ...data}));
+  };
+
   const checkLocalServer = async () => {
     try {
       console.log('Checking server availability...');
@@ -100,10 +112,7 @@ const Index = () => {
 
   const downloadFileLocally = async (
     filePath: string,
-    electricityPrice?: number,
-    gridPowerCharges?: number,
-    pvPeak?: number,
-    loadsKwIsNet?: boolean
+    formData: FormData
   ) => {
     try {
       const { data: fileData, error: downloadError } = await supabase
@@ -118,11 +127,13 @@ const Index = () => {
       const companyData = {
         companyName,
         address,
-        ...electricityPrice !== undefined && { electricityPrice },
-        ...gridPowerCharges !== undefined && { gridPowerCharges },
-        ...pvPeak !== undefined && { pv_peak: pvPeak },
-        ...loadsKwIsNet !== undefined && { loads_kw_is_net: loadsKwIsNet }
+        ...formData.electricityPrice !== undefined && { electricityPrice: formData.electricityPrice },
+        ...formData.gridPowerCharges !== undefined && { gridPowerCharges: formData.gridPowerCharges },
+        ...formData.pvPeak !== undefined && { pv_peak: formData.pvPeak },
+        ...formData.loadsKwIsNet !== undefined && { loads_kw_is_net: formData.loadsKwIsNet }
       };
+
+      console.log("Sending data to backend:", companyData);
 
       const response = await fetch(`${API_URL}/process-file`, {
         method: 'POST',
@@ -147,36 +158,32 @@ const Index = () => {
     }
   };
 
-  const handleFileUpload = async (
-    filePath: string,
-    electricityPrice?: number,
-    gridPowerCharges?: number,
-    pvPeak?: number,
-    loadsKwIsNet?: boolean
-  ) => {
+  const handleFileUpload = (filePath: string) => {
     setUploadedFilePath(filePath);
     localStorage.setItem('analysisFileName', filePath);
+  };
 
-    if (electricityPrice !== undefined) {
-      localStorage.setItem('electricityPrice', electricityPrice.toString());
+  const saveFormDataToLocalStorage = (data: FormData) => {
+    if (data.electricityPrice !== undefined) {
+      localStorage.setItem('electricityPrice', data.electricityPrice.toString());
     } else {
       localStorage.removeItem('electricityPrice');
     }
 
-    if (gridPowerCharges !== undefined) {
-      localStorage.setItem('gridPowerCharges', gridPowerCharges.toString());
+    if (data.gridPowerCharges !== undefined) {
+      localStorage.setItem('gridPowerCharges', data.gridPowerCharges.toString());
     } else {
       localStorage.removeItem('gridPowerCharges');
     }
 
-    if (pvPeak !== undefined) {
-      localStorage.setItem('pvPeak', pvPeak.toString());
+    if (data.pvPeak !== undefined) {
+      localStorage.setItem('pvPeak', data.pvPeak.toString());
     } else {
       localStorage.removeItem('pvPeak');
     }
 
-    if (loadsKwIsNet !== undefined) {
-      localStorage.setItem('loadsKwIsNet', loadsKwIsNet.toString());
+    if (data.loadsKwIsNet !== undefined) {
+      localStorage.setItem('loadsKwIsNet', data.loadsKwIsNet.toString());
     } else {
       localStorage.removeItem('loadsKwIsNet');
     }
@@ -205,22 +212,14 @@ const Index = () => {
         return;
       }
 
+      // Save all form data to localStorage
+      saveFormDataToLocalStorage(formData);
+
       const isLocalServerAvailable = await checkLocalServer();
       let useLocalProcessing = false;
 
       if (isLocalServerAvailable) {
-        const electricityPrice = localStorage.getItem('electricityPrice');
-        const gridPowerCharges = localStorage.getItem('gridPowerCharges');
-        const pvPeak = localStorage.getItem('pvPeak');
-        const loadsKwIsNet = localStorage.getItem('loadsKwIsNet');
-
-        useLocalProcessing = await downloadFileLocally(
-          uploadedFilePath,
-          electricityPrice ? parseFloat(electricityPrice) : undefined,
-          gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
-          pvPeak ? parseFloat(pvPeak) : undefined,
-          loadsKwIsNet ? loadsKwIsNet === 'true' : undefined
-        );
+        useLocalProcessing = await downloadFileLocally(uploadedFilePath, formData);
       }
 
       const { data: analysis, error: insertError } = await supabase
@@ -239,7 +238,10 @@ const Index = () => {
 
       if (!useLocalProcessing) {
         const { error: processError } = await supabase.functions.invoke('analyze-load-profile', {
-          body: { analysisId: analysis.id }
+          body: { 
+            analysisId: analysis.id,
+            formData: formData
+          }
         });
 
         if (processError) {
@@ -282,6 +284,7 @@ const Index = () => {
                   onFileUpload={handleFileUpload}
                   onExistingPVChange={handleExistingPVChange}
                   onPVSizeChange={handlePVSizeChange}
+                  onFormDataChange={handleFormDataChange}
                 />
               </div>
             </CardContent>
