@@ -147,7 +147,7 @@ const LoadProfileChart = () => {
     return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
   };
 
-  // Add this function to find the maximum load value
+  // Update the getMaxLoad function to format the value
   const getMaxLoad = (data: PeakLoadData[]) => {
     return Math.max(...data.map(item => item.load));
   };
@@ -258,12 +258,16 @@ const LoadProfileChart = () => {
                     <YAxis 
                       label={{ value: 'Load [kW]', angle: -90, position: 'insideLeft', offset: 7 }}
                     />
-                    {/* Add reference line for maximum value */}
                     {peakLoadData && (
                       <ReferenceLine 
                         y={getMaxLoad(peakLoadData)} 
                         stroke="red" 
                         strokeDasharray="3 3"
+                        label={{
+                          value: `Peak Load: ${getMaxLoad(peakLoadData).toFixed(2)} kW`,
+                          position: 'right',
+                          fill: 'red'
+                        }}
                       />
                     )}
                     <ChartTooltip 
@@ -281,38 +285,37 @@ const LoadProfileChart = () => {
                         return null;
                       }}
                     />
-                    <Legend />
-                    {/* Area component before Line component to ensure proper layering */}
+                    <Legend 
+                      align="right" 
+                      verticalAlign="top"
+                      wrapperStyle={{ paddingBottom: '10px' }}
+                    />
                     <Area
                       type="monotone"
                       dataKey="load"
                       stroke="#3b82f6"
                       fill="#3b82f6"
                       fillOpacity={0.8}
+                      name="Load"
+                      legendType="none"
                     />
                     <Line 
                       type="monotone" 
                       dataKey="load" 
-                      name="Load"
                       stroke="#3b82f6" 
                       strokeWidth={2}
                       dot={{ r: 1 }} 
-                      activeDot={{ r: 5 }} 
+                      activeDot={{ r: 5 }}
+                      legendType="none"
                     />
-                    {/* Add scatter plot for maximum point */}
                     {peakLoadData && (
-                      <Scatter
-                        data={[{
-                          time: peakLoadData.find(d => d.load === getMaxLoad(peakLoadData))?.time,
-                          load: getMaxLoad(peakLoadData)
-                        }]}
-                        name="Peak Load"
-                        fill="red"
-                        shape="circle"
-                        legendType="circle"
-                      >
-                        <Cell fill="red" />
-                      </Scatter>
+                      <ReferenceLine 
+                        y={getMaxLoad(peakLoadData)}
+                        stroke="red"
+                        strokeDasharray="3 3"
+                        name={`Peak Load: ${getMaxLoad(peakLoadData).toFixed(2)} kW`}
+                        legendType="line"
+                      />
                     )}
                   </LineChart>
                 </ResponsiveContainer>
