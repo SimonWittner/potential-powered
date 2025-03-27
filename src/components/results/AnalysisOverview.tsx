@@ -8,11 +8,11 @@ const AnalysisOverview = () => {
           <h2 className="text-2xl font-semibold">Load Profile Analysis</h2>
           <div className="flex space-x-4">
             <div className="bg-[#3b82f6] p-3 text-white text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
-              <span className="font-bold text-lg">100 MWh</span>
+              <span className="font-bold text-lg">100 <span className="text-sm">kWh</span></span>
               <span className="text-xs">Load/Year</span>
             </div>
             <div className="bg-[#3b82f6] p-3 text-white text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
-              <span className="font-bold text-lg">50 kW</span>
+              <span className="font-bold text-lg">50 <span className="text-sm">kW</span></span>
               <span className="text-xs">Maximum Load</span>
             </div>
           </div>
