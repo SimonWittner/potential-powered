@@ -90,8 +90,9 @@ const Index = () => {
 
   const handleFormDataChange = (data: FormData) => {
     setFormData(prevData => {
-      console.log("Form data updated:", data);
-      return {...prevData, ...data};
+      const newData = {...prevData, ...data};
+      console.log("Updated form data:", newData);
+      return newData;
     });
   };
 
@@ -126,17 +127,19 @@ const Index = () => {
         throw downloadError;
       }
 
+      console.log("Form data before sending to backend:", formData);
+      
       const companyData = {
         companyName,
         address,
         ...formData.electricityPrice !== undefined && { 
-          electricityPrice: Number(formData.electricityPrice) 
+          electricityPrice: formData.electricityPrice 
         },
         ...formData.gridPowerCharges !== undefined && { 
-          gridPowerCharges: Number(formData.gridPowerCharges) 
+          gridPowerCharges: formData.gridPowerCharges 
         },
         ...formData.pvPeak !== undefined && { 
-          pv_peak: Number(formData.pvPeak) 
+          pv_peak: formData.pvPeak 
         },
         ...formData.loadsKwIsNet !== undefined && { 
           loads_kw_is_net: formData.loadsKwIsNet 
@@ -174,25 +177,31 @@ const Index = () => {
   };
 
   const saveFormDataToLocalStorage = (data: FormData) => {
+    console.log("Saving to localStorage:");
+    
     if (data.electricityPrice !== undefined) {
+      console.log("- electricityPrice:", data.electricityPrice);
       localStorage.setItem('electricityPrice', String(data.electricityPrice));
     } else {
       localStorage.removeItem('electricityPrice');
     }
 
     if (data.gridPowerCharges !== undefined) {
+      console.log("- gridPowerCharges:", data.gridPowerCharges);
       localStorage.setItem('gridPowerCharges', String(data.gridPowerCharges));
     } else {
       localStorage.removeItem('gridPowerCharges');
     }
 
     if (data.pvPeak !== undefined) {
+      console.log("- pvPeak:", data.pvPeak);
       localStorage.setItem('pvPeak', String(data.pvPeak));
     } else {
       localStorage.removeItem('pvPeak');
     }
 
     if (data.loadsKwIsNet !== undefined) {
+      console.log("- loadsKwIsNet:", data.loadsKwIsNet);
       localStorage.setItem('loadsKwIsNet', String(data.loadsKwIsNet));
     } else {
       localStorage.removeItem('loadsKwIsNet');
@@ -222,6 +231,7 @@ const Index = () => {
         return;
       }
 
+      console.log("Form data before saving to localStorage:", formData);
       saveFormDataToLocalStorage(formData);
 
       const isLocalServerAvailable = await checkLocalServer();
@@ -246,6 +256,7 @@ const Index = () => {
       }
 
       if (!useLocalProcessing) {
+        console.log("Using edge function with form data:", formData);
         const { error: processError } = await supabase.functions.invoke('analyze-load-profile', {
           body: { 
             analysisId: analysis.id,

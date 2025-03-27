@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
 import ExistingPvSection from "./ExistingPvSection"
@@ -40,6 +40,16 @@ const ConsumptionForm = ({
   const [previewData, setPreviewData] = useState<{ value: number }[]>([]);
   const [uploadedFilePath, setUploadedFilePath] = useState<string>("");
 
+  // For debugging purposes
+  useEffect(() => {
+    console.log("Current form values:");
+    console.log("- Electricity Price:", electricityPrice);
+    console.log("- Grid Power Charges:", gridPowerCharges);
+    console.log("- Has Existing PV:", hasExistingPV);
+    console.log("- PV Size:", pvSize);
+    console.log("- Includes PV Generation:", includesPVGeneration);
+  }, [electricityPrice, gridPowerCharges, hasExistingPV, pvSize, includesPVGeneration]);
+
   const validateCSVContent = async (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -61,7 +71,12 @@ const ConsumptionForm = ({
   };
 
   const updateFormData = () => {
-    // Parse values properly, ensuring we use the full string value
+    console.log("Updating form data with:");
+    console.log("- Electricity Price:", electricityPrice);
+    console.log("- Grid Power Charges:", gridPowerCharges);
+    
+    // Ensure we convert strings to numbers only at this point, 
+    // and preserve full precision by using parseFloat not parseInt
     const formData = {
       electricityPrice: electricityPrice ? parseFloat(electricityPrice) : undefined,
       gridPowerCharges: gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
@@ -71,6 +86,7 @@ const ConsumptionForm = ({
       loadsKwIsNet: includesPVGeneration === "no" ? false : undefined
     };
 
+    console.log("Parsed form data:", formData);
     onFormDataChange(formData);
   };
 
@@ -131,11 +147,13 @@ const ConsumptionForm = ({
   };
 
   const handleElectricityPriceChange = (value: string) => {
+    console.log("Setting electricity price to:", value);
     setElectricityPrice(value);
     updateFormData();
   };
 
   const handleGridPowerChargesChange = (value: string) => {
+    console.log("Setting grid power charges to:", value);
     setGridPowerCharges(value);
     updateFormData();
   };

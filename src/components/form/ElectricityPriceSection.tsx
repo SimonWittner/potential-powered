@@ -23,20 +23,22 @@ const ElectricityPriceSection = ({
   const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
 
   const handleElectricityPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Store the complete text value without parsing to avoid losing precision
+    // Store the complete string value without parsing
     const value = e.target.value;
     if (value === "" || /^\d*\.?\d*$/.test(value)) {
       setElectricityPrice(value);
       onElectricityPriceChange(value);
+      console.log("Electricity price changed to:", value);
     }
   };
 
   const handleGridPowerChargesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Store the complete text value without parsing to avoid losing precision
+    // Store the complete string value without parsing
     const value = e.target.value;
     if (value === "" || /^\d*\.?\d*$/.test(value)) {
       setGridPowerCharges(value);
       onGridPowerChargesChange(value);
+      console.log("Grid power charges changed to:", value);
     }
   };
 
@@ -83,7 +85,7 @@ const ElectricityPriceSection = ({
               type="text" 
               inputMode="decimal"
               placeholder="Enter price in €/kWh"
-              className="mt-1"
+              className="mt-1 no-spinner"
               value={electricityPrice}
               onChange={handleElectricityPriceChange}
               onWheel={handleWheel}
@@ -96,7 +98,7 @@ const ElectricityPriceSection = ({
               type="text"
               inputMode="decimal"
               placeholder="Enter price in €/kW/month"
-              className="mt-1"
+              className="mt-1 no-spinner"
               value={gridPowerCharges}
               onChange={handleGridPowerChargesChange}
               onWheel={handleWheel}
