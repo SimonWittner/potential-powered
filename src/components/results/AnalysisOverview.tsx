@@ -20,7 +20,7 @@ const AnalysisOverview = () => {
           return;
         }
         
-        const fileId = analysisFileName.split('.')[0];
+        const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
         const { data, error } = await supabase.storage
           .from('load_profiles')
           .download(`input_data_${fileId}.json`);
