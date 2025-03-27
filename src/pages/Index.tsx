@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -92,6 +93,14 @@ const Index = () => {
     setFormData(prevData => {
       const newData = {...prevData, ...data};
       console.log("Updated form data:", newData);
+      
+      // Extra debug for grid power charges
+      if (data.gridPowerCharges !== undefined) {
+        console.log("Grid power charges value type:", typeof data.gridPowerCharges);
+        console.log("Grid power charges raw value:", data.gridPowerCharges);
+        console.log("Grid power charges string representation:", String(data.gridPowerCharges));
+      }
+      
       return newData;
     });
   };
@@ -129,6 +138,7 @@ const Index = () => {
 
       console.log("Form data before sending to backend:", formData);
       
+      // Ensure we're capturing the full values by using string representations first
       const companyData = {
         companyName,
         address,
@@ -146,7 +156,7 @@ const Index = () => {
         }
       };
 
-      console.log("Sending data to backend:", companyData);
+      console.log("Sending data to backend:", JSON.stringify(companyData));
 
       const response = await fetch(`${API_URL}/process-file`, {
         method: 'POST',
@@ -187,7 +197,12 @@ const Index = () => {
     }
 
     if (data.gridPowerCharges !== undefined) {
+      // Add extra debugging for grid power charges
       console.log("- gridPowerCharges:", data.gridPowerCharges);
+      console.log("- gridPowerCharges type:", typeof data.gridPowerCharges);
+      console.log("- gridPowerCharges string representation:", String(data.gridPowerCharges));
+      
+      // Ensure we're storing the exact string representation
       localStorage.setItem('gridPowerCharges', String(data.gridPowerCharges));
     } else {
       localStorage.removeItem('gridPowerCharges');
