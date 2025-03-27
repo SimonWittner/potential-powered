@@ -194,13 +194,6 @@ const LoadProfileChart = () => {
                   data={dailyLoadData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                 >
-                  <Area
-                    type="monotone"
-                    dataKey="load"
-                    stroke="#3b82f6"
-                    fill="#3b82f6"
-                    fillOpacity={0.2}
-                  />
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="hour" 
@@ -232,7 +225,9 @@ const LoadProfileChart = () => {
                     stroke="#3b82f6" 
                     strokeWidth={2}
                     dot={{ r: 1 }} 
-                    activeDot={{ r: 5 }} 
+                    activeDot={{ r: 5 }}
+                    fill="#3b82f6"
+                    fillOpacity={0.2} 
                   />
                 </LineChart>
               </ResponsiveContainer>
