@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 // Define the data type for daily load
@@ -174,6 +174,14 @@ const LoadProfileChart = () => {
                         }
                         return null;
                       }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="load"
+                      name="Load"
+                      stroke="#3b82f6"
+                      fill="#3b82f6"
+                      fillOpacity={0.2}
                     />
                     <Line 
                       type="monotone" 
