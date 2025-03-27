@@ -194,6 +194,13 @@ const LoadProfileChart = () => {
                   data={dailyLoadData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                 >
+                  <Area
+                    type="monotone"
+                    dataKey="load"
+                    stroke="#3b82f6"
+                    fill="#3b82f6"
+                    fillOpacity={0.2}
+                  />
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="hour" 
@@ -217,13 +224,6 @@ const LoadProfileChart = () => {
                       }
                       return null;
                     }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="load"
-                    stroke="#3b82f6"
-                    fill="#0EA5E9"
-                    fillOpacity={0.3}
                   />
                   <Line 
                     type="monotone" 
@@ -378,7 +378,8 @@ const LoadProfileChart = () => {
                     dataKey="load"
                     stroke="#3b82f6"
                     fill="#3b82f6"
-                    fillOpacity={0.3}
+                    fillOpacity={0.1}
+                    strokeWidth={0}
                   />
                   <Line 
                     type="monotone" 
