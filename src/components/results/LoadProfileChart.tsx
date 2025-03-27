@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area } from "recharts";
@@ -145,7 +144,7 @@ const LoadProfileChart = () => {
   // Format date for peak load
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return `${date.getHours()}:00`;
+    return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
   };
 
   return <div className="grid grid-cols-2 gap-8 rounded-sm">
@@ -235,7 +234,7 @@ const LoadProfileChart = () => {
                 config={{
                   load: {
                     label: "Load",
-                    color: "#ef4444" // red-500
+                    color: "#3b82f6" // red-500
                   }
                 }}
                 className="w-full h-full"
@@ -249,12 +248,7 @@ const LoadProfileChart = () => {
                     <XAxis 
                       dataKey="time" 
                       tickFormatter={formatDate}
-                      ticks={[0, 3, 6, 9, 12, 15, 18, 21].map(hour => {
-                        // Create a date with the hour, using the first date from the data
-                        const baseDate = peakLoadData[0]?.time.split('T')[0];
-                        return `${baseDate}T${hour.toString().padStart(2, '0')}:00:00`;
-                      })}
-                      label={{ value: 'Hour of Day', position: 'insideBottom', offset: -10 }}
+                      label={{ value: 'Date', position: 'insideBottom', offset: -10 }}
                     />
                     <YAxis 
                       label={{ value: 'Load [kW]', angle: -90, position: 'insideLeft', offset: 7 }}
@@ -266,7 +260,7 @@ const LoadProfileChart = () => {
                           const date = new Date(data.time);
                           return (
                             <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
-                              <p className="text-sm font-medium">{`${date.getHours()}:00`}</p>
+                              <p className="text-sm font-medium">{formatDate(data.time)}</p>
                               <p className="text-sm text-red-600">{`Load: ${data.load.toFixed(2)} kW`}</p>
                             </div>
                           );
@@ -278,15 +272,15 @@ const LoadProfileChart = () => {
                     <Area
                       type="monotone"
                       dataKey="load"
-                      stroke="#ef4444"
-                      fill="#f87171"
-                      fillOpacity={0.3}
+                      stroke="#3b82f6"
+                      fill="#3b82f6"
+                      fillOpacity={0.8}
                     />
                     <Line 
                       type="monotone" 
                       dataKey="load" 
                       name="Load"
-                      stroke="#ef4444" 
+                      stroke="#3b82f6" 
                       strokeWidth={2}
                       dot={{ r: 1 }} 
                       activeDot={{ r: 5 }} 
