@@ -1,4 +1,3 @@
-
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,10 +18,9 @@ const generateMonthlyData = (pvSize: number) => {
     { month: "Dec", baseProduction: 1156 }
   ];
 
-  // Scale the production values based on PV size
   return baseValues.map(item => ({
     month: item.month,
-    production: (item.baseProduction * pvSize) / 100 // Assuming base values are for 100kWp
+    production: (item.baseProduction * pvSize) / 100
   }));
 };
 
@@ -54,10 +52,9 @@ const generateDailyData = (pvSize: number) => {
     { hour: "23:00", baseProduction: 0 }
   ];
 
-  // Scale the production values based on PV size
   return baseValues.map(item => ({
     hour: item.hour,
-    production: (item.baseProduction * pvSize) / 100 // Assuming base values are for 100kWp
+    production: (item.baseProduction * pvSize) / 100
   }));
 };
 
@@ -65,7 +62,6 @@ const PVProductionChart = () => {
   const [pvSize, setPvSize] = useState<number>(0);
 
   useEffect(() => {
-    // Add console.log to debug localStorage values
     console.log('Reading from localStorage:', {
       pvPeak: localStorage.getItem('pvPeak'),
       hasExistingPV: localStorage.getItem('hasExistingPV')
@@ -90,73 +86,72 @@ const PVProductionChart = () => {
     <div className="space-y-6">
       <Card className="shadow-md">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-medium">PV Production</CardTitle>
+          <CardTitle className="text-lg font-medium">Average PV Generation Daily</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-lg font-medium mb-4">Average PV Generation Daily</h3>
-              <div className="h-[150px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={dailyData}>
-                    <XAxis 
-                      dataKey="hour"
-                      stroke="#666"
-                      tick={{ fill: '#666', fontSize: 12 }}
-                    />
-                    <YAxis 
-                      stroke="#666"
-                      tick={{ fill: '#666', fontSize: 12 }}
-                      label={{ 
-                        value: 'kW', 
-                        angle: -90, 
-                        position: 'insideLeft',
-                        style: { textAnchor: 'middle', fill: '#666' }
-                      }}
-                    />
-                    <Tooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="production" 
-                      stroke="#2563eb" 
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-medium mb-4">Average PV Generation Yearly</h3>
-              <div className="h-[150px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={monthlyData}>
-                    <XAxis 
-                      dataKey="month"
-                      stroke="#666"
-                      tick={{ fill: '#666', fontSize: 12 }}
-                    />
-                    <YAxis 
-                      stroke="#666"
-                      tick={{ fill: '#666', fontSize: 12 }}
-                      label={{ 
-                        value: 'kW', 
-                        angle: -90, 
-                        position: 'insideLeft',
-                        style: { textAnchor: 'middle', fill: '#666' }
-                      }}
-                    />
-                    <Tooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="production" 
-                      stroke="#2563eb" 
-                      strokeWidth={2}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+          <div className="h-[150px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={dailyData}>
+                <XAxis 
+                  dataKey="hour"
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                  label={{ 
+                    value: 'kW', 
+                    angle: -90, 
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle', fill: '#666' }
+                  }}
+                />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="production" 
+                  stroke="#2563eb" 
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="shadow-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-medium">Average PV Generation Yearly</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[150px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={monthlyData}>
+                <XAxis 
+                  dataKey="month"
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#666"
+                  tick={{ fill: '#666', fontSize: 12 }}
+                  label={{ 
+                    value: 'kW', 
+                    angle: -90, 
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle', fill: '#666' }
+                  }}
+                />
+                <Tooltip />
+                <Line 
+                  type="monotone" 
+                  dataKey="production" 
+                  stroke="#2563eb" 
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
@@ -165,4 +160,3 @@ const PVProductionChart = () => {
 };
 
 export default PVProductionChart;
-
