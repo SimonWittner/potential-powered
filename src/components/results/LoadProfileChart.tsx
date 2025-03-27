@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ReferenceLine, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ReferenceLine, Legend, AreaChart } from "recharts";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -190,7 +190,7 @@ const LoadProfileChart = () => {
               className="w-full h-full"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart
+                <AreaChart
                   data={dailyLoadData}
                   margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                 >
@@ -218,18 +218,18 @@ const LoadProfileChart = () => {
                       return null;
                     }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="load" 
+                  <Area
+                    type="monotone"
+                    dataKey="load"
                     name="Load"
-                    stroke="#3b82f6" 
-                    strokeWidth={2}
-                    dot={{ r: 1 }} 
-                    activeDot={{ r: 5 }}
+                    stroke="#3b82f6"
                     fill="#3b82f6"
-                    fillOpacity={0.2} 
+                    fillOpacity={0.2}
+                    strokeWidth={2}
+                    dot={{ r: 1 }}
+                    activeDot={{ r: 5 }}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             </ChartContainer>
           ) : (
