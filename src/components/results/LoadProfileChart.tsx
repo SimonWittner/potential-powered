@@ -156,7 +156,7 @@ const LoadProfileChart = () => {
   
   // Custom tooltip formatter to show load value with 2 decimal places
   const formatLoad = (value: number) => {
-    return `${value.toFixed(2)} kW`;
+    return `${value.toFixed(1)} kW`;
   };
 
   return <div className="grid grid-cols-2 gap-8 rounded-sm">
