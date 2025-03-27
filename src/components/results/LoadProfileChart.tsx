@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ReferenceLine, Scatter, Cell, Legend } from "recharts";
@@ -9,14 +10,19 @@ interface DailyLoadData {
   load: number;
 }
 
+interface WeeklyLoadData {
+  day: number;
+  load: number;
+}
+
 interface PeakLoadData {
   time: string;
   load: number;
 }
 
 const LoadProfileChart = () => {
-  const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
   const [dailyLoadData, setDailyLoadData] = useState<DailyLoadData[] | null>(null);
+  const [weeklyLoadData, setWeeklyLoadData] = useState<WeeklyLoadData[] | null>(null);
   const [peakLoadData, setPeakLoadData] = useState<PeakLoadData[] | null>(null);
 
   useEffect(() => {
@@ -60,22 +66,29 @@ const LoadProfileChart = () => {
           }
         }
 
-        // Check if weekly load plot exists
-        const weeklyLoadName = `weekly_load_${fileId}.png`;
+        // Fetch weekly load JSON data
+        const weeklyLoadJsonName = `weekly_load_${fileId}.json`;
         const {
-          data: weeklyLoadExists
+          data: weeklyLoadJsonExists
         } = await supabase.storage.from('analysis_results').list('', {
-          search: weeklyLoadName
+          search: weeklyLoadJsonName
         });
-        if (weeklyLoadExists && weeklyLoadExists.length > 0) {
+        
+        if (weeklyLoadJsonExists && weeklyLoadJsonExists.length > 0) {
           const {
-            data: weeklyLoadData
-          } = await supabase.storage.from('analysis_results').download(weeklyLoadName);
-          if (weeklyLoadData) {
-            const url = URL.createObjectURL(weeklyLoadData);
-            console.log("Successfully fetched and created URL for weekly load plot:", url);
-            setWeeklyPlotImageUrl(url);
-            hasWeekly = true;
+            data: weeklyLoadJsonData
+          } = await supabase.storage.from('analysis_results').download(weeklyLoadJsonName);
+          
+          if (weeklyLoadJsonData) {
+            try {
+              const text = await weeklyLoadJsonData.text();
+              const data = JSON.parse(text) as WeeklyLoadData[];
+              console.log("Successfully fetched weekly load JSON data:", data);
+              setWeeklyLoadData(data);
+              hasWeekly = true;
+            } catch (error) {
+              console.error("Error parsing weekly load JSON data:", error);
+            }
           }
         }
 
@@ -129,16 +142,21 @@ const LoadProfileChart = () => {
     };
     startPolling();
 
-    // Cleanup interval and object URLs on component unmount
+    // Cleanup interval on component unmount
     return () => {
       if (intervalId) clearInterval(intervalId);
-      if (weeklyPlotImageUrl) URL.revokeObjectURL(weeklyPlotImageUrl);
     };
   }, []); // Empty dependency array means this runs once when component mounts
 
   // Format hour for X-axis
   const formatHour = (hour: number) => {
     return `${hour}:00`;
+  };
+
+  // Format day of week for X-axis
+  const formatDay = (day: number) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[day];
   };
 
   // Format date for peak load
@@ -227,7 +245,67 @@ const LoadProfileChart = () => {
         <div className="bg-white rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Average Weekly Load</h3>
           <div className="h-[250px] w-full flex items-center justify-center">
-            {weeklyPlotImageUrl ? <img src={weeklyPlotImageUrl} alt="Weekly Load Analysis" className="max-h-full w-auto object-contain" /> : <div className="text-gray-500">Loading weekly load data...</div>}
+            {weeklyLoadData ? (
+              <ChartContainer 
+                config={{
+                  load: {
+                    label: "Load",
+                    color: "#22c55e" // green-500
+                  }
+                }}
+                className="w-full h-full"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={weeklyLoadData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="day" 
+                      tickFormatter={formatDay}
+                      label={{ value: 'Day of Week', position: 'insideBottom', offset: -10 }}
+                    />
+                    <YAxis 
+                      label={{ value: 'Load [kW]', angle: -90, position: 'insideLeft', offset: 7 }}
+                    />
+                    <ChartTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload as WeeklyLoadData;
+                          return (
+                            <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
+                              <p className="text-sm font-medium">{formatDay(data.day)}</p>
+                              <p className="text-sm text-green-600">{`Load: ${data.load.toFixed(2)} kW`}</p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    {/* Area component for fill under the curve */}
+                    <Area
+                      type="monotone"
+                      dataKey="load"
+                      stroke="#22c55e"
+                      fill="#22c55e"
+                      fillOpacity={0.3}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="load" 
+                      name="Load"
+                      stroke="#22c55e" 
+                      strokeWidth={2}
+                      dot={{ r: 1 }} 
+                      activeDot={{ r: 5 }} 
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            ) : (
+              <div className="text-gray-500">Loading weekly load data...</div>
+            )}
           </div>
         </div>
       </div>
