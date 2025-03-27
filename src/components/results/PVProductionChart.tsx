@@ -58,6 +58,17 @@ const generateDailyData = (pvSize: number) => {
   }));
 };
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-2 border border-gray-200 rounded shadow">
+        <p>PV production: {payload[0].value.toFixed(1)} kW</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const PVProductionChart = () => {
   const [pvSize, setPvSize] = useState<number>(0);
 
@@ -107,7 +118,7 @@ const PVProductionChart = () => {
                     style: { textAnchor: 'middle', fill: '#666' }
                   }}
                 />
-                <Tooltip />
+                <Tooltip content={<CustomTooltip />} />
                 <Line 
                   type="monotone" 
                   dataKey="production" 
@@ -143,7 +154,7 @@ const PVProductionChart = () => {
                     style: { textAnchor: 'middle', fill: '#666' }
                   }}
                 />
-                <Tooltip />
+                <Tooltip content={<CustomTooltip />} />
                 <Line 
                   type="monotone" 
                   dataKey="production" 
