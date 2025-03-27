@@ -22,7 +22,7 @@ const AnalysisOverview = () => {
         
         const fileId = analysisFileName.split('.')[0];
         const { data, error } = await supabase.storage
-          .from('load_profiles')
+          .from('analysis_results')
           .download(`input_data_${fileId}.json`);
           
         if (error) {
