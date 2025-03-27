@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import LoadProfileChart from "@/components/results/LoadProfileChart";
 import PVProductionChart from "@/components/results/PVProductionChart";
@@ -49,19 +48,19 @@ const AnalysisOverview = () => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Load Profile Analysis</h2>
           <div className="flex space-x-4">
-            <div className="bg-[#3b82f6] p-3 text-white text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
+            <div className="bg-[#d8c6c2] p-3 text-white text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
               <span className="font-bold text-lg">
                 {isLoading ? (
                   <span className="animate-pulse">...</span>
                 ) : (
                   <>
-                    {yearlyConsumption ? Math.round(yearlyConsumption) : 100} <span className="text-sm">kWh</span>
+                    {yearlyConsumption ? (Math.round(yearlyConsumption / 1000)).toFixed(1) : 0.1} <span className="text-sm">MWh</span>
                   </>
                 )}
               </span>
               <span className="text-xs">Load/Year</span>
             </div>
-            <div className="bg-[#3b82f6] p-3 text-white text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
+            <div className="bg-[#d8c6c2] p-3 text-white text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
               <span className="font-bold text-lg">50 <span className="text-sm">kW</span></span>
               <span className="text-xs">Maximum Load</span>
             </div>
