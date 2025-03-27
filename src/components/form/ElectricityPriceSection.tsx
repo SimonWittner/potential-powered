@@ -23,18 +23,20 @@ const ElectricityPriceSection = ({
   const [gridPowerCharges, setGridPowerCharges] = useState<string>("");
 
   const handleElectricityPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    if (e.target.value === "" || (value >= 0)) {
-      setElectricityPrice(e.target.value);
-      onElectricityPriceChange(e.target.value);
+    // Store the complete text value without parsing to avoid losing precision
+    const value = e.target.value;
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setElectricityPrice(value);
+      onElectricityPriceChange(value);
     }
   };
 
   const handleGridPowerChargesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    if (e.target.value === "" || (value >= 0)) {
-      setGridPowerCharges(e.target.value);
-      onGridPowerChargesChange(e.target.value);
+    // Store the complete text value without parsing to avoid losing precision
+    const value = e.target.value;
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setGridPowerCharges(value);
+      onGridPowerChargesChange(value);
     }
   };
 
@@ -78,11 +80,10 @@ const ElectricityPriceSection = ({
             <Label htmlFor="electricityPrice">Electricity Price</Label>
             <Input
               id="electricityPrice"
-              type="number"
-              min="0"
-              step="0.01"
+              type="text" 
+              inputMode="decimal"
               placeholder="Enter price in €/kWh"
-              className="mt-1 no-spinner"
+              className="mt-1"
               value={electricityPrice}
               onChange={handleElectricityPriceChange}
               onWheel={handleWheel}
@@ -92,11 +93,10 @@ const ElectricityPriceSection = ({
             <Label htmlFor="gridPowerCharges">Grid Power Charges</Label>
             <Input
               id="gridPowerCharges"
-              type="number"
-              min="0"
-              step="0.01"
+              type="text"
+              inputMode="decimal"
               placeholder="Enter price in €/kW/month"
-              className="mt-1 no-spinner"
+              className="mt-1"
               value={gridPowerCharges}
               onChange={handleGridPowerChargesChange}
               onWheel={handleWheel}

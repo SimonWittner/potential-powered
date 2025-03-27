@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -90,7 +89,10 @@ const Index = () => {
   };
 
   const handleFormDataChange = (data: FormData) => {
-    setFormData(prevData => ({...prevData, ...data}));
+    setFormData(prevData => {
+      console.log("Form data updated:", data);
+      return {...prevData, ...data};
+    });
   };
 
   const checkLocalServer = async () => {
@@ -127,10 +129,18 @@ const Index = () => {
       const companyData = {
         companyName,
         address,
-        ...formData.electricityPrice !== undefined && { electricityPrice: formData.electricityPrice },
-        ...formData.gridPowerCharges !== undefined && { gridPowerCharges: formData.gridPowerCharges },
-        ...formData.pvPeak !== undefined && { pv_peak: formData.pvPeak },
-        ...formData.loadsKwIsNet !== undefined && { loads_kw_is_net: formData.loadsKwIsNet }
+        ...formData.electricityPrice !== undefined && { 
+          electricityPrice: Number(formData.electricityPrice) 
+        },
+        ...formData.gridPowerCharges !== undefined && { 
+          gridPowerCharges: Number(formData.gridPowerCharges) 
+        },
+        ...formData.pvPeak !== undefined && { 
+          pv_peak: Number(formData.pvPeak) 
+        },
+        ...formData.loadsKwIsNet !== undefined && { 
+          loads_kw_is_net: formData.loadsKwIsNet 
+        }
       };
 
       console.log("Sending data to backend:", companyData);
@@ -165,25 +175,25 @@ const Index = () => {
 
   const saveFormDataToLocalStorage = (data: FormData) => {
     if (data.electricityPrice !== undefined) {
-      localStorage.setItem('electricityPrice', data.electricityPrice.toString());
+      localStorage.setItem('electricityPrice', String(data.electricityPrice));
     } else {
       localStorage.removeItem('electricityPrice');
     }
 
     if (data.gridPowerCharges !== undefined) {
-      localStorage.setItem('gridPowerCharges', data.gridPowerCharges.toString());
+      localStorage.setItem('gridPowerCharges', String(data.gridPowerCharges));
     } else {
       localStorage.removeItem('gridPowerCharges');
     }
 
     if (data.pvPeak !== undefined) {
-      localStorage.setItem('pvPeak', data.pvPeak.toString());
+      localStorage.setItem('pvPeak', String(data.pvPeak));
     } else {
       localStorage.removeItem('pvPeak');
     }
 
     if (data.loadsKwIsNet !== undefined) {
-      localStorage.setItem('loadsKwIsNet', data.loadsKwIsNet.toString());
+      localStorage.setItem('loadsKwIsNet', String(data.loadsKwIsNet));
     } else {
       localStorage.removeItem('loadsKwIsNet');
     }
@@ -212,7 +222,6 @@ const Index = () => {
         return;
       }
 
-      // Save all form data to localStorage
       saveFormDataToLocalStorage(formData);
 
       const isLocalServerAvailable = await checkLocalServer();

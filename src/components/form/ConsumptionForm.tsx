@@ -61,11 +61,12 @@ const ConsumptionForm = ({
   };
 
   const updateFormData = () => {
+    // Parse values properly, ensuring we use the full string value
     const formData = {
       electricityPrice: electricityPrice ? parseFloat(electricityPrice) : undefined,
       gridPowerCharges: gridPowerCharges ? parseFloat(gridPowerCharges) : undefined,
       pvPeak: (hasExistingPV === "yes" && pvSize) 
-        ? Number(pvSize.replace(',', '.'))
+        ? parseFloat(pvSize.replace(',', '.'))
         : undefined,
       loadsKwIsNet: includesPVGeneration === "no" ? false : undefined
     };
