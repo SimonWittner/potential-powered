@@ -155,6 +155,7 @@ const LoadProfileChart = () => {
                     <XAxis 
                       dataKey="hour" 
                       tickFormatter={formatHour}
+                      ticks={[0, 3, 6, 9, 12, 15, 18, 21]} // Show only every 3 hours
                       label={{ value: 'Hour of Day', position: 'insideBottom', offset: -10 }}
                     />
                     <YAxis 
