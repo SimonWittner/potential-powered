@@ -20,7 +20,7 @@ const AnalysisOverview = () => {
           return;
         }
         
-        const fileId = analysisFileName.replace(/\.[^/.]+$/, "");
+        const fileId = analysisFileName.split('.')[0];
         const { data, error } = await supabase.storage
           .from('load_profiles')
           .download(`input_data_${fileId}.json`);
@@ -55,7 +55,7 @@ const AnalysisOverview = () => {
                   <span className="animate-pulse">...</span>
                 ) : (
                   <>
-                    {yearlyConsumption ? Math.round(yearlyConsumption)} <span className="text-sm">kWh</span>
+                    {yearlyConsumption ? Math.round(yearlyConsumption) : 100} <span className="text-sm">kWh</span>
                   </>
                 )}
               </span>
