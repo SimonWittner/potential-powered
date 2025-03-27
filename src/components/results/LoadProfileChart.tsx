@@ -306,7 +306,7 @@ const LoadProfileChart = () => {
                         y={getMaxLoad(peakLoadData)}
                         stroke="red"
                         strokeDasharray="3 3"
-                        name={`Peak Load: ${getMaxLoad(peakLoadData).toFixed(2)} kW`}
+                        name={`sPeak Load: ${getMaxLoad(peakLoadData).toFixed(2)} kW`}
                         legendType="line"
                       />
                     )}
