@@ -144,7 +144,9 @@ const LoadProfileChart = () => {
   // Format date for peak load
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+    return `${date.getDate()}. ${date.toLocaleDateString('en-US', { 
+      month: 'short'
+    })}`; // Returns format like "21. Jan"
   };
 
   // Update the getMaxLoad function to format the value
@@ -289,15 +291,6 @@ const LoadProfileChart = () => {
                       align="right" 
                       verticalAlign="top"
                       wrapperStyle={{ paddingBottom: '10px' }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="load"
-                      stroke="#3b82f6"
-                      fill="#3b82f6"
-                      fillOpacity={0.8}
-                      name="Load"
-                      legendType="none"
                     />
                     <Line 
                       type="monotone" 
