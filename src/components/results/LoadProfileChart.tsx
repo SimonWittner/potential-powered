@@ -159,7 +159,7 @@ const LoadProfileChart = () => {
                       label={{ value: 'Hour of Day', position: 'insideBottom', offset: -10 }}
                     />
                     <YAxis 
-                      label={{ value: 'Load (kW)', angle: -90, position: 'insideLeft', offset: 10 }}
+                      label={{ value: 'Load (kW)', angle: -90, position: 'insideLeft', offset: 5 }}
                     />
                     <ChartTooltip 
                       content={({ active, payload }) => {
