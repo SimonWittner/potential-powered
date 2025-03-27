@@ -48,7 +48,8 @@ const AnalysisOverview = () => {
     fetchData();
   }, []);
   
-  return <div className="grid grid-cols-1 gap-8">
+  return (
+    <div className="grid grid-cols-1 gap-8">
       <Card className="p-6 bg-white shadow-sm">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Load Profile Analysis</h2>
@@ -59,7 +60,7 @@ const AnalysisOverview = () => {
                   <span className="animate-pulse">...</span>
                 ) : (
                   <>
-                    {yearlyConsumption ? (yearlyConsumption / 1000).toFixed(1)} <span className="text-sm">MWh</span>
+                    {yearlyConsumption ? (yearlyConsumption / 1000).toFixed(1) : 0} <span className="text-sm">MWh</span>
                   </>
                 )}
               </span>
@@ -90,6 +91,8 @@ const AnalysisOverview = () => {
           <PVProductionChart />
         </div>
       </Card>
-    </div>;
+    </div>
+  );
 };
+
 export default AnalysisOverview;
