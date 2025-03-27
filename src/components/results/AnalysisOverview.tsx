@@ -78,7 +78,7 @@ const AnalysisOverview = () => {
 
       <Card className="p-6 bg-white shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">PV Design</h2>
+          <h2 className="text-2xl font-semibold">PV</h2>
           <div className="flex space-x-4">
             <div className="bg-[#d8c6c2] p-3 text-black text-center flex flex-col justify-center min-w-[110px] shadow-sm rounded-full">
               <span className="font-bold text-lg">
