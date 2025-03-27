@@ -54,7 +54,7 @@ const AnalysisOverview = () => {
                   <span className="animate-pulse">...</span>
                 ) : (
                   <>
-                    {yearlyConsumption ? (Math.round(yearlyConsumption / 1000)).toFixed(1) : 0.1} <span className="text-sm">MWh</span>
+                    {yearlyConsumption ? (Math.round(yearlyConsumption / 1000)).toFixed(1)} <span className="text-sm">MWh</span>
                   </>
                 )}
               </span>
