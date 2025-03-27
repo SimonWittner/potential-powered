@@ -134,7 +134,7 @@ const LoadProfileChart = () => {
   return <div className="grid grid-cols-2 gap-8 rounded-sm">
       <div className="space-y-8">
         <div className="bg-white rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Average Daily Load</h3>
+          <h3 className="text-lg font-semibold mb-4">Average Daily Load</h3>
           <div className="h-[250px] w-full flex items-center justify-center">
             {dailyLoadData ? (
               <ChartContainer 
@@ -151,18 +151,10 @@ const LoadProfileChart = () => {
                     data={dailyLoadData}
                     margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                   >
-                    <defs>
-                      <linearGradient id="colorLoad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="hour" 
                       tickFormatter={formatHour}
-                      ticks={[0, 3, 6, 9, 12, 15, 18, 21]} // Show only every 3 hours
                       label={{ value: 'Hour of Day', position: 'insideBottom', offset: -10 }}
                     />
                     <YAxis 
@@ -182,13 +174,11 @@ const LoadProfileChart = () => {
                         return null;
                       }}
                     />
-                    
-                    {/* Transparent Filled Area */}
-                    <Area 
+                    <Line 
                       type="monotone" 
                       dataKey="load" 
+                      name="Load"
                       stroke="#3b82f6" 
-                      fill="url(#colorLoad)" 
                       dot={{ r: 1 }} 
                       activeDot={{ r: 5 }} 
                     />
@@ -199,7 +189,6 @@ const LoadProfileChart = () => {
               <div className="text-gray-500">Loading daily load data...</div>
             )}
           </div>
-
         </div>
 
         <div className="bg-white rounded-lg p-6">
