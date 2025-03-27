@@ -2,18 +2,23 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 
-// Define the data type for daily load
+// Define the data types for load data
 interface DailyLoadData {
   hour: number;
   load: number;
 }
 
+interface PeakLoadData {
+  time: string;
+  load: number;
+}
+
 const LoadProfileChart = () => {
   const [weeklyPlotImageUrl, setWeeklyPlotImageUrl] = useState<string | null>(null);
-  const [peakLoadPlotImageUrl, setPeakLoadPlotImageUrl] = useState<string | null>(null);
   const [dailyLoadData, setDailyLoadData] = useState<DailyLoadData[] | null>(null);
+  const [peakLoadData, setPeakLoadData] = useState<PeakLoadData[] | null>(null);
 
   useEffect(() => {
     const analysisFileName = localStorage.getItem('analysisFileName');
@@ -75,22 +80,29 @@ const LoadProfileChart = () => {
           }
         }
 
-        // Check if peak load plot exists
-        const peakLoadName = `peak_load_${fileId}.png`;
+        // Fetch peak load JSON data
+        const peakLoadJsonName = `peak_load_${fileId}.json`;
         const {
-          data: peakLoadExists
+          data: peakLoadJsonExists
         } = await supabase.storage.from('analysis_results').list('', {
-          search: peakLoadName
+          search: peakLoadJsonName
         });
-        if (peakLoadExists && peakLoadExists.length > 0) {
+        
+        if (peakLoadJsonExists && peakLoadJsonExists.length > 0) {
           const {
-            data: peakLoadData
-          } = await supabase.storage.from('analysis_results').download(peakLoadName);
-          if (peakLoadData) {
-            const url = URL.createObjectURL(peakLoadData);
-            console.log("Successfully fetched and created URL for peak load plot:", url);
-            setPeakLoadPlotImageUrl(url);
-            hasPeak = true;
+            data: peakLoadJsonData
+          } = await supabase.storage.from('analysis_results').download(peakLoadJsonName);
+          
+          if (peakLoadJsonData) {
+            try {
+              const text = await peakLoadJsonData.text();
+              const data = JSON.parse(text) as PeakLoadData[];
+              console.log("Successfully fetched peak load JSON data:", data);
+              setPeakLoadData(data);
+              hasPeak = true;
+            } catch (error) {
+              console.error("Error parsing peak load JSON data:", error);
+            }
           }
         }
 
@@ -122,13 +134,18 @@ const LoadProfileChart = () => {
     return () => {
       if (intervalId) clearInterval(intervalId);
       if (weeklyPlotImageUrl) URL.revokeObjectURL(weeklyPlotImageUrl);
-      if (peakLoadPlotImageUrl) URL.revokeObjectURL(peakLoadPlotImageUrl);
     };
   }, []); // Empty dependency array means this runs once when component mounts
 
   // Format hour for X-axis
   const formatHour = (hour: number) => {
     return `${hour}:00`;
+  };
+
+  // Format date for peak load
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getHours()}:00`;
   };
 
   return <div className="grid grid-cols-2 gap-8 rounded-sm">
@@ -213,7 +230,73 @@ const LoadProfileChart = () => {
         <div className="bg-white rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Peak Load</h3>
           <div className="h-[250px] w-full flex items-center justify-center">
-            {peakLoadPlotImageUrl ? <img src={peakLoadPlotImageUrl} alt="Peak Load Analysis" className="max-h-full w-auto object-contain" /> : <div className="text-gray-500">Loading peak load data...</div>}
+            {peakLoadData ? (
+              <ChartContainer 
+                config={{
+                  load: {
+                    label: "Load",
+                    color: "#ef4444" // red-500
+                  }
+                }}
+                className="w-full h-full"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={peakLoadData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="time" 
+                      tickFormatter={formatDate}
+                      ticks={[0, 3, 6, 9, 12, 15, 18, 21].map(hour => {
+                        // Create a date with the hour, using the first date from the data
+                        const baseDate = peakLoadData[0]?.time.split('T')[0];
+                        return `${baseDate}T${hour.toString().padStart(2, '0')}:00:00`;
+                      })}
+                      label={{ value: 'Hour of Day', position: 'insideBottom', offset: -10 }}
+                    />
+                    <YAxis 
+                      label={{ value: 'Load [kW]', angle: -90, position: 'insideLeft', offset: 7 }}
+                    />
+                    <ChartTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload as PeakLoadData;
+                          const date = new Date(data.time);
+                          return (
+                            <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
+                              <p className="text-sm font-medium">{`${date.getHours()}:00`}</p>
+                              <p className="text-sm text-red-600">{`Load: ${data.load.toFixed(2)} kW`}</p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    {/* Area component before Line component to ensure proper layering */}
+                    <Area
+                      type="monotone"
+                      dataKey="load"
+                      stroke="#ef4444"
+                      fill="#f87171"
+                      fillOpacity={0.3}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="load" 
+                      name="Load"
+                      stroke="#ef4444" 
+                      strokeWidth={2}
+                      dot={{ r: 1 }} 
+                      activeDot={{ r: 5 }} 
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            ) : (
+              <div className="text-gray-500">Loading peak load data...</div>
+            )}
           </div>
         </div>
 
