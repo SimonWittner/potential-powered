@@ -175,19 +175,20 @@ const LoadProfileChart = () => {
                         return null;
                       }}
                     />
+                    {/* Area component before Line component to ensure proper layering */}
                     <Area
                       type="monotone"
                       dataKey="load"
-                      name="Load"
                       stroke="#3b82f6"
-                      fill="#3b82f6"
-                      fillOpacity={0.8}
+                      fill="#0EA5E9"
+                      fillOpacity={0.3}
                     />
                     <Line 
                       type="monotone" 
                       dataKey="load" 
                       name="Load"
                       stroke="#3b82f6" 
+                      strokeWidth={2}
                       dot={{ r: 1 }} 
                       activeDot={{ r: 5 }} 
                     />
