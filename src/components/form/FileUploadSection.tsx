@@ -60,7 +60,7 @@ const FileUploadSection = ({
             </p>
             <p className="text-gray-600 mt-2">
               <strong>Upload</strong><br />
-              Upload load data in a .csv file. The file should have a single column with 8760 numeric values (no heading/column name).<br />
+              Upload load data in a .csv file. The file should have a single column with 8760 numeric values (no heading/column name) in [kW].<br />
               If uploading causes issues, open the .csv file with a text editor and verify that it has this format:
             </p>
             <img 
