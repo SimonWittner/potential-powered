@@ -54,7 +54,15 @@ const FileUploadSection = ({
             <Info className="h-4 w-4 text-gray-500 cursor-help" />
           </HoverCardTrigger>
           <HoverCardContent className="text-sm p-4 bg-white shadow-lg rounded-md border border-gray-200">
-            <p className="text-gray-600">The load profile is needed for the most accurate analysis results.</p>
+            <p className="text-gray-600">
+              <strong>Load Profile</strong><br />
+              The load profile is needed for the most accurate analysis results.
+            </p>
+            <p className="text-gray-600 mt-2">
+              <strong>Upload</strong><br />
+              Upload load data in a .csv file. The file should have a single column with 8760 numeric values (no heading/column name).<br />
+              If uploading causes issues, open the .csv file with a text editor and verify that it has this format:
+            </p>
           </HoverCardContent>
         </HoverCard>
       </div>
