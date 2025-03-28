@@ -113,7 +113,7 @@ const FileUploadSection = ({
           disabled={isUploading}
         >
           <Plus className="h-4 w-4" />
-          <span className="text-xs">Upload Demo Load Profile</span>
+          <span className="text-xs">Try Demo Load Profile</span>
         </Button>
         <div
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
