@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -52,28 +51,22 @@ const FileUploadSection = ({
   const handleDemoUpload = async () => {
     setIsUploading(true);
     try {
-      // Fetch the demo file from Supabase storage
-      const { data, error } = await supabase
-        .storage
-        .from('demoload')
-        .download('load_hourly_demo.csv');
+      const demoFileUrl = "https://jhnqdukpwmcvkcwvejfg.supabase.co/storage/v1/object/sign/demoload/load_hourly_demo.csv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJkZW1vbG9hZC9sb2FkX2hvdXJseV9kZW1vLmNzdiIsImlhdCI6MTc0MzE2NDEyNiwiZXhwIjoxOTAwODQ0MTI2fQ.3_lEkUNd7p2GGVKkmPSP2_BWo8tzG9_X_8DV-AI3K4A";
       
-      if (error) {
-        throw error;
+      const response = await fetch(demoFileUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch demo file: ${response.status} ${response.statusText}`);
       }
       
-      if (!data) {
-        throw new Error('Failed to download demo file');
-      }
+      const data = await response.blob();
       
-      // Convert the blob to a File object
       const file = new File(
         [data], 
         'load_hourly_demo.csv', 
         { type: 'text/csv' }
       );
       
-      // Pass the file to the onFileUpload function
       await onFileUpload(file);
       toast.success("Demo load profile uploaded successfully");
     } catch (error) {
