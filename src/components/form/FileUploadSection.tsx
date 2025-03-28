@@ -63,7 +63,7 @@ const FileUploadSection = ({
               Upload load data in a .csv file. The file should have a single column with 8760 numeric values (no heading/column name).<br />
               If uploading causes issues, open the .csv file with a text editor and verify that it has this format:
             </p>
-            <img src="../../../public/lovable-uploads/icon_dummy.png" alt="CSV Format Example" className="mt-2 w-48 h-auto rounded-md border" />
+            <img src="../../../public/lovable-uploads/csv_upload_hover.png" alt="CSV Format Example" className="mt-2 w-48 h-auto rounded-md border" />
           </HoverCardContent>
         </HoverCard>
       </div>
