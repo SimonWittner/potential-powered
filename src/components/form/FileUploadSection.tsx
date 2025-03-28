@@ -53,13 +53,41 @@ const FileUploadSection = ({
     setIsUploading(true);
     try {
       // Fetch the demo file from Supabase storage
+      // Updated to use 'load_profiles' bucket which likely exists in the project
+      // and contains a file named 'load_hourly_demo.csv'
       const { data, error } = await supabase
         .storage
-        .from('demoload')
+        .from('load_profiles')
         .download('load_hourly_demo.csv');
       
       if (error) {
-        throw error;
+        console.error('Error downloading demo file:', error);
+        
+        // Try an alternative path if the first one fails
+        const alternativeResult = await supabase
+          .storage
+          .from('load_profiles')
+          .download('demo/load_hourly_demo.csv');
+          
+        if (alternativeResult.error) {
+          throw error; // If both paths fail, throw the original error
+        }
+        
+        if (!alternativeResult.data) {
+          throw new Error('Failed to download demo file from alternative path');
+        }
+        
+        // Use the alternative data if found
+        const file = new File(
+          [alternativeResult.data], 
+          'load_hourly_demo.csv', 
+          { type: 'text/csv' }
+        );
+        
+        await onFileUpload(file);
+        toast.success("Demo load profile uploaded successfully");
+        setIsUploading(false);
+        return;
       }
       
       if (!data) {
