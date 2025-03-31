@@ -37,8 +37,8 @@ const AnalysisOverview = () => {
         if (inputData && inputData.pv_yearly_generation) {
           setPvYearlyGeneration(inputData.pv_yearly_generation);
         }
-        if (inputData && inputData.pv_peak) {
-          setPvPeak(inputData.pv_peak);
+        if (inputData && inputData.pv_peak_max) {
+          setPvPeak(inputData.pv_peak_max);
         }
       } catch (error) {
         console.error("Error processing input data:", error);
